@@ -54,9 +54,7 @@ sub send_lastlog_by_tag_lastusec{
 
 sub w {
   my ($text) = @_;
-  if(!utf8::is_utf8($text)){
-    $text = encode('UTF-8', $text)
-  }
+  $text = encode('UTF-8', $text);
   warn($text);
 }
 
@@ -284,8 +282,19 @@ builder {
                             #w "bye ".$nick;
                             delete $nicknames->{$nick};
                             
-                            #TODO タグ毎にできたPoolからも削除をしなければならない。
-
+                            #タグ毎にできたPool等からも削除
+                            my $socket_id = $self->id();
+                            my $joined_tags = $tags_reverse->{$socket_id};
+                            foreach my $k(@$joined_tags){
+                               delete $tags->{$k}->{connections}->{$socket_id};
+                            }
+                            
+                            delete $tags_reverse->{$socket_id};
+                            
+                            w 'delete conn from pool';
+                            w Dumper($tags);
+                            w Dumper($tags_reverse);
+                            
                             $self->broadcast->emit('announcement',
                                 $nick . ' disconnected');
                             $self->broadcast->emit('nicknames', $nicknames);
