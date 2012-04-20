@@ -52,9 +52,9 @@ sub get_now_micro_sec{
 sub send_lastlog_by_tag_lastusec{
   my ($pio, $tag, $lastusec) = @_;
   
-  w 'send_lastlog_by_tag_lastusec------------';
-  w $tag;
-  w $lastusec;  
+  #w 'send_lastlog_by_tag_lastusec------------';
+  #w $tag;
+  #w $lastusec;  
   
   my $rv = $select_lastlog_by_tag_lastusec_sth->execute( (encode('UTF-8', '%#'.$tag.'%'), $lastusec) );
 
@@ -82,18 +82,21 @@ sub decodeUTF8hash{
 }
 
 sub build_tag_list_from_text{
+  w 'build_tag_list_from_text';
   my ($str) = @_;
-  my @match = $str =~ /#([a-zA-Z0-9_]+)/g; #  /(?:^|[^ー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z0-9&_\/]+)[#](\w*[a-zA-Z_]\w*)/; #
-  
-  my %h;
+  w $str;
+  my @match = $str =~ /#([a-zA-Z0-9]+)/g; 
+  #  /(?:^|[^ー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z0-9&_\/]+)[#](\w*[a-zA-Z_]\w*)/; #
+  w Dumper(@match);
+  my $h;
   foreach my $k (@match){
-    my $s = uc $match[$k];
-    $h{$s} = 1;
+    my $s = uc($match[$k]);
+    $h->{$s} = 1;
   }
   
-  #w Dumper %h;
+  w Dumper $h;
   
-  return keys %h;
+  return keys(%$h);
 }
 
 sub build_user_message_hash{
@@ -143,9 +146,14 @@ builder {
                   }
                   insert_post($nick, $message);
                   
+                  #w '--------------';
+                  #w Dumper(@tag_list);
+                  
                   foreach my $i (@tag_list){
+                    #w $i;
+                    #w $tag_list[$i];
                     if($tags->{$tag_list[$i]}){
-                      w "Send to ${tag_list[$i]} from ${nick} => \"${message}\"";
+                      #w "Send to ${tag_list[$i]} from ${nick} => \"${message}\"";
                       my $event = PocketIO::Message->new(type => 'event', data => {name => 'user message', args => build_user_message_hash( {
                         'created_at_ms' => get_now_micro_sec(),
                         'text' => $message,
@@ -176,6 +184,7 @@ builder {
                     return;
                   }
                   #w $nick." PING PONG ";
+
                   $self->emit('ping pong', 'PONG');
                 });
               }
@@ -194,7 +203,7 @@ builder {
                         $self->set(nick => $nick);
 
                         $nicknames->{$nick} = $nick;
-                        w "hello ".$nick;
+                        #w "hello ".$nick;
 
                         $self->broadcast->emit('announcement', $nick . ' connected');
                         $self->sockets->emit('nicknames', $nicknames);
@@ -209,6 +218,14 @@ builder {
                     my $self = shift;
                     my ($tag_list, $cb) = @_;
                     
+                    my $h = {};
+                    foreach my $k (keys(%$tag_list)){
+                      my $uk = uc $k;
+                      $h->{$uk} = $tag_list->{$k};
+                    }
+                    
+                    $tag_list = $h;
+
                     #現在の（自分の）SocketIDを取得
                     my $socket_id = $self->id();
                     
@@ -223,7 +240,7 @@ builder {
                     
                     #タグ毎にPocketIO::Poolを作成して、自分の接続を追加
                     foreach my $tag (keys(%$tag_list)){
-                      w $tag;
+                      #w $tag;
                       if(!$tags->{$tag}){
                         $tags->{$tag} = PocketIO::Pool->new();
                       }
@@ -245,13 +262,13 @@ builder {
                     foreach my $k(@new_joined_tags){
                       $diff->{$k} += 2;
                     }
-                    w Dumper($diff);
+                    #w Dumper($diff);
                     
                     #無くなったタグを消していく
                     foreach my $d(keys $diff){
                       if($diff->{$d}==1){
                         #remove
-                        w "delete tag ".$d;
+                        #w "delete tag ".$d;
                         delete $tags->{$d}->{connections}->{$socket_id}; 
                       }elsif($diff->{$d}==2){
                         #new
