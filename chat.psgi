@@ -161,7 +161,7 @@ builder {
 
                 $self->get('nick' => sub {
                   my ($self, $err, $nick) = @_;
-                  if($nick eq ''){ #TODO Use of uninitialized value $nick in string eq at chat.psgi line 164, <> line 15.
+                  if(!defined($nick) || $nick eq ''){
                     $self->emit('ping pong', 'FAIL');
                     return;
                   }
