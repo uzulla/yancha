@@ -11,111 +11,26 @@
 <script src="/jquery.cookie.js"></script>
 <script src="/ios.min.js"></script>
 
-
-<script>// socket.io specific code
+<script>
 var socket = io.connect();
-var pingpongTimer = null;
 var data = {
   nick:false,
   tags:{PUBLIC:0}
 };
 var debug = 0;
 
-var PINGPONG_WINDOW_MSEC = 10000;
-
+//各種接続、切断、エラーイベント
 socket.on('connect', function () {
   $('#chat').addClass('connected');
   setPingpong();
 });
-
-socket.on('announcement', function (msg) {
-  if(debug){
-    $('#lines').append($('<p>').append($('<em>').text(msg)));
-    $('#lines').get(0).scrollTop = 10000000;  
-  }
-});
-
-socket.on('nicknames', function (nicknames) {
-  $('#nicknames').empty().append($('<span>Online: </span>'));
-  for (var i in nicknames) {
-    $('#nicknames').append($('<b>').text(nicknames[i]));
-  }
-});
-
-socket.on('nickname', function (message) {
-//サーバー側にニックネーム登録がない場合に本処理
-//TODO:同一名称をはじく場合、ここがリトライを繰り返してしまう
-  if(data.nick){
-    console.log('try register');
-    socket.emit('nickname', data.nick, function (set) {
-      if (!set) {
-        console.log('reg');
-      }else{
-        console.log('re reg'); 
-      }
-      
-      if(message){
-        socket.emit('user message', message);
-      }
-      
-    });
-  }
-});
-
-
-socket.on('ping pong', function (msg) {
-  //console.log('pong!');
-  if(msg == 'FAIL'){
-    console.log('unregisted');
-    if(data.nick){
-      console.log('try register');
-      socket.emit('nickname', data.nick, function (set) {
-        if (!set) {
-          console.log('reg');
-        }else{
-          console.log('re reg');
-        }
-      });
-    }
-  }
-  pingpongTimer=null;
-  setPingpong();
-});
-
-
-socket.on('user message', function(hash){
-  for(var i=0; hash.tags.length > i; i++){
-    data.tags[hash.tags[i]] = hash.created_at_ms ;
-  }
-
-  message(hash.by, hash.text+"("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")");
-});
-
-socket.on('user message log', function(hash){
-  for(var i=0; hash.tags.length > i; i++){
-    data.tags[hash.tags[i]] = hash.created_at_ms ;
-  }
-  message_log(hash.by, hash.text+"("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")");
-});
-
-socket.on('join_tag', function(tags){
-  $('#tags').empty().append($('<span>Join Tags: </span>'));
-  for (var i in tags) {
-    $('#tags').append($('<b>').text(i));
-  }
-});
-
-
 socket.on('reconnect', function () {
-  //$('#lines').remove();
   if(debug){message('System', 'Reconnected to the server');}
   socket.emit('join_tag', data.tags);
 });
-
 socket.on('reconnecting', function () {
   if(debug){message('System', 'Attempting to re-connect to the server');}
 });
-
 socket.on('error', function (e) {
   if(pingpongTimer != null){
     console.log("disconnected");
@@ -125,26 +40,93 @@ socket.on('error', function (e) {
   if(debug){message('System', e ? e : 'A unknown error occurred');}
 });
 
+
+//サーバからのアナウンス
+socket.on('announcement', function (msg) {
+  if(debug){
+    $('#lines').append($('<p>').append($('<em>').text(msg)));
+    $('#lines').get(0).scrollTop = 10000000;  
+  }
+});
+
+//サーバから、参加ニックネームリストの更新
+socket.on('nicknames', function (nicknames) {
+  $('#nicknames').empty().append($('<span>Online: </span>'));
+  for (var i in nicknames) {
+    $('#nicknames').append($('<b>').text(nicknames[i]));
+  }
+});
+
+//サーバー側にニックネーム登録がない場合に本処理
+//messageは再送する為にサーバーから戻されたテキスト、分かりづらく、設計の筋がよくない。
+//TODO:同一名称をはじく場合、ここがリトライを繰り返してしまう
+socket.on('nickname', function (message) {
+  if(data.nick){
+    console.log('try register');
+    socket.emit('nickname', data.nick, function (set) {
+      if(message){
+        socket.emit('user message', message);
+      }
+    });
+  }
+});
+
+
+//メッセージイベント
+socket.on('user message', function(hash){
+  for(var i=0; hash.tags.length > i; i++){
+    data.tags[hash.tags[i]] = hash.created_at_ms ;
+  }
+  message(hash.by, hash.text+"("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")");
+});
+
+//ログメッセージ（再送）イベント
+socket.on('user message log', function(hash){
+  for(var i=0; hash.tags.length > i; i++){
+    data.tags[hash.tags[i]] = hash.created_at_ms ;
+  }
+  message_log(hash.by, hash.text+"("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")");
+});
+
+
+//ログ表示、オートリンクだけ実装
 function message (from, msg) {
-  $('#lines').append($('<p>').append($('<b>').text(from),  $('<span>').text(msg) ));
+  //auto link
+  var html = $('<span>').text(msg).html().replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>");
+  $('#lines').append($('<p>').append($('<b>').text(from),  html ));
   $('#lines').get(0).scrollTop = 10000000;
 }
 
+//ログ表示、message()と色が違うだけ
 function message_log (from, msg) {
   $('#lines').append($('<p style="color:gray">').append($('<b>').text(from), $('<span>').text(msg) ));
   $('#lines').get(0).scrollTop = 10000000;
 }
 
+//ws切断回避用にpingpong。websocketじゃなかったら、いらないのでは…
+var pingpongTimer = null;
+var PINGPONG_WINDOW_MSEC = 10000;
 function setPingpong(){
   if(pingpongTimer == null){
-    //console.log('add pingpong timer');
     pingpongTimer = setTimeout(function(){
-      //console.log('ping!');
       socket.emit('ping pong', 'ping');
     }, PINGPONG_WINDOW_MSEC);
   }
-}1
+}
+socket.on('ping pong', function (msg) {
+  //console.log('pong!');
+  if(msg == 'FAIL'){
+    console.log('unregisted');
+    if(data.nick){
+      console.log('try register');
+      socket.emit('nickname', data.nick);
+    }
+  }
+  pingpongTimer=null;
+  setPingpong();
+});
 
+//テキスト入力欄をクリア、ただし、タグは残しておく
 function clear () {
   var tag_list = ($('#message').val().match(/#[a-zA-Z0-9]+/g, '#')!=null)? $('#message').val().match(/#[a-zA-Z0-9]+/g, '#'): [];
   var str  = tag_list.join(' ');
@@ -153,6 +135,8 @@ function clear () {
   $('#message')[0].selectionEnd = 0;
 };
 
+
+//オートログインクッキーを消して、接続を切って、リロード
 function logout(){
   $.cookie('chat_nickname', null);
   $.cookie('chat_tag_list', null);
@@ -163,6 +147,7 @@ function logout(){
   location.href="/";
 }
 
+//クッキーがあれば、オートログインさせる
 function autologin(){
   
   if($.cookie('chat_nickname')){
@@ -170,11 +155,6 @@ function autologin(){
     if(data.nick){
       console.log('try autologin');
       socket.emit('nickname', data.nick, function (set) {
-        if (!set) {
-          console.log('reg');
-        }else{
-          console.log('re reg');
-        }
         clear();
         $.cookie('chat_nickname', data.nick, { expires: 1 });
         $('#chat').addClass('nickname-set');
@@ -194,9 +174,10 @@ function autologin(){
 }
 
 
-
+//購読タグを入力させて、サーバーに送信
 function setTag(){
     var now_tags = [];    
+
     for( k in data.tags ){
       now_tags.push(k);
     }
@@ -207,6 +188,7 @@ function setTag(){
       return false;
     }
 
+    //Textで入力されたタグを配列に
     var tag_list = tag_list_str.toUpperCase().replace(' ','').replace('#','').split(',');
     
     _tags = {};
@@ -214,25 +196,39 @@ function setTag(){
     
     for(var i=0; tag_list.length>i; i++){
       if(typeof(data.tags[tag_list[i]]) == 'undefined'){
-        _tags[tag_list[i]] = 0;
+        _tags[tag_list[i]] = 0; //未読なので0
       }else{
-        _tags[tag_list[i]] = data.tags[tag_list[i]];
+        _tags[tag_list[i]] = data.tags[tag_list[i]]; //既読の時刻を設定
       }
       _keys.push(tag_list[i]); 
     }
+    
+    //状態変数に保存しておく
     data.tags = _tags;
     
-    console.log(data.tags);
+    //console.log(data.tags);
     
+    //オートログイン用に保存しておく
     $.cookie('chat_tag_list', _keys.join(','), { expires: 1 });
     
+    //送信
     socket.emit('join_tag', data.tags);
     return false;
 }
+//タグ登録処理完了イベント
+socket.on('join_tag', function(tags){
+  $('#tags').empty().append($('<span>Join Tags: </span>'));
+  for (var i in tags) {
+    $('#tags').append($('<b>').text(i));
+  }
+});
 
 
-// dom manipulation
+
+//各種初期化
 $(function () {
+
+  //ログイン
   $('#set-nickname').submit(function (ev) {
     data.nick = $('#nick').val();
     socket.emit('nickname', $('#nick').val(), function (set) {
@@ -250,6 +246,7 @@ $(function () {
     return false;
   });
 
+  //送信ボタン
   $('#send-message').submit(function () {
     //message('me', $('#message').val());
     socket.emit('user message', $('#message').val());
@@ -258,6 +255,7 @@ $(function () {
     return false;
   });
 
+  //Cookieがあれば、オートログインさせる
   autologin();
 
 });
@@ -300,9 +298,9 @@ $(function () {
   <form id="send-message">
   <input id="message">
   <button >Send</button>
+  </form>
   <button style="float:right" onclick="setTag()">ChangeTag</button>
   <button style="float:right" onclick="logout()">Logout</button>
-  </form>
   ※送信してもパット出てこないときは再接続が走ってます。10秒くらいまてば、うごくかも。
 </div>
 </body>
