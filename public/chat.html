@@ -99,7 +99,8 @@ function message (from, msg) {
 
 //ログ表示、message()と色が違うだけ
 function message_log (from, msg) {
-  $('#lines').append($('<p style="color:gray">').append($('<b>').text(from), $('<span>').text(msg) ));
+  var html = $('<span>').text(msg).html().replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>");
+  $('#lines').append($('<p style="color:gray">').append($('<b>').text(from), html ));
   $('#lines').get(0).scrollTop = 10000000;
 }
 
