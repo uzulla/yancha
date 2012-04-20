@@ -11,6 +11,8 @@ BEGIN {
 }
 
 use strict;
+use utf8;
+use warnings;
 use PocketIO;
 use DBI;
 use JSON;
@@ -27,19 +29,19 @@ my $tags_reverse = {};#クライアントコネクション->参加Tag リスト
 
 
 my $dbh =  DBI->connect('dbi:mysql:host=localhost;database=yairc', 'yairc', 'yairc') || die DBI::errstr; #plz change
+#$dbh->do("set names utf8");
 my $insert_post_sth = $dbh->prepare('INSERT INTO `post` (`by`, `text`, `created_at_ms`) VALUES (?, ?, ?) ');
 my $select_lastlog_by_tag_lastusec_sth = $dbh->prepare('SELECT * FROM `post` WHERE `text` like ? AND `created_at_ms` > ? ORDER BY `created_at_ms` DESC LIMIT 100 ');
 
-
 sub insert_post {
   my ($by, $text) = @_;
-  $insert_post_sth->execute( (encode('UTF-8', $by), encode('UTF-8',$text), get_now_micro_sec()) );
+  $insert_post_sth->execute( $by, $text, get_now_micro_sec() );
   return;
 }
 
 sub send_lastlog_by_tag_lastusec{
   my ($pio, $tag, $lastusec) = @_;
-  my $rv = $select_lastlog_by_tag_lastusec_sth->execute( (encode('UTF-8', '%#'.$tag.'%'), $lastusec) );
+  my $rv = $select_lastlog_by_tag_lastusec_sth->execute( '%#'.$tag.'%', $lastusec );
 
   my @hash_list = ();  
   while(my $hash = $select_lastlog_by_tag_lastusec_sth->fetchrow_hashref()){
@@ -65,12 +67,10 @@ sub get_now_micro_sec{
 
 sub decodeUTF8hash{
   my ($hash) = @_;
+  
+  %$hash = map { decode('UTF-8', $_) } %$hash;
 
-  my $rtn = {};
-  foreach my $i (keys $hash){
-    $rtn->{$i} = decode('UTF-8', $hash->{$i} );
-  } 
-  return $rtn;
+  return $hash;
 }
 
 sub build_tag_list_from_text{
@@ -135,8 +135,8 @@ builder {
                   
                   #タグ毎に送信処理
                   foreach my $i (@tag_list){
-                    if($tags->{$tag_list[$i]}){
-                      w "Send to ${tag_list[$i]} from ${nick} => \"${message}\"";
+                    if($tags->{$i}){
+                      w "Send to ${i} from ${nick} => \"${message}\"";
                       
                       #ちょいとややこしいPocketIOの直接Poolを触る場合
                       my $event = PocketIO::Message->new(type => 'event', data => {name => 'user message', args => build_user_message_hash( {
@@ -146,7 +146,7 @@ builder {
                         'by' => $nick
                         })
                       });
-                      $tags->{$tag_list[$i]}->send($event);
+                      $tags->{$i}->send($event);
                     }
                   }
                 });
@@ -161,7 +161,7 @@ builder {
 
                 $self->get('nick' => sub {
                   my ($self, $err, $nick) = @_;
-                  if($nick eq ''){
+                  if($nick eq ''){ #TODO Use of uninitialized value $nick in string eq at chat.psgi line 164, <> line 15.
                     $self->emit('ping pong', 'FAIL');
                     return;
                   }
@@ -279,6 +279,11 @@ builder {
                     $self->get(
                         'nick' => sub {
                             my ($self, $err, $nick) = @_;
+                            
+                            if(!$nick){
+                              #TODO:このときの処理を考える
+                            }
+                            
                             #w "bye ".$nick;
                             delete $nicknames->{$nick};
                             
@@ -296,7 +301,7 @@ builder {
                             w Dumper($tags_reverse);
                             
                             $self->broadcast->emit('announcement',
-                                $nick . ' disconnected');
+                                $nick . ' disconnected'); #nickがないときにエラー
                             $self->broadcast->emit('nicknames', $nicknames);
                         }
                     );
