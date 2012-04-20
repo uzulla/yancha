@@ -45,7 +45,7 @@ sub send_lastlog_by_tag_lastusec{
 
   my @hash_list = ();  
   while(my $hash = $select_lastlog_by_tag_lastusec_sth->fetchrow_hashref()){
-    push(@hash_list, decodeUTF8hash($hash));
+    push(@hash_list, decodeUTF8hash($hash)); #緩募：DBから取ってきてイチイチDecodeしなくていい方法
   }
 
   foreach my $hash(reverse(@hash_list)){
@@ -53,23 +53,18 @@ sub send_lastlog_by_tag_lastusec{
   }
 }
 
-
 sub w {
   my ($text) = @_;
-  $text = encode('UTF-8', $text);
-  warn($text);
+  warn(encode('UTF-8', $text));
 }
 
 sub get_now_micro_sec{
-  my $time = Time::HiRes::time();
-  return $time * 100_000;
+  return Time::HiRes::time() * 100_000;
 }
 
 sub decodeUTF8hash{
   my ($hash) = @_;
-  
   %$hash = map { decode('UTF-8', $_) } %$hash;
-
   return $hash;
 }
 
@@ -79,8 +74,7 @@ sub build_tag_list_from_text{
   #delete duplicated tags. and toUpper.
   my $h;
   foreach my $k (@match){
-    my $s = uc($k);
-    $h->{$s} = 1;
+    $h->{uc($k)} = 1;
   }
   return keys(%$h);
 }
@@ -90,7 +84,6 @@ sub build_user_message_hash{
   @{$hash->{tags}} = build_tag_list_from_text($hash->{text});
   return $hash;
 }
-
 
 builder {
     mount '/socket.io/socket.io.js' =>
@@ -125,7 +118,7 @@ builder {
                   my ($self, $err, $nick) = @_;
                   
                   #nickがない場合、ニックネーム再登録を依頼して終わる。
-                  if($nick eq ''){
+                  if(!defined($nick) || $nick eq ''){
                     $self->emit('nickname', $message);
                     return;
                   }
@@ -180,6 +173,8 @@ builder {
 #                     if ($nicknames->{$nick}) { #同一名称ではじく必要ないんじゃないの？
 #                         $cb->(JSON::true);
 #                     } else {
+                        w "hello ${nick}";
+
                         $cb->(JSON::false);
                         $self->set(nick => $nick);
                         
@@ -203,8 +198,7 @@ builder {
                     
                     my $h = {};
                     foreach my $k (keys(%$tag_list)){
-                      my $uk = uc $k;
-                      $h->{$uk} = $tag_list->{$k};
+                      $h->{uc $k} = $tag_list->{$k};
                     }
                     
                     $tag_list = $h;
@@ -280,11 +274,11 @@ builder {
                         'nick' => sub {
                             my ($self, $err, $nick) = @_;
                             
-                            if(!$nick){
-                              #TODO:このときの処理を考える
+                            if(!defined($nick)){
+                              w "bye undefined nickname user";
+                              return;
                             }
-                            
-                            #w "bye ".$nick;
+
                             delete $nicknames->{$nick};
                             
                             #タグ毎にできたPool等からも削除
@@ -296,13 +290,15 @@ builder {
                             
                             delete $tags_reverse->{$socket_id};
                             
-                            w 'delete conn from pool';
-                            w Dumper($tags);
-                            w Dumper($tags_reverse);
+                            #w 'delete conn from pool';
+                            #w Dumper($tags);
+                            #w Dumper($tags_reverse);
                             
                             $self->broadcast->emit('announcement',
                                 $nick . ' disconnected'); #nickがないときにエラー
                             $self->broadcast->emit('nicknames', $nicknames);
+
+                            w "bye ".$nick;
                         }
                     );
                 }
