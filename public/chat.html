@@ -126,12 +126,12 @@ socket.on('error', function (e) {
 });
 
 function message (from, msg) {
-  $('#lines').append($('<p>').append($('<b>').text(from), msg));
+  $('#lines').append($('<p>').append($('<b>').text(from),  $('<span>').text(msg) ));
   $('#lines').get(0).scrollTop = 10000000;
 }
 
 function message_log (from, msg) {
-  $('#lines').append($('<p style="color:gray">').append($('<b>').text(from), msg));
+  $('#lines').append($('<p style="color:gray">').append($('<b>').text(from), $('<span>').text(msg) ));
   $('#lines').get(0).scrollTop = 10000000;
 }
 
