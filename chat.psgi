@@ -11,7 +11,6 @@ BEGIN {
 }
 
 use strict;
-#use utf8;
 use PocketIO;
 use DBI;
 use JSON;
@@ -22,15 +21,15 @@ use Encode;
 use Time::HiRes qw/ time /;
 use Data::Dumper;
 
-my $nicknames = {};
-my $tags = {};
-my $tags_reverse = {};
+my $nicknames = {}; #共有ニックネームリスト
+my $tags = {};#参加タグ->コネクションプールリスト
+my $tags_reverse = {};#クライアントコネクション->参加Tag リスト
 
-my $dbh =  DBI->connect('dbi:mysql:host=localhost;database=yairc', 'yairc', 'yairc') || die DBI::errstr;  
-#$dbh->do('SET NAMES utf8');
 
+my $dbh =  DBI->connect('dbi:mysql:host=localhost;database=yairc', 'yairc', 'yairc') || die DBI::errstr; #plz change
 my $insert_post_sth = $dbh->prepare('INSERT INTO `post` (`by`, `text`, `created_at_ms`) VALUES (?, ?, ?) ');
 my $select_lastlog_by_tag_lastusec_sth = $dbh->prepare('SELECT * FROM `post` WHERE `text` like ? AND `created_at_ms` > ? ORDER BY `created_at_ms` DESC LIMIT 100 ');
+
 
 sub insert_post {
   my ($by, $text) = @_;
@@ -38,24 +37,8 @@ sub insert_post {
   return;
 }
 
-sub w {
-  my ($text) = @_;
-  warn(encode('UTF-8', $text));
-}
-
-sub get_now_micro_sec{
-  my $time = Time::HiRes::time();
-  return $time * 100_000;
-}
-
-
 sub send_lastlog_by_tag_lastusec{
   my ($pio, $tag, $lastusec) = @_;
-  
-  #w 'send_lastlog_by_tag_lastusec------------';
-  #w $tag;
-  #w $lastusec;  
-  
   my $rv = $select_lastlog_by_tag_lastusec_sth->execute( (encode('UTF-8', '%#'.$tag.'%'), $lastusec) );
 
   my @hash_list = ();  
@@ -64,9 +47,22 @@ sub send_lastlog_by_tag_lastusec{
   }
 
   foreach my $hash(reverse(@hash_list)){
-    #w Dumper $hash;
     $pio->emit('user message log', build_user_message_hash($hash));
   }
+}
+
+
+sub w {
+  my ($text) = @_;
+  if(!utf8::is_utf8($text)){
+    $text = encode('UTF-8', $text)
+  }
+  warn($text);
+}
+
+sub get_now_micro_sec{
+  my $time = Time::HiRes::time();
+  return $time * 100_000;
 }
 
 sub decodeUTF8hash{
@@ -76,9 +72,7 @@ sub decodeUTF8hash{
   foreach my $i (keys $hash){
     $rtn->{$i} = decode('UTF-8', $hash->{$i} );
   } 
-  
   return $rtn;
-
 }
 
 sub build_tag_list_from_text{
@@ -119,51 +113,49 @@ builder {
                 my $self = shift;
                 my ($message) = @_;
                 
-                
-                #正規表現でタグを抜いておく、タグがみつからなかったら、PUBLICに?
+                #メッセージ内のタグをリストに
                 my @tag_list = build_tag_list_from_text($message);
                 
+                #タグがみつからなかったら、#PUBLICタグを付けておく
                 if($#tag_list == -1){
                   $message = $message . " #PUBLIC";
                   push(@tag_list, "PUBLIC" );
                 }
                 
+                #pocketio のソケット毎ストレージから自分のニックネームを取り出す
                 $self->get('nick' => sub {
                   my ($self, $err, $nick) = @_;
                   
-#                  if(length($message)>1024){}
-                  
+                  #nickがない場合、ニックネーム再登録を依頼して終わる。
                   if($nick eq ''){
                     $self->emit('nickname', $message);
                     return;
                   }
+                  
+                  #DBに保存
                   insert_post($nick, $message);
                   
-                  #w '--------------';
-                  #w Dumper(@tag_list);
-                  
+                  #タグ毎に送信処理
                   foreach my $i (@tag_list){
-                    #w $i;
-                    #w $tag_list[$i];
                     if($tags->{$tag_list[$i]}){
-                      #w "Send to ${tag_list[$i]} from ${nick} => \"${message}\"";
+                      w "Send to ${tag_list[$i]} from ${nick} => \"${message}\"";
+                      
+                      #ちょいとややこしいPocketIOの直接Poolを触る場合
                       my $event = PocketIO::Message->new(type => 'event', data => {name => 'user message', args => build_user_message_hash( {
                         'created_at_ms' => get_now_micro_sec(),
                         'text' => $message,
-                        'id' => -1,
+                        'id' => -1,#DBに保存されていないと、IDが振られないので
                         'by' => $nick
                         })
                       });
                       $tags->{$tag_list[$i]}->send($event);
                     }
                   }
-
-                  
                 });
-                
               }
             );
             
+            #接続維持のPing
             $self->on(
               'ping pong' => sub {
                 my $self = shift;
@@ -172,17 +164,16 @@ builder {
                 $self->get('nick' => sub {
                   my ($self, $err, $nick) = @_;
                   if($nick eq ''){
-                    #w "not registed pingpong ";
                     $self->emit('ping pong', 'FAIL');
                     return;
                   }
-                  #w $nick." PING PONG ";
 
                   $self->emit('ping pong', 'PONG');
                 });
               }
             );
 
+            #自分のニックネーム登録、これは必要なのか何とも言えない、ログイン代わり
             $self->on(
                 'nickname' => sub {
                     my $self = shift;
@@ -192,22 +183,23 @@ builder {
 #                         $cb->(JSON::true);
 #                     } else {
                         $cb->(JSON::false);
-
                         $self->set(nick => $nick);
-
+                        
+                        #nickname listを更新し、周知
                         $nicknames->{$nick} = $nick;
-                        #w "hello ".$nick;
-
-                        $self->broadcast->emit('announcement', $nick . ' connected');
                         $self->sockets->emit('nicknames', $nicknames);
+
+                        #サーバー告知メッセージ
+                        $self->broadcast->emit('announcement', $nick . ' connected');
 #                     }
                 }
             );
 
 
+            #参加タグの登録（タグ毎のコネクションプールの管理）
             $self->on(
                 'join_tag' => sub {
-                    #あまりにも適当な実装なので、後でリファクタれ
+                    #あまりにも適当な実装なので、後でリファクタる必要あり
                     my $self = shift;
                     my ($tag_list, $cb) = @_;
                     
@@ -281,7 +273,7 @@ builder {
                 }
             );
 
-
+            #切断時処理
             $self->on(
                 'disconnect' => sub {
                     my $self = shift;
@@ -289,13 +281,14 @@ builder {
                     $self->get(
                         'nick' => sub {
                             my ($self, $err, $nick) = @_;
-                            warn "bye ".$nick;
+                            #w "bye ".$nick;
                             delete $nicknames->{$nick};
+                            
+                            #TODO タグ毎にできたPoolからも削除をしなければならない。
 
                             $self->broadcast->emit('announcement',
                                 $nick . ' disconnected');
                             $self->broadcast->emit('nicknames', $nicknames);
-
                         }
                     );
                 }
