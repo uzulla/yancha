@@ -82,27 +82,20 @@ sub decodeUTF8hash{
 }
 
 sub build_tag_list_from_text{
-  w 'build_tag_list_from_text';
   my ($str) = @_;
-  w $str;
-  my @match = $str =~ /#([a-zA-Z0-9]+)/g; 
-  #  /(?:^|[^ー゛゜々ヾヽぁ-ヶ一-龠ａ-ｚＡ-Ｚ０-９a-zA-Z0-9&_\/]+)[#](\w*[a-zA-Z_]\w*)/; #
-  w Dumper(@match);
+  my @match = $str =~ /#([a-zA-Z0-9]+)/g; #もっと良い感じのタグ判定正規表現にしないといけない
+  #delete duplicated tags. and toUpper.
   my $h;
   foreach my $k (@match){
-    my $s = uc($match[$k]);
+    my $s = uc($k);
     $h->{$s} = 1;
   }
-  
-  w Dumper $h;
-  
   return keys(%$h);
 }
 
 sub build_user_message_hash{
   my ($hash) = @_;
   @{$hash->{tags}} = build_tag_list_from_text($hash->{text});
-  #$hash = encodeUTF8hash($hash);
   return $hash;
 }
 
