@@ -21,6 +21,7 @@ use Encode;
 use Data::Dumper;
 use Config::Pit;
 use Yairc;
+use Yairc::API;
 
 my $config = pit_get( "yairc", require => {
        "dsn" => "dsn",
@@ -43,6 +44,22 @@ builder {
       Plack::App::File->new(file => "$root/public/WebSocketMainInsecure.swf");
 
     mount '/socket.io' => PocketIO->new( instance => Yairc->new( dbh => $dbh ) );
+
+    mount '/api' => builder {
+        # リクエストパラメータで取得するデータ形式とか発言の取得範囲を指定できたらいいなっ
+
+        my $api = Yairc::API->new( dbh => $dbh );
+        
+        my $res = $api->get_log_data();
+        sub {
+            [   200,
+                [   'Content-Type'   => $res->{'content-type'},
+                    'Content-Length' => length($res->{'data'})
+                ],
+                [$res->{'data'}]
+            ];
+        };
+    };
 
     mount '/' => builder {
         enable "Static",
