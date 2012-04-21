@@ -22,13 +22,19 @@ use Plack::Middleware::Static;
 use Encode;
 use Time::HiRes qw/ time /;
 use Data::Dumper;
+use Config::Pit;
 
 my $nicknames = {}; #共有ニックネームリスト
 my $tags = {};#参加タグ->コネクションプールリスト
 my $tags_reverse = {};#クライアントコネクション->参加Tag リスト
 
+my $config = pit_get( "yairc", require => {
+       "dsn" => "dsn",
+       "db_user" => "db username",
+       "db_pass" => "db password"
+});
 
-my $dbh =  DBI->connect('dbi:mysql:host=localhost;database=yairc', 'yairc', 'yairc') || die DBI::errstr; #plz change
+my $dbh =  DBI->connect($config->{dsn}, $config->{db_user}, $config->{db_pass}) || die DBI::errstr; #plz change
 #$dbh->do("set names utf8");
 my $insert_post_sth = $dbh->prepare('INSERT INTO `post` (`by`, `text`, `created_at_ms`) VALUES (?, ?, ?) ');
 my $select_lastlog_by_tag_lastusec_sth = $dbh->prepare('SELECT * FROM `post` WHERE `text` like ? AND `created_at_ms` > ? ORDER BY `created_at_ms` DESC LIMIT 100 ');
@@ -164,7 +170,8 @@ builder {
               }
             );
 
-            #自分のニックネーム登録、これは必要なのか何とも言えない、ログイン代わり
+            #自分のニックネーム登録。PocketIOのサンプルコードを流用した為にのこっているが、nickをpocketIOの機能で保存するのは不要では。
+            #現状においては、ログイン代わり。
             $self->on(
                 'nickname' => sub {
                     my $self = shift;
