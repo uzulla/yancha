@@ -25,9 +25,8 @@ sub get_log_data {
         push(@hash_list, $hash);
     }
 
-    my $json = JSON->new;
     return {
-        'data'          => $json->encode(\@hash_list),
+        'data'          => encode_json(\@hash_list),
         'content-type'  => 'application/json',
     };
 }
