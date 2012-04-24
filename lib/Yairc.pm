@@ -215,7 +215,7 @@ sub run {
                     #w Dumper($diff);
                     
                     #無くなったタグを消していく
-                    foreach my $d(keys $diff){
+                    foreach my $d(keys %$diff){
                       if($diff->{$d}==1){
                         #remove
                         #w "delete tag ".$d;
