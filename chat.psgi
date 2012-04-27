@@ -20,6 +20,9 @@ use Plack::Middleware::Static;
 use Encode;
 use Data::Dumper;
 use Config::Pit;
+
+use FindBin;
+use lib ("$FindBin::Bin/lib");
 use Yairc;
 use Yairc::API;
 
