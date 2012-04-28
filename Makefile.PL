@@ -16,7 +16,7 @@ WriteMakefile(
         'DBI'         => 0,
         'Encode'      => 0,
         'Time::HiRes' => 0,
-        'PocketIO'    => 0,
+        'PocketIO'    => 0.13,
         'Plack'       => 0,
         'Config::Pit' => 0,
         'FindBin'     => 0,
