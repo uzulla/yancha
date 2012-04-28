@@ -24,7 +24,8 @@ use Config::Pit;
 use FindBin;
 use lib ("$FindBin::Bin/lib");
 use Yairc;
-use Yairc::API;
+use Yairc::API::Search;
+
 
 my $config = pit_get( "yairc", require => {
        "dsn" => "dsn",
@@ -48,21 +49,7 @@ builder {
 
     mount '/socket.io' => PocketIO->new( instance => Yairc->new( dbh => $dbh ) );
 
-    mount '/api' => builder {
-        # リクエストパラメータで取得するデータ形式とか発言の取得範囲を指定できたらいいなっ
-
-        my $api = Yairc::API->new( dbh => $dbh );
-        
-        my $res = $api->get_log_data();
-        sub {
-            [   200,
-                [   'Content-Type'   => $res->{'content-type'},
-                    'Content-Length' => length($res->{'data'})
-                ],
-                [$res->{'data'}]
-            ];
-        };
-    };
+    mount '/api' => do ( './api.psgi' ) ;
 
     mount '/' => builder {
         enable "Static",
