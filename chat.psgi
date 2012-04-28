@@ -41,6 +41,8 @@ builder {
 
     mount '/socket.io' => PocketIO->new( instance => Yairc->new( dbh => $dbh ) );
 
+    # APIリクエストサンプル
+    # https://gist.github.com/2440738
     mount '/api' => do ( './api.psgi' ) ;
 
     mount '/' => builder {
