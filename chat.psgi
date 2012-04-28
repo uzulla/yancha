@@ -19,22 +19,15 @@ use Plack::Builder;
 use Plack::Middleware::Static;
 use Encode;
 use Data::Dumper;
-use Config::Pit;
 
 use FindBin;
 use lib ("$FindBin::Bin/lib");
 use Yairc;
-use Yairc::API;
+use Yairc::DB;
+use Yairc::API::Search;
 
-my $config = pit_get( "yairc", require => {
-       "dsn" => "dsn",
-       "db_user" => "db username",
-       "db_pass" => "db password"
-});
 
-my $dbh = DBI->connect($config->{dsn}, $config->{db_user}, $config->{db_pass}, { mysql_enable_utf8 => 1 })
-        || die DBI::errstr; #plz change
-
+my $dbh = Yairc::DB->new('yairc');
 
 builder {
     mount '/socket.io/socket.io.js' =>
@@ -48,21 +41,9 @@ builder {
 
     mount '/socket.io' => PocketIO->new( instance => Yairc->new( dbh => $dbh ) );
 
-    mount '/api' => builder {
-        # リクエストパラメータで取得するデータ形式とか発言の取得範囲を指定できたらいいなっ
-
-        my $api = Yairc::API->new( dbh => $dbh );
-        
-        my $res = $api->get_log_data();
-        sub {
-            [   200,
-                [   'Content-Type'   => $res->{'content-type'},
-                    'Content-Length' => length($res->{'data'})
-                ],
-                [$res->{'data'}]
-            ];
-        };
-    };
+    # APIリクエストサンプル
+    # https://gist.github.com/2440738
+    mount '/api' => do ( './api.psgi' ) ;
 
     mount '/' => builder {
         enable "Static",
