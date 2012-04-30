@@ -21,6 +21,8 @@ sub new {
             $config->{db_pass},
             {
                 mysql_enable_utf8 => 1 
+                mysql_auto_reconnect => 1,
+                RaiseError => 1,
             }
     ) || die DBI::errstr; #plz change
 
