@@ -9,7 +9,7 @@ sub new {
     my ($self, $name) = @_;
 
     $name ||= 'yairc';
-    my $config = pit_get( "yairc", require => {
+    my $config = pit_get( $name, require => {
             "dsn" => "dsn",
             "db_user" => "db username",
             "db_pass" => "db password"
