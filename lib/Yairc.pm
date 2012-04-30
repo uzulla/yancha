@@ -107,12 +107,12 @@ sub run {
                       w "Send to ${i} from ${nick} => \"${message}\"";
                       
                       #ちょいとややこしいPocketIOの直接Poolを触る場合
-                      my $event = PocketIO::Message->new(type => 'event', data => {name => 'user message', args => build_user_message_hash( {
+                      my $event = PocketIO::Message->new(type => 'event', data => {name => 'user message', args => [ build_user_message_hash( {
                         'created_at_ms' => get_now_micro_sec(),
                         'text' => $message,
                         'id' => -1,#DBに保存されていないと、IDが振られないので
                         'by' => $nick
-                        })
+                        }) ]
                       });
                       $tags->{$i}->send($event);
                     }
