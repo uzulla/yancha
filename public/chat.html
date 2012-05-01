@@ -89,7 +89,7 @@ socket.on('user message', function(hash){
     var img = $('<img style="float:left;margin:3px;">');
   }
   var from = $('<span style="font-weight:bold;">').text(hash.nickname);
-  var text = $('<span>').text(hash.text).html().replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>");
+  var text = $('<span>').text(hash.text).html().replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>").replace(/[\r]?\n/g, '<br />');
   var time = $('<span style="float:right">').text("("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")");
     
   $('#lines').append($('<p>').append(img, from, $('<br>'),text, $('<br>'), time, $('<br style="clear:both">')));
@@ -238,6 +238,20 @@ $(function () {
     clear();
     return false;
   });
+  
+  //インプット欄の改行制御
+	$("#send-message").keypress(function(ev) {
+		if ((ev.which && ev.which === 13) || (ev.keyCode && ev.keyCode === 13)) {
+		  if(ev.shiftKey){
+		    return true;
+		  }else{
+		    $('#send-message').submit();
+		    return false;
+		  }
+		} else {
+			return true;
+		}
+	});  
 
   //Cookieがあれば、オートログインさせる
   autologin();
@@ -296,7 +310,7 @@ $(function () {
   <form id="send-message">
   <table style="width:100%">
   <tr>
-    <td><input id="message">
+    <td><textarea  id="message"></textarea>
     <td style="width:60px"><button>Send</button>
     <td style="width:60px"><button style="float:right" onclick="setTag()">ChangeTag</button>
     <td style="width:60px"><button style="float:right" onclick="logout()">Logout</button>

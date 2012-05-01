@@ -124,11 +124,11 @@ margin:0px;
   background: #fff;
   position: relative;
 }
-#send-message input {
+#send-message textarea {
   border: 1px solid gray;
-  height: 30px;
+  height: 50px;
   padding: 5 5px;
-  line-height: 30px;
+  line-height: 1.1em;
   vertical-align: middle;
   width: 100%;
   -webkit-border-radius: 10px;
