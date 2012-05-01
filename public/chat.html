@@ -89,7 +89,7 @@ socket.on('user message', function(hash){
     var img = $('<img style="float:left;margin:3px;">');
   }
   var from = $('<span style="font-weight:bold;">').text(hash.nickname);
-  var text = $('<span>').text(hash.text).html().replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>").replace(/[\r]?\n/g, '<br />');
+  var text = $('<pre>').append($('<span>').text(hash.text).html().replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>"));
   var time = $('<span style="float:right">').text("("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")");
     
   $('#lines').append($('<p>').append(img, from, $('<br>'),text, $('<br>'), time, $('<br style="clear:both">')));

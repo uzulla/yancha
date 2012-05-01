@@ -2,6 +2,13 @@ body{
 padding:0px;
 margin:0px;
 }
+
+pre{
+padding:0px;
+margin:0px;
+
+}
+
 #chat,
 #nickname,
 #messages {
