@@ -14,7 +14,9 @@
 <script>
 var socket = io.connect();
 var data = {
+  token:false,
   nick:false,
+  profile_image_url:false,
   tags:{PUBLIC:0}
 };
 var debug = 0;
@@ -37,6 +39,7 @@ socket.on('error', function (e) {
     clearTimeout(pingpongTimer);
     pingpongTimer=null;
   }
+
   if(debug){message('System', e ? e : 'A unknown error occurred');}
 });
 
@@ -55,19 +58,21 @@ socket.on('nicknames', function (nicknames) {
   for (var i in nicknames) {
     $('#nicknames').append($('<b>').text(nicknames[i]));
   }
+  $(window).resize();
 });
 
 //サーバー側にニックネーム登録がない場合に本処理
 //messageは再送する為にサーバーから戻されたテキスト、分かりづらく、設計の筋がよくない。
-//TODO:同一名称をはじく場合、ここがリトライを繰り返してしまう
-socket.on('nickname', function (message) {
-  if(data.nick){
+socket.on('no session', function (message) {
+  if(data.token){
     console.log('try register');
-    socket.emit('nickname', data.nick, function (set) {
-      if(message){
+    socket.emit('token_login', data.token, function (status) {
+      if(status && message){ //メッセージを再送する
         socket.emit('user message', message);
       }
     });
+  }else{
+    alert('ログインしていません、リロードしてログインをやり直してください。');
   }
 });
 
@@ -77,54 +82,44 @@ socket.on('user message', function(hash){
   for(var i=0; hash.tags.length > i; i++){
     data.tags[hash.tags[i]] = hash.created_at_ms ;
   }
-  message(hash.by, hash.text+"("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")");
-});
-
-//ログメッセージ（再送）イベント
-socket.on('user message log', function(hash){
-  for(var i=0; hash.tags.length > i; i++){
-    data.tags[hash.tags[i]] = hash.created_at_ms ;
+  
+  if(hash.profile_image_url.length>0){
+    var img = $('<img style="float:left;margin:3px;">').attr('src', hash.profile_image_url);
+  }else{
+    var img = $('<img style="float:left;margin:3px;">');
   }
-  message_log(hash.by, hash.text+"("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")");
+  var from = $('<span style="font-weight:bold;">').text(hash.nickname);
+  var text = $('<span>').text(hash.text).html().replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>");
+  var time = $('<span style="float:right">').text("("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")");
+    
+  $('#lines').append($('<p>').append(img, from, $('<br>'),text, $('<br>'), time, $('<br style="clear:both">')));
+  $('#lines').get(0).scrollTop = 10000000;  
 });
 
 
-//ログ表示、オートリンクだけ実装
-function message (from, msg) {
-  //auto link
-  var html = $('<span>').text(msg).html().replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>");
-  $('#lines').append($('<p>').append($('<b>').text(from),  html ));
-  $('#lines').get(0).scrollTop = 10000000;
-}
-
-//ログ表示、message()と色が違うだけ
-function message_log (from, msg) {
-  var html = $('<span>').text(msg).html().replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>");
-  $('#lines').append($('<p style="color:gray">').append($('<b>').text(from), html ));
-  $('#lines').get(0).scrollTop = 10000000;
-}
-
-//ws切断回避用にpingpong。websocketじゃなかったら、いらないのでは…
+//ws切断回避用に、暫定的にpingpong(将来的にはpocketIO側の調整で解決予定)
 var pingpongTimer = null;
 var PINGPONG_WINDOW_MSEC = 10000;
 function setPingpong(){
   if(pingpongTimer == null){
     pingpongTimer = setTimeout(function(){
-      socket.emit('ping pong', 'ping');
+      socket.emit('ping pong', '(」・ω・)」うー');
     }, PINGPONG_WINDOW_MSEC);
   }
 }
 socket.on('ping pong', function (msg) {
   //console.log('pong!');
   if(msg == 'FAIL'){
-    console.log('unregisted');
-    if(data.nick){
-      console.log('try register');
-      socket.emit('nickname', data.nick);
+    console.log('session not found');
+    if(data.token){
+      console.log('try create session');
+      socket.emit('token_login', data.token);
     }
   }
   pingpongTimer=null;
   setPingpong();
+  $(window).resize();
+
 });
 
 //テキスト入力欄をクリア、ただし、タグは残しておく
@@ -139,41 +134,50 @@ function clear () {
 
 //オートログインクッキーを消して、接続を切って、リロード
 function logout(){
-  $.cookie('chat_nickname', null);
+  $.cookie('yairc_auto_login_token', null);
   $.cookie('chat_tag_list', null);
   data.nick = '';
-  data.tags = {};
-  
+  data.tags = {'PUBLIC':0};
   socket.emit('disconnect');
   location.href="/";
 }
 
 //クッキーがあれば、オートログインさせる
 function autologin(){
-  
-  if($.cookie('chat_nickname')){
-    data.nick = $.cookie('chat_nickname');
-    if(data.nick){
+  if($.cookie('yairc_auto_login_token')){
+    data.token = $.cookie('yairc_auto_login_token');
+    if(data.token){
       console.log('try autologin');
-      socket.emit('nickname', data.nick, function (set) {
+      socket.emit('token_login', data.token, function (set) {
         clear();
-        $.cookie('chat_nickname', data.nick, { expires: 1 });
         $('#chat').addClass('nickname-set');
-        
       });
     }
   }
-
-  if( $.cookie('chat_tag_list')){
-    var str = $.cookie('chat_tag_list');
-    var list = str.split(',');
-    for( i in list ){
-      data.tags[list[i]] = 0;
-    }
-  }
-  socket.emit('join_tag', data.tags);
 }
 
+//トークンを使ってログインした後、レスポンスされる自分情報を保存
+socket.on('token_login', function(res){
+  if(res.status == 'ok'){
+    var ud = res.user_data;
+  
+    data.nick = ud.nick;
+    data.profile_image_url = ud.profile_image_url;
+  
+    if( $.cookie('chat_tag_list')){
+      var str = $.cookie('chat_tag_list');
+      var list = str.split(',');
+      for( i in list ){
+        data.tags[list[i]] = 0;
+      }
+    }
+    socket.emit('join_tag', data.tags);
+  }else{
+    alert('自動ログインセッションが不正です、ログインをやり直してください');
+    logout();
+  }
+
+});
 
 //購読タグを入力させて、サーバーに送信
 function setTag(){
@@ -207,8 +211,6 @@ function setTag(){
     //状態変数に保存しておく
     data.tags = _tags;
     
-    //console.log(data.tags);
-    
     //オートログイン用に保存しておく
     $.cookie('chat_tag_list', _keys.join(','), { expires: 1 });
     
@@ -222,42 +224,37 @@ socket.on('join_tag', function(tags){
   for (var i in tags) {
     $('#tags').append($('<b>').text(i));
   }
-});
+  $(window).resize();
 
+});
 
 
 //各種初期化
 $(function () {
 
-  //ログイン
-  $('#set-nickname').submit(function (ev) {
-    data.nick = $('#nick').val();
-    socket.emit('nickname', $('#nick').val(), function (set) {
-      if (!set) {
-        clear();
-        $.cookie('chat_nickname', data.nick, { expires: 1 });
-        return $('#chat').addClass('nickname-set');
-
-      }
-      $('#nickname-err').css('visibility', 'visible');
-    });
-
-    socket.emit('join_tag', data.tags);
-    
-    return false;
-  });
-
   //送信ボタン
   $('#send-message').submit(function () {
-    //message('me', $('#message').val());
     socket.emit('user message', $('#message').val());
     clear();
-    $('#lines').get(0).scrollTop = 10000000;
     return false;
   });
 
   //Cookieがあれば、オートログインさせる
   autologin();
+  
+  $(window).resize(function(){
+    $("#nickname").css('height', $(window).height()+'px');
+    $("#connecting").css('height', $(window).height()+'px');
+  
+    var height = $(window).height()- $('#send-message').height();
+  
+    $("#messages").css('height', height+'px');
+    
+    height = height - ($('#nicknames').height() + $('#tags').height())
+    $("#lines").css('height', height-15+'px');
+  });
+  
+  $(window).resize();
 
 });
 </script>
@@ -279,15 +276,15 @@ $(function () {
 <body>
 <div id="chat">
 
-  <div id="nickname">
-    <form id="set-nickname" class="wrap">
-      <p>Please type in your nickname and press enter.</p>
-      <input id="nick"><p id="nickname-err">Nickname already in use</p>
-    </form>
-  </div>
-
   <div id="connecting">
     <div class="wrap">Connecting to socket.io server</div>
+  </div>
+
+  <div id="nickname">
+    <form id="set-nickname" class="wrap">
+      <p>Please login by ...</p>
+      <p><a href="/login">Twitter</a></p>
+    </form>
   </div>
   
   <div id="messages">
@@ -297,12 +294,14 @@ $(function () {
   </div>
   
   <form id="send-message">
-  <input id="message">
-  <button >Send</button>
+  <table style="width:100%">
+  <tr>
+    <td><input id="message">
+    <td style="width:60px"><button>Send</button>
+    <td style="width:60px"><button style="float:right" onclick="setTag()">ChangeTag</button>
+    <td style="width:60px"><button style="float:right" onclick="logout()">Logout</button>
+  </table>
   </form>
-  <button style="float:right" onclick="setTag()">ChangeTag</button>
-  <button style="float:right" onclick="logout()">Logout</button>
-  ※送信してもパット出てこないときは再接続が走ってます。10秒くらいまてば、うごくかも。
 </div>
 </body>
 </html>

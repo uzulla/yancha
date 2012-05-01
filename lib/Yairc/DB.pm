@@ -20,7 +20,7 @@ sub new {
             $config->{db_user},
             $config->{db_pass},
             {
-                mysql_enable_utf8 => 1 
+                mysql_enable_utf8 => 1 ,
                 mysql_auto_reconnect => 1,
                 RaiseError => 1,
             }

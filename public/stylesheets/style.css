@@ -7,9 +7,9 @@ margin:0px;
 #messages {
   width: 100%;
 }
+
 #chat {
   position: relative;
-  border: 1px solid #ccc;
 }
 #nickname,
 #connecting {
@@ -20,7 +20,7 @@ margin:0px;
   top: 0;
   background: #fff;
   text-align: center;
-  width: 600px;
+  width: 100％;
   font: 15px Georgia;
   color: #666;
   display: block;
@@ -126,14 +126,14 @@ margin:0px;
 }
 #send-message input {
   border: 1px solid gray;
-  hheight: 15px;
-  padding: 0 2px;
+  height: 30px;
+  padding: 5 5px;
   line-height: 30px;
   vertical-align: middle;
   width: 100%;
-  -webkit-border-radius: 3px;
-  -moz-border-radius: 3px;
-  border-radius: 3px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
   
 }
 #send-message input:focus {

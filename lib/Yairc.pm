@@ -6,6 +6,7 @@ use JSON;
 use DBI;
 use Encode;
 use Time::HiRes qw/ time /;
+use Data::Dumper;
 
 our $VERSION = '0.01';
 
@@ -19,8 +20,9 @@ sub new {
     my $self = bless { @args }, $class;
     my $dbh  = $self->{ dbh };
 
-    $self->{ insert_post_sth } = $dbh->prepare('INSERT INTO `post` (`by`, `text`, `created_at_ms`) VALUES (?, ?, ?) ');
+    $self->{ insert_post_sth } = $dbh->prepare('INSERT INTO `post` (`user_key`, `nickname`, `profile_image_url`, `text`, `created_at_ms`) VALUES (?, ?, ?, ?, ?) ');
     $self->{ select_lastlog_by_tag_lastusec_sth } = $dbh->prepare('SELECT * FROM `post` WHERE `text` like ? AND `created_at_ms` > ? ORDER BY `created_at_ms` DESC LIMIT 100 ');
+    $self->{ select_user_by_token } = $dbh->prepare('SELECT * FROM `user` WHERE `token` = ?');    
 
     return $self;
 }
@@ -31,8 +33,8 @@ sub w {
 }
 
 sub insert_post {
-    my ($self, $by, $text) = @_;
-    $self->{ insert_post_sth }->execute( $by, $text, get_now_micro_sec() );
+    my ($self, $user_key, $nickname, $profile_image_url, $text) = @_;
+    $self->{ insert_post_sth }->execute( $user_key, $nickname, $profile_image_url, $text, get_now_micro_sec() );
     return;
 }
 
@@ -47,7 +49,7 @@ sub send_lastlog_by_tag_lastusec {
     }
 
     foreach my $hash(reverse(@hash_list)){
-        $pio->emit('user message log', build_user_message_hash($hash));
+        $pio->emit('user message', build_user_message_hash($hash));
     }
 }
 
@@ -72,7 +74,7 @@ sub run {
     my ( $app ) = @_;
 
     return sub {
-        my $self = shift;
+        my ($self, $env) = @_;
 
         $self->on(
             'user message' => sub {
@@ -89,194 +91,218 @@ sub run {
                 }
                 
                 #pocketio のソケット毎ストレージから自分のニックネームを取り出す
-                $self->get('nick' => sub {
-                  my ($self, $err, $nick) = @_;
-                  
-                  #nickがない場合、ニックネーム再登録を依頼して終わる。
-                  if(!defined($nick) || $nick eq ''){
-                    $self->emit('nickname', $message);
+                $self->get('user_data' => sub {
+                  my ($self, $err, $user_data) = @_;
+
+                  #user_dataがない(セッションが無い)場合、再ログインを依頼して終わる。
+                  if(!defined($user_data)){
+                    $self->emit('no session', $message);
                     return;
                   }
-                  
+
                   #DBに保存
-                  $app->insert_post($nick, $message);
+                  $app->insert_post($user_data->{user_key}, $user_data->{nick}, $user_data->{profile_image_url}, $message);
                   
                   #タグ毎に送信処理
                   foreach my $i (@tag_list){
                     if($tags->{$i}){
-                      w "Send to ${i} from ${nick} => \"${message}\"";
+                      w "Send to ${i} from $user_data->{nick} => \"${message}\"";
                       
                       #ちょいとややこしいPocketIOの直接Poolを触る場合
                       my $event = PocketIO::Message->new(type => 'event', data => {name => 'user message', args => [ build_user_message_hash( {
-                        'created_at_ms' => get_now_micro_sec(),
-                        'text' => $message,
                         'id' => -1,#DBに保存されていないと、IDが振られないので
-                        'by' => $nick
+                        'nickname' => $user_data->{nick},
+                        'profile_image_url' => $user_data->{profile_image_url},
+                        'text' => $message,
+                        'created_at_ms' => get_now_micro_sec(),
                         }) ]
                       });
                       $tags->{$i}->send($event);
                     }
                   }
                 });
-            });
+            }
+        );
 
-            #接続維持のPing
-            $self->on(
-              'ping pong' => sub {
-                my $self = shift;
-                my ($message) = @_;
+        #接続維持のPing
+        $self->on(
+          'ping pong' => sub {
+            my $self = shift;
+            my ($message) = @_;
 
-                $self->get('nick' => sub {
-                  my ($self, $err, $nick) = @_;
-                  if(!defined($nick) || $nick eq ''){
-                    $self->emit('ping pong', 'FAIL');
-                    return;
-                  }
-
-                  $self->emit('ping pong', 'PONG');
-                });
+            $self->get('user_data' => sub {
+              my ($self, $err, $user_data) = @_;
+              if( !defined($user_data) ){
+                $self->emit('ping pong', 'FAIL');
+                return;
               }
-            );
 
-            #自分のニックネーム登録、これは必要なのか何とも言えない、ログイン代わり
-            $self->on(
-                'nickname' => sub {
-                    my $self = shift;
-                    my ($nick, $cb) = @_;
+              $self->emit('ping pong', '(/・ω・)/にゃー');
+            });
+          }
+        );
 
-#                     if ($nicknames->{$nick}) { #同一名称ではじく必要ないんじゃないの？
-#                         $cb->(JSON::true);
-#                     } else {
-                        w "hello ${nick}";
+        #token_login
+        $self->on(
+            'token_login' => sub {
+                my $self = shift;
+                my ($token, $cb) = @_;
+                
+                #get from db
+                my $select_user_by_token = $app->{ select_user_by_token };
+                my $rv = $select_user_by_token->execute( $token );
+                my $profile = $select_user_by_token->fetchrow_hashref();
 
-                        $cb->(JSON::false);
-                        $self->set(nick => $nick);
+                #TODO tokenが無い場合のエラー
+                unless($profile){
+                  $self->emit('token_login', { "status"=>"user notfound" });
+                }
+
+                my $user_data = {
+                  "nick"=>$profile->{nickname},
+                  "profile_image_url"=>$profile->{profile_image_url},
+                  "user_key"=>$profile->{user_key},
+                };
+
+                my $nick = $profile->{nickname};
+
+                w "hello ${nick}";
+
+                
+                $self->set(user_data => $user_data);
+                
+                #nickname listを更新し、周知
+                $nicknames->{$nick} = $user_data->{nick};
+                $self->sockets->emit('nicknames', $nicknames);
+
+                #サーバー告知メッセージ
+                $self->broadcast->emit('announcement', $nick . ' connected');
+                
+                $self->emit('token_login', {
+                  "status"=>"ok",
+                  "user_data"=>$user_data,
+                });
+                
+                $cb->(JSON::true);
+                
+            }
+        );
+
+        #参加タグの登録（タグ毎のコネクションプールの管理）
+        $self->on(
+            'join_tag' => sub {
+                #あまりにも適当な実装なので、後でリファクタる必要あり
+                my $self = shift;
+                my ($tag_list, $cb) = @_;
+                
+                my $h = {};
+                foreach my $k (keys(%$tag_list)){
+                  $h->{uc $k} = $tag_list->{$k};
+                }
+                
+                $tag_list = $h;
+
+                #現在の（自分の）SocketIDを取得
+                my $socket_id = $self->id();
+                
+                #SocketID->参加Tagテーブルの初期化
+                if(!$tags_reverse->{$socket_id}){
+                  $tags_reverse->{$socket_id} = ();
+                }
+                
+                my $joined_tags = $tags_reverse->{$socket_id};
+                #テンポラリ
+                my @new_joined_tags = ();
+                #タグ毎にPocketIO::Poolを作成して、自分の接続を追加
+                foreach my $tag (keys(%$tag_list)){
+                  #w $tag;
+                  if(!$tags->{$tag}){
+                    $tags->{$tag} = PocketIO::Pool->new();
+                  }
+                  $tags->{$tag}->{connections}->{$socket_id} = $self->{conn};
+                  
+                  my $lastusec = $tag_list->{$tag};
+                  $app->send_lastlog_by_tag_lastusec($self, $tag, $lastusec);
+                  
+                  push(@new_joined_tags, $tag);
+                }
+                
+                #send_lastlog_by_tags_lastusec($self, \@new_joined_tags, $lastusec);
+                
+                #前と、今の接続を比較して、なくなったタグをリストアップ
+                my $diff = {};
+                
+                foreach my $k(@$joined_tags){
+                  $diff->{$k} += 1;
+                }
+                foreach my $k(@new_joined_tags){
+                  $diff->{$k} += 2;
+                }
+                #w Dumper($diff);
+                
+                #無くなったタグを消していく
+                foreach my $d(keys %$diff){
+                  if($diff->{$d}==1){
+                    #remove
+                    #w "delete tag ".$d;
+                    delete $tags->{$d}->{connections}->{$socket_id}; 
+                  }elsif($diff->{$d}==2){
+                    #new
+                  }elsif($diff->{$d}==3){
+                    #exists
+                  }
+                }
+                
+                #SID＞tagテーブル更新
+                @{$tags_reverse->{$socket_id}} = @new_joined_tags;
+                
+                #更新した参加タグをレスポンス
+                $self->emit('join_tag', $tag_list);
+                
+                #w "dump tags--";
+                #w Dumper($tags);
+            }
+        );
+
+        #切断時処理
+        $self->on(
+            'disconnect' => sub {
+                my $self = shift;
+
+                $self->get(
+                    'nick' => sub {
+                        my ($self, $err, $nick) = @_;
                         
-                        #nickname listを更新し、周知
-                        $nicknames->{$nick} = $nick;
-                        $self->sockets->emit('nicknames', $nicknames);
-
-                        #サーバー告知メッセージ
-                        $self->broadcast->emit('announcement', $nick . ' connected');
-#                     }
-                }
-            );
-
-            #参加タグの登録（タグ毎のコネクションプールの管理）
-            $self->on(
-                'join_tag' => sub {
-                    #あまりにも適当な実装なので、後でリファクタる必要あり
-                    my $self = shift;
-                    my ($tag_list, $cb) = @_;
-                    
-                    my $h = {};
-                    foreach my $k (keys(%$tag_list)){
-                      $h->{uc $k} = $tag_list->{$k};
-                    }
-                    
-                    $tag_list = $h;
-
-                    #現在の（自分の）SocketIDを取得
-                    my $socket_id = $self->id();
-                    
-                    #SocketID->参加Tagテーブルの初期化
-                    if(!$tags_reverse->{$socket_id}){
-                      $tags_reverse->{$socket_id} = ();
-                    }
-                    
-                    my $joined_tags = $tags_reverse->{$socket_id};
-                    #テンポラリ
-                    my @new_joined_tags = ();
-                    #タグ毎にPocketIO::Poolを作成して、自分の接続を追加
-                    foreach my $tag (keys(%$tag_list)){
-                      #w $tag;
-                      if(!$tags->{$tag}){
-                        $tags->{$tag} = PocketIO::Pool->new();
-                      }
-                      $tags->{$tag}->{connections}->{$socket_id} = $self->{conn};
-                      
-                      my $lastusec = $tag_list->{$tag};
-                      $app->send_lastlog_by_tag_lastusec($self, $tag, $lastusec);
-                      
-                      push(@new_joined_tags, $tag);
-                    }
-                    
-                    #send_lastlog_by_tags_lastusec($self, \@new_joined_tags, $lastusec);
-                    
-                    #前と、今の接続を比較して、なくなったタグをリストアップ
-                    my $diff = {};
-                    
-                    foreach my $k(@$joined_tags){
-                      $diff->{$k} += 1;
-                    }
-                    foreach my $k(@new_joined_tags){
-                      $diff->{$k} += 2;
-                    }
-                    #w Dumper($diff);
-                    
-                    #無くなったタグを消していく
-                    foreach my $d(keys %$diff){
-                      if($diff->{$d}==1){
-                        #remove
-                        #w "delete tag ".$d;
-                        delete $tags->{$d}->{connections}->{$socket_id}; 
-                      }elsif($diff->{$d}==2){
-                        #new
-                      }elsif($diff->{$d}==3){
-                        #exists
-                      }
-                    }
-                    
-                    #SID＞tagテーブル更新
-                    @{$tags_reverse->{$socket_id}} = @new_joined_tags;
-                    
-                    #更新した参加タグをレスポンス
-                    $self->emit('join_tag', $tag_list);
-                    
-                    #w "dump tags--";
-                    #w Dumper($tags);
-                }
-            );
-
-            #切断時処理
-            $self->on(
-                'disconnect' => sub {
-                    my $self = shift;
-
-                    $self->get(
-                        'nick' => sub {
-                            my ($self, $err, $nick) = @_;
-                            
-                            if(!defined($nick)){
-                              w "bye undefined nickname user";
-                              return;
-                            }
-
-                            delete $nicknames->{$nick};
-                            
-                            #タグ毎にできたPool等からも削除
-                            my $socket_id = $self->id();
-                            my $joined_tags = $tags_reverse->{$socket_id};
-                            foreach my $k(@$joined_tags){
-                               delete $tags->{$k}->{connections}->{$socket_id};
-                            }
-                            
-                            delete $tags_reverse->{$socket_id};
-                            
-                            #w 'delete conn from pool';
-                            #w Dumper($tags);
-                            #w Dumper($tags_reverse);
-                            
-                            $self->broadcast->emit('announcement',
-                                $nick . ' disconnected'); #nickがないときにエラー
-                            $self->broadcast->emit('nicknames', $nicknames);
-
-                            w "bye ".$nick;
+                        if(!defined($nick)){
+                          w "bye undefined nickname user";
+                          return;
                         }
-                    );
-                }
-            );
-        }
+
+                        delete $nicknames->{$nick};
+                        
+                        #タグ毎にできたPool等からも削除
+                        my $socket_id = $self->id();
+                        my $joined_tags = $tags_reverse->{$socket_id};
+                        foreach my $k(@$joined_tags){
+                           delete $tags->{$k}->{connections}->{$socket_id};
+                        }
+                        
+                        delete $tags_reverse->{$socket_id};
+                        
+                        #w 'delete conn from pool';
+                        #w Dumper($tags);
+                        #w Dumper($tags_reverse);
+                        
+                        $self->broadcast->emit('announcement',
+                            $nick . ' disconnected'); #nickがないときにエラー
+                        $self->broadcast->emit('nicknames', $nicknames);
+
+                        w "bye ".$nick;
+                    }
+                );
+            }
+        );
+    }
 
 }
 
