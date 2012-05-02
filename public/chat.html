@@ -48,6 +48,12 @@ var data = {
   tags:{PUBLIC:0}
 };
 var debug = 0;
+var notify = false;
+if ( jwNotify.status ) {
+  notify = jwNotify.checkPermission;
+}
+
+
 
 //各種接続、切断、エラーイベント
 socket.on('connect', function () {
@@ -108,12 +114,14 @@ function h(s){return s.replace(/[&<>"']/g,function(m){return "&#"+m.charCodeAt(0
 
 //メッセージイベント
 socket.on('user message', function(hash){
-  $.jwNotify({
-    image : hash.profile_image_url,
-    title: hash.nickname,
-    body: hash.text,
-    timeout: 10000
-  });
+  if ( notify && hash.nickname != data.nick && load_at < hash.created_at_ms/100 ) {
+    $.jwNotify({
+      image : hash.profile_image_url,
+      title: hash.nickname,
+      body: hash.text,
+      timeout: 10000
+    });
+  }
   
   for(var i=0; hash.tags.length > i; i++){
     data.tags[hash.tags[i]] = hash.created_at_ms ;
@@ -425,6 +433,41 @@ $(function () {
     $('abbr.timeago').timeago();
   },60000);
 
+
+  //デスクトップ通知許可
+  if (jwNotify.status) {
+    if (notify) {
+      $('button.allowNotify').text('Disable Notify');
+    }
+    else {
+      $('button.allowNotify').text('Enable Notify');
+    }
+    $('button.allowNotify').click(function(e){
+      e.preventDefault();
+      if (notify) {
+        $.jwNotify({
+          image: '/img/nobody.png',
+          title: 'デスクトップ通知の停止',
+          body: 'デスクトップ通知を停止します'
+        });
+        notify = false;
+        $('button.allowNotify').text('Enable Notify');
+      }
+      else {
+        $.jwNotify({
+          image: '/img/nobody.png',
+          title: 'デスクトップ通知の許可',
+          body: 'デスクトップ通知が許可されました'
+        });
+        notify = true;
+        $('button.allowNotify').text('Disable Notify');
+      }
+    });
+  }
+  else {
+    $('button.allowNotify').remove();
+  }
+
 });
 
 var soundMessage = function(){};
@@ -488,6 +531,7 @@ function onSoundLoadComplete(){
     <div style="border-bottom:1px #999 solid;padding:3px;">
       <button onclick="setTag()">ChangeTag</button>
       <button onclick="logout()">Logout</button>
+      <button class="allowNotify">Allow Notify</button>
     </div>
     HINTS
     <div style="border-bottom:1px #999 solid;padding:3px;font-size:80%">
