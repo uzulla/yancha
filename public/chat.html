@@ -12,6 +12,7 @@
 <script src="/js/ios.min.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_main.min.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_javascript.js"></script>
+<script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_perl.js"></script>
 <link type="text/css" rel="stylesheet" href="http://yairc.cfe.jp/shjs/sh_style.css">
 
 
@@ -99,10 +100,12 @@ socket.on('user message', function(hash){
   message = message.replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>");
 
   message = message.replace(/&#62;\|javascript\|\n([\s\S]*)\n\|\|&#60;/g,
-    function(whole,s1) {
-　　　 return( '<pre class="sh_javascript">' + s1 + '</pre>' );
-　　　}
-  );
+    function(whole,s1) {return( '<pre class="sh_javascript">' + s1 + '</pre>' );});
+  message = message.replace(/&#62;\|perl\|\n([\s\S]*)\n\|\|&#60;/g,
+    function(whole,s1) {return( '<pre class="sh_perl">' + s1 + '</pre>' );});
+
+  message = message.replace(/&#62;\|[a-z]+\|\n([\s\S]*)\n\|\|&#60;/g,
+    function(whole,s1) {return( '<pre>' + s1 + '</pre>' );});
 
   message = message.replace(/&#62;\|\|\n([\s\S]*)\n\|\|&#60;/g,
     function(whole,s1) {
