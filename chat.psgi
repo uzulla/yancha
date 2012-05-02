@@ -29,6 +29,7 @@ use Yairc;
 use Yairc::DB;
 use Yairc::API::Search;
 use Yairc::Login::Twitter;
+use Yairc::Login::Simple;
 
 my $dbh = Yairc::DB->new('yairc');
 
@@ -51,6 +52,8 @@ builder {
     mount '/api' => do ( './api.psgi' ) ;
 
     Yairc::Login::Twitter->build_psgi_endpoint( '/login/twitter' );
+
+    Yairc::Login::Simple->build_psgi_endpoint( '/login' );
 
     mount '/' => builder {
         enable "Static",
