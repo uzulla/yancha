@@ -260,6 +260,7 @@ socket.on('join_tag', function(tags){
 });
 
 
+//メッセージ送信
 function sendMessage(){
   var message = $('#message').val()
   message = message.replace(/#[a-zA-Z0-9]+/g, '');
