@@ -25,6 +25,14 @@ sub build_psgi_endpoint {
             my $session = Plack::Session->new( $env );
             my $nick    = $req->parameters->{ $name_field };
 
+            my $url = 'http://'.$env->{HTTP_HOST}; # ok?
+            my $res = Plack::Response->new;
+            $res->redirect($url);
+
+            unless ( length $nick ){
+                return $res->finalize;
+            }
+
             #db store
             my $token = $class->user_info_set(
                 '-:'.$nick,
@@ -35,9 +43,6 @@ sub build_psgi_endpoint {
 
             $session->set( 'token', $token );
 
-            my $url = 'http://'.$env->{HTTP_HOST}; # ok?
-            my $res = Plack::Response->new;
-            $res->redirect($url);
             $res->cookies->{yairc_auto_login_token} = {
                 value => $token,
                 path  => "/",
