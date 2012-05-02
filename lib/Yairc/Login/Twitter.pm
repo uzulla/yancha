@@ -3,6 +3,7 @@ package Yairc::Login::Twitter;
 use strict;
 use warnings;
 
+use base 'Yairc::Login';
 use Plack::Builder;
 use Plack::Request;
 use Plack::Response;
@@ -10,7 +11,6 @@ use JSON;
 
 use FindBin;
 use lib ("$FindBin::Bin/lib");
-use Yairc::Login;
 
 use Net::Twitter::Lite;
 
@@ -19,10 +19,12 @@ my $nt = Net::Twitter::Lite->new(
     consumer_secret => 'ayIwIXzTNSE4deChyn2p1VmXfhxjXPgj79PVMoGs',
 );
 
-sub new {
+sub build_psgi_endpoint {
+    my ( $class, $endpoint_root ) = @_;
 
-  return builder {
-    mount '/start' => builder {
+    # Carp::croak("Invalid login endpoint root.") unless $endpoint_root =~ m{^[-./\w]*$};
+
+    mount "$endpoint_root/start" => builder {
       sub {
         my $env    = shift;
         my $session = Plack::Session->new( $env );
@@ -37,7 +39,7 @@ sub new {
       };
     };
 
-    mount '/callback' => builder {
+    mount "$endpoint_root/callback" => builder {
       sub {
         my $env = shift;
         
@@ -48,7 +50,7 @@ sub new {
         
         unless ( $session->get('token') ){
           warn 'session lost';
-          return [   500,
+          return [  401,
               [   'Content-Type'   => 'text/html',
               ],
               ["session lost"]
@@ -66,7 +68,7 @@ sub new {
             my $profile = eval { $nt->verify_credentials() };
             
             #db store
-            $token = Yairc::Login->user_info_set(
+            $token = $class->user_info_set(
               'twitter:'.$profile->{id},
               $screen_name,
               $profile->{profile_image_url},
@@ -84,7 +86,8 @@ sub new {
         return $res->finalize;
       };
     };
-  };
+
+    return;
 }
 
 
