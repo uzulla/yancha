@@ -10,6 +10,7 @@
 <script src="/js/moment.min.js"></script>
 <script src="/js/jquery.cookie.js"></script>
 <script src="/js/ios.min.js"></script>
+<script src="/js/jquery.jwNotify.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_main.min.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_javascript.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_perl.js"></script>
@@ -85,6 +86,13 @@ function h(s){return s.replace(/[&<>"']/g,function(m){return "&#"+m.charCodeAt(0
 
 //メッセージイベント
 socket.on('user message', function(hash){
+  $.jwNotify({
+    image : hash.profile_image_url,
+    title: hash.nickname,
+    body: hash.text,
+    timeout: 10000
+  });
+  
   for(var i=0; hash.tags.length > i; i++){
     data.tags[hash.tags[i]] = hash.created_at_ms ;
   }
