@@ -89,7 +89,7 @@ socket.on('user message', function(hash){
   if ( hash.nickname != data.nick && load_at < hash.created_at_ms/100 ) {
     $.jwNotify({
       image : hash.profile_image_url,
-      title: hash.nickname + "(" + load_at + "---==" + hash.created_at_ms + ")" ,
+      title: hash.nickname,
       body: hash.text,
       timeout: 10000
     });
