@@ -31,8 +31,6 @@ function requestingPopupPermission(callback){
     //Check if the feature is supported by browser and the variables have be saved
     if((jwNotify.status) && (jwNotify.options) && (jwNotify.type))
         jwNotify.notifications.requestPermission(callback);
-    else
-        console.log('Error');
 }
 
 //Function to show the actual Notification

@@ -75,18 +75,34 @@ line-height: 110%;
   display: inline-block;
   padding-right: 10px;
 }
+#messages p.unread {
+  background: #ffaaaa;
+}
 #messages p:nth-child(even) {
   background: #fafafa;
 }
-#messages #nicknames ,#messages #tags {
-  background: #ccc;
-  padding: 2px 4px 4px;
+#messages p.unread:nth-child(even) {
+  background: #ff9999;
+}
+
+#infomation{
+  width:180px;
+  float:right;
+
+}
+
+#infomation #nicknames ,#infomation #tags {
+  border-bottom:1px #999 solid;padding:3px;
+  bbackground: #ccc;
+  ppadding: 2px 4px 4px;
   font: 11px Helvetica;
 }
-#messages #nicknames span ,#messages #tags span {
+
+
+#infomation #nicknames span ,#infomation #tags span {
   color: #000;
 }
-#messages #nicknames b,#messages #tags b {
+#infomation #nicknames b,#infomation #tags b {
   display: inline-block;
   color: #fff;
   background: #999;
@@ -99,8 +115,8 @@ line-height: 110%;
 }
 #messages #lines {
   height: 340px;
-  overflow: scroll;
-  overflow-x: scroll;
+  overflow: auto;
+  overflow-x: auto;
   overflow-y: scroll;
 }
 #messages #lines::-webkit-scrollbar {
@@ -108,7 +124,7 @@ line-height: 110%;
   height: 6px;
 }
 #messages #lines::-webkit-scrollbar-button:start:decrement,
-#messages #lines ::-webkit-scrollbar-button:end:increment {
+#messages #lines::-webkit-scrollbar-button:end:increment {
   display: block;
   height: 10px;
 }
@@ -135,9 +151,9 @@ line-height: 110%;
 }
 #send-message textarea {
   border: 1px solid gray;
-  height: 50px;
+  height: 1.2em;
   padding: 5 5px;
-  line-height: 1.1em;
+  line-height: 1.2em;
   vertical-align: middle;
   width: 100%;
   -webkit-border-radius: 10px;

@@ -2,23 +2,44 @@
 <html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<title>chat</title>
+<title>yairc</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <link href="/stylesheets/style.css" rel="stylesheet">
-<script src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="/js/socket.io.js"></script>
 <script src="/js/moment.min.js"></script>
 <script src="/js/jquery.cookie.js"></script>
 <script src="/js/ios.min.js"></script>
 <script src="/js/jquery.jwNotify.js"></script>
+<script src="/js/jquery.timeago.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_main.min.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_javascript.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_perl.js"></script>
 <link type="text/css" rel="stylesheet" href="http://yairc.cfe.jp/shjs/sh_style.css">
 
+<script type="text/javascript" src="http://code.createjs.com/preloadjs-0.1.0.min.js"></script>
+<script type="text/javascript" src="/js/soundjs/SoundJS.js"></script>
+<script type="text/javascript" src="/js/soundjs/HTMLAudioPlugin.js"></script>
+<script type="text/javascript" src="/js/soundjs/FlashPlugin.js"></script>
+<script type="text/javascript" src="/js/swfobject.js"></script>
 
 <script>
-var load_at = (new Date()).getTime();
+//JQuery add-on that add an If statement https://gist.github.com/1672273#file_jquery_if_then.js
+$.fn.ift = function(){
+    var flag = arguments[0];
+    var func = arguments[1];
+    var else_func = arguments[2];
+
+    if(flag && $.isFunction(func)){
+        func.call(this, this);
+    }else if(!flag && $.isFunction(else_func)){
+        else_func.call(this, this);
+    }
+    return this;
+}
+</script>
+
+<script>
 var socket = io.connect();
 var data = {
   token:false,
@@ -27,10 +48,6 @@ var data = {
   tags:{PUBLIC:0}
 };
 var debug = 0;
-var notify = false;
-if ( jwNotify.status ) {
-  notify = jwNotify.checkPermission;
-}
 
 //各種接続、切断、エラーイベント
 socket.on('connect', function () {
@@ -65,7 +82,7 @@ socket.on('announcement', function (msg) {
 
 //サーバから、参加ニックネームリストの更新
 socket.on('nicknames', function (nicknames) {
-  $('#nicknames').empty().append($('<span>Online: </span>'));
+  $('#nicknames').empty();
   for (var i in nicknames) {
     $('#nicknames').append($('<b>').text(nicknames[i]));
   }
@@ -91,14 +108,12 @@ function h(s){return s.replace(/[&<>"']/g,function(m){return "&#"+m.charCodeAt(0
 
 //メッセージイベント
 socket.on('user message', function(hash){
-  if ( notify && hash.nickname != data.nick && load_at < hash.created_at_ms/100 ) {
-    $.jwNotify({
-      image : hash.profile_image_url,
-      title: hash.nickname,
-      body: hash.text,
-      timeout: 10000
-    });
-  }
+  $.jwNotify({
+    image : hash.profile_image_url,
+    title: hash.nickname,
+    body: hash.text,
+    timeout: 10000
+  });
   
   for(var i=0; hash.tags.length > i; i++){
     data.tags[hash.tags[i]] = hash.created_at_ms ;
@@ -115,12 +130,16 @@ socket.on('user message', function(hash){
   message = message.replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>");
 
   message = message.replace(/&#62;\|javascript\|\n([\s\S]*)\n\|\|&#60;/g,
-    function(whole,s1) {return( '<pre class="sh_javascript">' + s1 + '</pre>' );});
-  message = message.replace(/&#62;\|perl\|\n([\s\S]*)\n\|\|&#60;/g,
-    function(whole,s1) {return( '<pre class="sh_perl">' + s1 + '</pre>' );});
+    function(whole,s1) {
+　　　 return( '<pre class="sh_javascript">' + s1 + '</pre>' );
+　　　}
+  );
 
-  message = message.replace(/&#62;\|[a-z]+\|\n([\s\S]*)\n\|\|&#60;/g,
-    function(whole,s1) {return( '<pre>' + s1 + '</pre>' );});
+  message = message.replace(/&#62;\|perl\|\n([\s\S]*)\n\|\|&#60;/g,
+    function(whole,s1) {
+　　　 return( '<pre class="sh_perl">' + s1 + '</pre>' );
+　　　}
+  );
 
   message = message.replace(/&#62;\|\|\n([\s\S]*)\n\|\|&#60;/g,
     function(whole,s1) {
@@ -138,12 +157,44 @@ socket.on('user message', function(hash){
   
   var text = $('<div style="overflow: hidden;">').html(message);
   
-  var time = $('<span style="float:right">').text("("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")");
-    
-  $('#lines').append($('<p>').append(img, from, $('<br>'),text, $('<br>'), time, $('<br style="clear:both">')));
+  var time = $('<span style="float:right">').append(
+    $('<abbr class="timeago">')
+      .attr('title', moment(hash.created_at_ms/100).format("YYYY-MM-DDTHH:mm:ss")+"Z+09:00")
+      .text("("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")")
+      .timeago()
+  );
+  
+  $('#lines').append(
+    $('<p>')
+      .append(img, from, $('<br>'),text, $('<br>'), time, $('<br style="clear:both">'))
+      .on('mouseover', function(){
+        $(this).removeClass('unread');
+        $(this).off('mouseover');
+        updateTitle();
+      })
+      .ift(hash.id < 0, function(){ //ログか、現在の投稿か
+        $(this).addClass('unread');
+      })
+  );
   $('#lines').get(0).scrollTop = 10000000;  
   sh_highlightDocument();
+  
+  if(hash.id < 0){ //ログか、現在の投稿か
+    soundMessage();
+  }
+  
+  updateTitle();
+
 });
+
+function updateTitle(){
+  var unreadnum = $('#lines p.unread').length;
+  var prefix = '';
+  if(unreadnum>0){
+    prefix = "("+unreadnum+")";
+  }
+  document.title = prefix+"yairc";
+}
 
 
 //ws切断回避用に、暫定的にpingpong(将来的にはpocketIO側の調整で解決予定)
@@ -178,6 +229,7 @@ function clear () {
   $('#message').val(' '+str).focus();
   $('#message')[0].selectionStart = 0;
   $('#message')[0].selectionEnd = 0;
+  resizeMessageTextarea(1);
 };
 
 
@@ -269,13 +321,15 @@ function setTag(){
 }
 //タグ登録処理完了イベント
 socket.on('join_tag', function(tags){
-  $('#tags').empty().append($('<span>Join Tags: </span>'));
+  $('#tags').empty();
   for (var i in tags) {
     $('#tags').append($('<b>').text(i));
   }
   $(window).resize();
 
 });
+
+
 
 
 //メッセージ送信
@@ -290,6 +344,26 @@ function sendMessage(){
   return false;
 }
 
+//入力欄の高さ調整
+function resizeMessageTextarea(linenum){
+  if(!linenum){
+    if($("#message").val().match(/\n/)){
+      linenum = $("#message").val().match(/\n/g).length + 1;
+    }else{
+      linenum = 1;
+    }
+  }
+  if(linenum>10){
+    linenum=10; // hard limit
+  }
+
+  var em = (linenum * 1.2) + 'em';
+  $("#message").css('height', em);
+  $(window).resize();
+}
+
+
+
 
 //各種初期化
 $(function () {
@@ -301,6 +375,7 @@ $(function () {
 	$("#send-message").keypress(function(ev) {
 		if ((ev.which && ev.which === 13) || (ev.keyCode && ev.keyCode === 13)) {
 		  if(ev.shiftKey){
+  		  
 		    return true;
 		  }else{
 		    $('#send-message').submit();
@@ -309,7 +384,11 @@ $(function () {
 		} else {
 			return true;
 		}
-	});  
+	}); 
+	
+	$('#message').bind("click mouseup blur keyup input", function() {   
+    resizeMessageTextarea();
+  });
 
   //Cookieがあれば、オートログインさせる
   autologin();
@@ -317,52 +396,49 @@ $(function () {
   $(window).resize(function(){
     $("#nickname").css('height', $(window).height()+'px');
     $("#connecting").css('height', $(window).height()+'px');
-  
-    var height = $(window).height()- $('#send-message').height();
-  
+    var height = $(window).height() - $('#send-message').height();
     $("#messages").css('height', height+'px');
-    
-    height = height - ($('#nicknames').height() + $('#tags').height())
-    $("#lines").css('height', height-15+'px');
+    $("#lines").css('height', height+'px');
+
+
+
+    if (navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
+      $("#messages").css('height','384px');
+      $("#lines").css('height','384px');
+      $("#infomation").css('height','384px');
+    }
+
   });
   
   $(window).resize();
 
-  //デスクトップ通知許可
-  if (jwNotify.status) {
-    if (notify) {
-      $('button.allowNotify').text('Disable Notify');
-    }
-    else {
-      $('button.allowNotify').text('Enable Notify');
-    }
-    $('button.allowNotify').click(function(e){
-      e.preventDefault();
-      if (notify) {
-        $.jwNotify({
-          image: '/img/nobody.png',
-          title: 'デスクトップ通知の停止',
-          body:  'デスクトップ通知を停止します'
-        });
-        notify = false;
-        $('button.allowNotify').text('Enable Notify');
-      }
-      else {
-        $.jwNotify({
-          image: '/img/nobody.png',
-          title: 'デスクトップ通知の許可',
-          body:  'デスクトップ通知が許可されました'
-        });
-        notify = true;
-        $('button.allowNotify').text('Disable Notify');
-      }
-    });
-  }
-  else {
-    $('button.allowNotify').remove();
-  }
+
+  var loader = new PreloadJS(false);
+  loader.installPlugin(SoundJS);
+  loader.onComplete = onSoundLoadComplete;
+  loader.loadManifest([
+    {src:"http://yairc.cfe.jp/yairc/1ekMA.mp3|http://yairc.cfe.jp/yairc/9E2Ny.ogg",id:"message"}
+  ]);
+
+
+  var timeagoTimer = setInterval(function(){
+    $('abbr.timeago').timeago();
+  },60000);
 
 });
+
+var soundMessage = function(){};
+
+function onSoundLoadComplete(){
+  console.log('SoundLoadComplete');
+  soundMessage = function(){
+    if($('#sound').prop("checked")){
+      SoundJS.play('message', SoundJS.INTERRUPT_EARLY, 0, 0, false);
+    }
+  }
+}
+
+
 </script>
 <script type="text/javascript">
 
@@ -397,9 +473,38 @@ $(function () {
 
   </div>
   
+  <div id="infomation">
+    ONLINE
+    <div id="nicknames">
+    </div>
+    TAGS
+    <div id="tags">
+    </div>
+    SETTINGS
+    <div style="border-bottom:1px #999 solid;padding:3px;">
+      <label><input type="checkbox" id="sound" checked=checked>音をならす</label>
+    </div>
+    ACTIONS
+    <div style="border-bottom:1px #999 solid;padding:3px;">
+      <button onclick="setTag()">ChangeTag</button>
+      <button onclick="logout()">Logout</button>
+    </div>
+    HINTS
+    <div style="border-bottom:1px #999 solid;padding:3px;font-size:80%">
+      ・コードハイライト<br>
+      &gt;|(javascript|perl)|<br>
+      CODE<br>
+      ||&lt;<br>
+      <br>
+      ・PRE<br>
+      &gt;&gt;<br>
+      テキスト<br>
+      &lt;&lt;<br>
+    </div>
+  </div>
+  
+  
   <div id="messages">
-    <div id="nicknames"></div>
-    <div id="tags"></div>
     <div id="lines"></div>
   </div>
   
@@ -408,9 +513,7 @@ $(function () {
   <tr>
     <td><textarea  id="message"></textarea>
     <td style="width:60px"><button>Send</button>
-    <td style="width:60px"><button style="float:right" onclick="setTag()">ChangeTag</button>
-    <td style="width:60px"><button style="float:right" onclick="logout()">Logout</button>
-    <td style="width:60px"><button class="allowNotify" style="float:right">Allow Notify</button>
+    <td style="width:60px"><button onclick='$("#infomation").toggle("slow");'>MENU</button>
   </table>
   </form>
 </div>
