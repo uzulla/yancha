@@ -27,6 +27,10 @@ var data = {
   tags:{PUBLIC:0}
 };
 var debug = 0;
+var notify = false;
+if ( jwNotify.status ) {
+  notify = jwNotify.checkPermission;
+}
 
 //各種接続、切断、エラーイベント
 socket.on('connect', function () {
@@ -87,7 +91,7 @@ function h(s){return s.replace(/[&<>"']/g,function(m){return "&#"+m.charCodeAt(0
 
 //メッセージイベント
 socket.on('user message', function(hash){
-  if ( hash.nickname != data.nick && load_at < hash.created_at_ms/100 ) {
+  if ( notify && hash.nickname != data.nick && load_at < hash.created_at_ms/100 ) {
     $.jwNotify({
       image : hash.profile_image_url,
       title: hash.nickname,
@@ -324,6 +328,40 @@ $(function () {
   
   $(window).resize();
 
+  //デスクトップ通知許可
+  if (jwNotify.status) {
+    if (notify) {
+      $('button.allowNotify').text('Disable Notify');
+    }
+    else {
+      $('button.allowNotify').text('Enable Notify');
+    }
+    $('button.allowNotify').click(function(e){
+      e.preventDefault();
+      if (notify) {
+        $.jwNotify({
+          image: '/img/nobody.png',
+          title: 'デスクトップ通知の停止',
+          body:  'デスクトップ通知を停止します'
+        });
+        notify = false;
+        $('button.allowNotify').text('Enable Notify');
+      }
+      else {
+        $.jwNotify({
+          image: '/img/nobody.png',
+          title: 'デスクトップ通知の許可',
+          body:  'デスクトップ通知が許可されました'
+        });
+        notify = true;
+        $('button.allowNotify').text('Disable Notify');
+      }
+    });
+  }
+  else {
+    $('button.allowNotify').remove();
+  }
+
 });
 </script>
 <script type="text/javascript">
@@ -372,6 +410,7 @@ $(function () {
     <td style="width:60px"><button>Send</button>
     <td style="width:60px"><button style="float:right" onclick="setTag()">ChangeTag</button>
     <td style="width:60px"><button style="float:right" onclick="logout()">Logout</button>
+    <td style="width:60px"><button class="allowNotify" style="float:right">Allow Notify</button>
   </table>
   </form>
 </div>
