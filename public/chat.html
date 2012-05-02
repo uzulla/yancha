@@ -17,6 +17,7 @@
 
 
 <script>
+var load_at = (new Date()).getTime();
 var socket = io.connect();
 var data = {
   token:false,
@@ -85,12 +86,14 @@ function h(s){return s.replace(/[&<>"']/g,function(m){return "&#"+m.charCodeAt(0
 
 //メッセージイベント
 socket.on('user message', function(hash){
-  $.jwNotify({
-    image : hash.profile_image_url,
-    title: hash.nickname,
-    body: hash.text,
-    timeout: 10000
-  });
+  if ( hash.nickname != data.nick && load_at < hash.created_at_ms/100 ) {
+    $.jwNotify({
+      image : hash.profile_image_url,
+      title: hash.nickname + "(" + load_at + "---==" + hash.created_at_ms + ")" ,
+      body: hash.text,
+      timeout: 10000
+    });
+  }
   
   for(var i=0; hash.tags.length > i; i++){
     data.tags[hash.tags[i]] = hash.created_at_ms ;
