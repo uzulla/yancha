@@ -53,7 +53,7 @@ builder {
 
     Yairc::Login::Twitter->build_psgi_endpoint( '/login/twitter' );
 
-    Yairc::Login::Simple->build_psgi_endpoint( '/login' );
+    Yairc::Login::Simple->build_psgi_endpoint( '/login', { name_field => 'nick' } );
 
     mount '/' => builder {
         enable "Static",

@@ -13,7 +13,8 @@ use Plack::Session;
 
 
 sub build_psgi_endpoint {
-    my ( $class, $endpoint_root ) = @_;
+    my ( $class, $endpoint_root, $opt ) = @_;
+    my $name_field = $opt->{ 'name_field' } || 'nick';
 
     # Carp::croak("Invalid login endpoint root.") unless $endpoint_root =~ m{^[-./\w]*$};
 
@@ -22,7 +23,7 @@ sub build_psgi_endpoint {
             my $env     = shift;
             my $req     = Plack::Request->new($env);
             my $session = Plack::Session->new( $env );
-            my $nick    = $req->parameters->{ nick };
+            my $nick    = $req->parameters->{ $name_field };
 
             #db store
             my $token = $class->user_info_set(
