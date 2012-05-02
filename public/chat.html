@@ -6,10 +6,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <link href="/stylesheets/style.css" rel="stylesheet">
 <script src="http://code.jquery.com/jquery-1.6.1.min.js"></script>
-<script src="/socket.io/socket.io.js"></script>
-<script src="/moment.min.js"></script>
-<script src="/jquery.cookie.js"></script>
-<script src="/ios.min.js"></script>
+<script src="/js/socket.io.js"></script>
+<script src="/js/moment.min.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<script src="/js/ios.min.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_main.min.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_javascript.js"></script>
 <link type="text/css" rel="stylesheet" href="http://yairc.cfe.jp/shjs/sh_style.css">
@@ -91,7 +91,7 @@ socket.on('user message', function(hash){
   if(hash.profile_image_url.length>0){
     var img = $('<img style="float:left;margin:3px;">').attr('src', hash.profile_image_url);
   }else{
-    var img = $('<img style="float:left;margin:3px;">');
+    var img = $('<img style="float:left;margin:3px;width:48px;height:48px;" src="/img/nobody.png">');
   }
   var from = $('<span style="font-weight:bold;">').text(hash.nickname);
   
@@ -260,15 +260,23 @@ socket.on('join_tag', function(tags){
 });
 
 
+function sendMessage(){
+  var message = $('#message').val()
+  message = message.replace(/#[a-zA-Z0-9]+/g, '');
+  message = message.replace(/\s/g, '');
+  if(message.length>0){
+    socket.emit('user message', message);
+    clear();
+  }
+  return false;
+}
+
+
 //各種初期化
 $(function () {
 
   //送信ボタン
-  $('#send-message').submit(function () {
-    socket.emit('user message', $('#message').val());
-    clear();
-    return false;
-  });
+  $('#send-message').submit(sendMessage);
   
   //インプット欄の改行制御
 	$("#send-message").keypress(function(ev) {
