@@ -22,16 +22,13 @@ use Data::Dumper;
 
 use Plack::Session;
 use Plack::Request;
-use Net::Twitter::Lite;
-use Data::UUID;
-use JSON;
 
 use FindBin;
 use lib ("$FindBin::Bin/lib");
 use Yairc;
 use Yairc::DB;
-use Yairc::Login;
 use Yairc::API::Search;
+use Yairc::Login::Twitter;
 
 my $dbh = Yairc::DB->new('yairc');
 
@@ -53,8 +50,8 @@ builder {
     # https://gist.github.com/2440738
     mount '/api' => do ( './api.psgi' ) ;
 
-    mount '/login' => Yairc::Login->new;
-    
+    Yairc::Login::Twitter->build_psgi_endpoint( '/login/twitter' );
+
     mount '/' => builder {
         enable "Static",
           path => qr/\.(?:js|css|jpe?g|gif|png|html?|swf|ico)$/,
