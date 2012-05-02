@@ -10,6 +10,10 @@
 <script src="/moment.min.js"></script>
 <script src="/jquery.cookie.js"></script>
 <script src="/ios.min.js"></script>
+<script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_main.min.js"></script>
+<script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_javascript.js"></script>
+<link type="text/css" rel="stylesheet" href="http://yairc.cfe.jp/shjs/sh_style.css">
+
 
 <script>
 var socket = io.connect();
@@ -76,6 +80,7 @@ socket.on('no session', function (message) {
   }
 });
 
+function h(s){return s.replace(/[&<>"']/g,function(m){return "&#"+m.charCodeAt(0)+';'})}
 
 //メッセージイベント
 socket.on('user message', function(hash){
@@ -89,11 +94,37 @@ socket.on('user message', function(hash){
     var img = $('<img style="float:left;margin:3px;">');
   }
   var from = $('<span style="font-weight:bold;">').text(hash.nickname);
-  var text = $('<pre>').append($('<span>').text(hash.text).html().replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>"));
+  
+  var message = h(hash.text);
+  message = message.replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>");
+
+  message = message.replace(/&#62;\|javascript\|\n([\s\S]*)\n\|\|&#60;/g,
+    function(whole,s1) {
+　　　 return( '<pre class="sh_javascript">' + s1 + '</pre>' );
+　　　}
+  );
+
+  message = message.replace(/&#62;\|\|\n([\s\S]*)\n\|\|&#60;/g,
+    function(whole,s1) {
+　　　 return( '<pre>' + s1 + '</pre>' );
+　　　}
+  );
+  
+  message = message.replace(/&#62;&#62;\n([\s\S]*)\n&#60;&#60;/g,
+    function(whole,s1) {
+　　　 return( '<pre>' + s1 + '</pre>' );
+　　　}
+  );  
+  
+  message = message.replace(/\n/g, "<br />");
+  
+  var text = $('<div style="overflow: hidden;">').html(message);
+  
   var time = $('<span style="float:right">').text("("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")");
     
   $('#lines').append($('<p>').append(img, from, $('<br>'),text, $('<br>'), time, $('<br style="clear:both">')));
   $('#lines').get(0).scrollTop = 10000000;  
+  sh_highlightDocument();
 });
 
 
