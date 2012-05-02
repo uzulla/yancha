@@ -50,7 +50,7 @@ sub build_psgi_endpoint {
         
         unless ( $session->get('token') ){
           warn 'session lost';
-          return [   500,
+          return [  401,
               [   'Content-Type'   => 'text/html',
               ],
               ["session lost"]
