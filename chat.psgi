@@ -56,11 +56,11 @@ builder {
     # https://gist.github.com/2440738
     mount '/api' => do ( './api.psgi' ) ;
 
-    Yairc::Login::Twitter->new(data_storage => $data_storage)
-                         ->build_psgi_endpoint( '/login/twitter' );
+    mount '/login/twitter' => Yairc::Login::Twitter->new(data_storage => $data_storage)
+                                ->build_psgi_endpoint();
 
-    Yairc::Login::Simple->new(data_storage => $data_storage)
-                        ->build_psgi_endpoint( '/login', { name_field => 'nick' } );
+    mount '/login'         => Yairc::Login::Simple->new(data_storage => $data_storage)
+                                ->build_psgi_endpoint( { name_field => 'nick' } );
 
     mount '/' => builder {
         enable "Static",
