@@ -64,6 +64,13 @@
     <div id="nicknames">
     </div>
     TAGS
+    <table>
+      <tr>
+        <td>
+          <input id="tagname" type="text" style="width:100px">
+        <td style="width:50px">
+          <button onclick="addTag($('#tagname').val());$('#tagname').val('');return false;">追加</button>
+    </table>
     <div id="tags">
     </div>
     SETTINGS
@@ -72,7 +79,6 @@
     </div>
     ACTIONS
     <div style="border-bottom:1px #999 solid;padding:3px;">
-      <button onclick="setTag()">ChangeTag</button>
       <button onclick="logout()">Logout</button>
       <button class="toggleNotify">Notify</button>
     </div>

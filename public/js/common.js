@@ -18,3 +18,12 @@ function h(s){return s.replace(/[&<>"']/g,function(m){return "&#"+m.charCodeAt(0
 //for InternetExplorer(don't have console.log())
 if(typeof console != 'object'){ var console = {'log': function(){}}; } // hehe
 
+//get keys
+$.extend({
+  keys: function(obj){
+    var a = [];
+    $.each(obj, function(k){ a.push(k) });
+    return a;
+  }
+});
+ 

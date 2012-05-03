@@ -78,7 +78,9 @@ socket.on('user message', function(hash){
   }
   
   for(var i=0; hash.tags.length > i; i++){
-    data.tags[hash.tags[i]] = hash.created_at_ms ;
+    if(data.tags[hash.tags[i]]){
+      data.tags[hash.tags[i]] = hash.created_at_ms ;
+    }
   }
   
   if(hash.profile_image_url.length>0){
@@ -139,6 +141,11 @@ socket.on('user message', function(hash){
         $(this).addClass('unread');
       })
   );
+  
+  if($('#lines p').length>100){
+    $('#lines p:first').remove();
+  }
+  
   $('#lines').get(0).scrollTop = 10000000;  
   sh_highlightDocument();
   
@@ -243,54 +250,49 @@ socket.on('token_login', function(res){
 
 });
 
-//購読タグを入力させて、サーバーに送信
-function setTag(){
-    var now_tags = [];    
-
-    for( k in data.tags ){
-      now_tags.push(k);
-    }
-    
-    var tag_list_str = prompt('plz set tag.(comma separate, case insesitive)', now_tags.join(',') );
-
-    if(!tag_list_str){
-      return false;
-    }
-
-    //Textで入力されたタグを配列に
-    var tag_list = tag_list_str.toUpperCase().replace(' ','').replace('#','').split(',');
-    
-    _tags = {};
-    _keys = [];
-    
-    for(var i=0; tag_list.length>i; i++){
-      if(typeof(data.tags[tag_list[i]]) == 'undefined'){
-        _tags[tag_list[i]] = 0; //未読なので0
-      }else{
-        _tags[tag_list[i]] = data.tags[tag_list[i]]; //既読の時刻を設定
-      }
-      _keys.push(tag_list[i]); 
-    }
-    
-    //状態変数に保存しておく
-    data.tags = _tags;
-    
-    //オートログイン用に保存しておく
-    $.cookie('chat_tag_list', _keys.join(','), { expires: 1 });
-    
-    //送信
-    socket.emit('join_tag', data.tags);
-    return false;
-}
 //タグ登録処理完了イベント
 socket.on('join_tag', function(tags){
   $('#tags').empty();
   for (var i in tags) {
-    $('#tags').append($('<b>').text(i));
+    $('#tags').append($('<b>').append( i, "&nbsp;", $('<a href="javascript:return void();">x</a>').on('click', 
+    (function(i){ 
+      return function(){removeTag(i)}
+    })(i)
+    ) ) , $("<br />") );
   }
   $(window).resize();
 
 });
+
+//tag削除
+function removeTag(tag){
+  delete (data.tags[tag]);
+  sendTags();
+}
+
+//tag追加
+function addTag(newtag){
+  newtag = newtag.toUpperCase();
+  if(newtag.length==0 || newtag.match(/^A-Z0-9/)){
+    alert('タグは /^A-Z0-9/ の必要が有ります。');
+    return;
+  }
+
+  //console.log(newtag);
+  if(!data.tags[newtag]){
+    data.tags[newtag] = 0;
+  }  
+  sendTags();
+}
+
+//send tag
+function sendTags(){
+  //オートログイン用に保存しておく
+  $.cookie('chat_tag_list', $.keys(data.tags).join(','), { expires: 1 });
+  //送信
+  socket.emit('join_tag', data.tags);
+}
+
 
 //メッセージ送信
 function sendMessage(){
