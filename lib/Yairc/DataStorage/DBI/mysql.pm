@@ -105,7 +105,7 @@ sub add_post {
         user_key => $user->{ user_key },
         profile_image_url => $user->{ profile_image_url },
         created_at_ms     => $self->_get_now_micro_sec(),
-    } : { %$post, id => _id(), created_at_ms => $self->_get_now_micro_sec() };
+    } : { %$post, created_at_ms => $self->_get_now_micro_sec() };
 
     $self->{ insert_post }->execute(
                     @{$post}{ qw/user_key nickname profile_image_url text created_at_ms/ } );
