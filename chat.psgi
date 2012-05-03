@@ -20,6 +20,7 @@ use Plack::Middleware::Static;
 use Encode;
 use Data::Dumper;
 
+use Plack::App::File;
 use Plack::Session;
 use Plack::Request;
 
@@ -38,6 +39,7 @@ my $data_storage = Yairc::DataStorage::DBI::mysql->new( dbh => $dbh );
 
 builder {
     enable 'Session';
+    enable "SimpleLogger", level => 'debug';
 
     mount '/socket.io/socket.io.js' =>
       Plack::App::File->new(file => "$root/public/socket.io.js");
@@ -65,22 +67,7 @@ builder {
           path => qr/\.(?:js|css|jpe?g|gif|png|html?|swf|ico)$/,
           root => "$root/public";
 
-        enable "SimpleLogger", level => 'debug';
-
-        my $html = do {
-            local $/;
-            open my $fh, '<', "$root/public/chat.html"
-              or die $!;
-            <$fh>;
-        };
-
-        sub {
-            [   200,
-                [   'Content-Type'   => 'text/html',
-                    'Content-Length' => length($html)
-                ],
-                [$html]
-            ];
-        };
+        mount '/' => Plack::App::File->new( file => "$root/public/chat.html" );
     };
+
 };
