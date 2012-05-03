@@ -18,38 +18,25 @@ my $tags_reverse = {}; #クライアントコネクション->参加Tag リス�
 sub new {
     my ( $class, @args ) = @_;
     my $self = bless { @args }, $class;
-    my $dbh  = $self->{ dbh };
-
-    $self->{ insert_post_sth } = $dbh->prepare('INSERT INTO `post` (`user_key`, `nickname`, `profile_image_url`, `text`, `created_at_ms`) VALUES (?, ?, ?, ?, ?) ');
-    $self->{ select_lastlog_by_tag_lastusec_sth } = $dbh->prepare('SELECT * FROM `post` WHERE `text` like ? AND `created_at_ms` > ? ORDER BY `created_at_ms` DESC LIMIT 100 ');
-    $self->{ select_user_by_token } = $dbh->prepare('SELECT * FROM `user` WHERE `token` = ?');    
 
     return $self;
 }
+
+sub data_storage { $_[0]->{ data_storage } } 
 
 sub w {
     my ($text) = @_;
     warn(encode('UTF-8', $text));
 }
 
-sub insert_post {
-    my ($self, $user_key, $nickname, $profile_image_url, $text) = @_;
-    $self->{ insert_post_sth }->execute( $user_key, $nickname, $profile_image_url, $text, get_now_micro_sec() );
-    return;
-}
-
 sub send_lastlog_by_tag_lastusec {
     my ($self, $pio, $tag, $lastusec) = @_;
-    my $select_lastlog_by_tag_lastusec_sth = $self->{ select_lastlog_by_tag_lastusec_sth };
-    my $rv = $select_lastlog_by_tag_lastusec_sth->execute( '%#'.$tag.'%', $lastusec );
 
-    my @hash_list = ();  
-    while( my $hash = $select_lastlog_by_tag_lastusec_sth->fetchrow_hashref() ){
-        push(@hash_list, $hash);
-    }
+    my $posts = $self->data_storage->get_last_posts_by_tag( $tag, $lastusec );
 
-    foreach my $hash(reverse(@hash_list)){
-        $pio->emit('user message', build_user_message_hash($hash));
+    foreach my $post ( reverse( @$posts ) ){
+        $post->{'is_message_log'} = JSON::true;
+        $pio->emit('user message', build_user_message_hash($post));
     }
 }
 
@@ -92,29 +79,30 @@ sub run {
                 
                 #pocketio のソケット毎ストレージから自分のニックネームを取り出す
                 $self->get('user_data' => sub {
-                  my ($self, $err, $user_data) = @_;
+                  my ($self, $err, $user) = @_;
 
-                  #user_dataがない(セッションが無い)場合、再ログインを依頼して終わる。
-                  if(!defined($user_data)){
+                  #userがない(セッションが無い)場合、再ログインを依頼して終わる。
+                  if(!defined($user)){
                     $self->emit('no session', $message);
                     return;
                   }
 
+                  $user->{ nickname } ||= $user->{ nick }; # TODO: 後で直す
+
                   #DBに保存
-                  $app->insert_post($user_data->{user_key}, $user_data->{nick}, $user_data->{profile_image_url}, $message);
-                  
+                  my $post = $app->data_storage->add_post( { text => $message }, $user );
+
                   #タグ毎に送信処理
                   foreach my $i (@tag_list){
                     if($tags->{$i}){
-                      w "Send to ${i} from $user_data->{nick} => \"${message}\"";
+                      w "Send to ${i} from $user->{nickname} => \"${message}\"";
                       
                       #ちょいとややこしいPocketIOの直接Poolを触る場合
-                      my $event = PocketIO::Message->new(type => 'event', data => {name => 'user message', args => [ build_user_message_hash( {
-                        'id' => -1,#DBに保存されていないと、IDが振られないので
-                        'nickname' => $user_data->{nick},
-                        'profile_image_url' => $user_data->{profile_image_url},
-                        'text' => $message,
-                        'created_at_ms' => get_now_micro_sec(),
+                      my $event = PocketIO::Message->new(
+                        type => 'event',
+                        data => { name => 'user message', args => [ build_user_message_hash( {
+                            %$post,
+                            'is_message_log' => JSON::false,
                         }) ]
                       });
                       $tags->{$i}->send($event);
@@ -131,8 +119,8 @@ sub run {
             my ($message) = @_;
 
             $self->get('user_data' => sub {
-              my ($self, $err, $user_data) = @_;
-              if( !defined($user_data) ){
+              my ($self, $err, $user) = @_;
+              if( !defined($user) ){
                 $self->emit('ping pong', 'FAIL');
                 return;
               }
@@ -147,44 +135,34 @@ sub run {
             'token_login' => sub {
                 my $self = shift;
                 my ($token, $cb) = @_;
-                
-                #get from db
-                my $select_user_by_token = $app->{ select_user_by_token };
-                my $rv = $select_user_by_token->execute( $token );
-                my $profile = $select_user_by_token->fetchrow_hashref();
+                my $user = $app->data_storage->get_user_by_token( $token );
 
                 #TODO tokenが無い場合のエラー
-                unless($profile){
+                unless($user){
                   $self->emit('token_login', { "status"=>"user notfound" });
                 }
 
-                my $user_data = {
-                  "nick"=>$profile->{nickname},
-                  "profile_image_url"=>$profile->{profile_image_url},
-                  "user_key"=>$profile->{user_key},
-                };
+                $user->{ nick } = $user->{ nickname }; # TODO: 直す
 
-                my $nick = $profile->{nickname};
+                my $nickname = $user->{nickname};
 
-                w "hello ${nick}";
-
+                w "hello $nickname";
                 
-                $self->set(user_data => $user_data);
+                $self->set(user_data => $user);
                 
                 #nickname listを更新し、周知
-                $nicknames->{$nick} = $user_data->{nick};
+                $nicknames->{$nickname} = $user->{nickname};
                 $self->sockets->emit('nicknames', $nicknames);
 
                 #サーバー告知メッセージ
-                $self->broadcast->emit('announcement', $nick . ' connected');
+                $self->broadcast->emit('announcement', $nickname . ' connected');
                 
                 $self->emit('token_login', {
                   "status"=>"ok",
-                  "user_data"=>$user_data,
+                  "user_data"=>$user,
                 });
                 
                 $cb->(JSON::true);
-                
             }
         );
 

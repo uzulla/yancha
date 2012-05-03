@@ -7,26 +7,29 @@ use Plack::Builder;
 use FindBin;
 use lib ("$FindBin::Bin/lib");
 
-use Data::UUID;
+use Data::UUID; # TODO: don't use
 
-# TODO: 移動させる
-my $dbh = Yairc::DB->new('yairc');
+sub new {
+    my ( $class, @args ) = @_;
+    return bless { @args }, $class;
+}
 
-my $user_insert_or_update = $dbh->prepare('INSERT INTO `user` (`user_key`,`nickname`,`profile_image_url`,`sns_data_cache`,`token`,`created_at`,`updated_at`) VALUES (?, ?, ?, ?, ?, now(), now()) ON DUPLICATE KEY UPDATE `sns_data_cache`=values(`sns_data_cache`),`nickname`=values(`nickname`),`profile_image_url`=values(`profile_image_url`),`updated_at`=now();');
-my $user_select_by_user_key  = $dbh->prepare('SELECT * FROM `user` WHERE `user_key`=? ');
+sub data_storage { $_[0]->{ data_storage } } 
 
 sub user_info_set {
     my ($self, $user_key,$nickname,$profile_image_url,$sns_data_cache) = @_;
     my $ug = new Data::UUID;
     my $token = $ug->create_str();
-    $user_insert_or_update->execute( $user_key,$nickname,$profile_image_url,$sns_data_cache,$token );
 
-    $user_select_by_user_key->execute( $user_key );
-    my $user = $user_select_by_user_key->fetchrow_hashref();
+    $self->data_storage->add_or_replace_user({
+        user_key => $user_key,
+        nickname => $nickname,
+        token    => $token,
+        profile_image_url => $profile_image_url,
+        sns_data_cache    => $sns_data_cache,
+    });
 
-    my $rtntoken = $user->{token};
-
-    return $rtntoken;
+    return $token;
 }
 
 
