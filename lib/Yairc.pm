@@ -248,15 +248,16 @@ sub run {
                 my $self = shift;
 
                 $self->get(
-                    'nick' => sub {
-                        my ($self, $err, $nick) = @_;
-                        
-                        if(!defined($nick)){
+                    'user_data' => sub {
+                        my ($self, $err, $user) = @_;
+
+                        if(!defined($user)){
                           w "bye undefined nickname user";
                           return;
                         }
+                        my $nickname = $user->{ nickname };
 
-                        delete $nicknames->{$nick};
+                        delete $nicknames->{$nickname};
                         
                         #タグ毎にできたPool等からも削除
                         my $socket_id = $self->id();
@@ -271,11 +272,10 @@ sub run {
                         #w Dumper($tags);
                         #w Dumper($tags_reverse);
                         
-                        $self->broadcast->emit('announcement',
-                            $nick . ' disconnected'); #nickがないときにエラー
+                        $self->broadcast->emit('announcement', $nickname . ' disconnected');
                         $self->broadcast->emit('nicknames', $nicknames);
 
-                        w "bye ".$nick;
+                        w "bye ".$nickname;
                     }
                 );
             }
