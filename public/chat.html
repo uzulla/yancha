@@ -172,6 +172,7 @@ socket.on('user message', function(hash){
       .timeago()
   );
   
+  
   $('#lines').append(
     $('<p>')
       .append(img, from, $('<br>'),text, $('<br>'), time, $('<br style="clear:both">'))
@@ -180,14 +181,14 @@ socket.on('user message', function(hash){
         $(this).off('mouseover');
         updateTitle();
       })
-      .ift(hash.id < 0, function(){ //ログか、現在の投稿か
+      .ift(!hash.is_message_log, function(){ //ログか、現在の投稿か
         $(this).addClass('unread');
       })
   );
   $('#lines').get(0).scrollTop = 10000000;  
   sh_highlightDocument();
   
-  if(hash.id < 0){ //ログか、現在の投稿か
+  if(!hash.is_message_log){ //ログか、現在の投稿か
     soundMessage();
   }
   
