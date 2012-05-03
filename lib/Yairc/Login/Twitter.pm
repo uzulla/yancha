@@ -12,6 +12,7 @@ use JSON;
 use FindBin;
 use lib ("$FindBin::Bin/lib");
 use Net::Twitter::Lite;
+use LWP::Protocol::https;
 
 # TODO: 外に出す
 my $nt = Net::Twitter::Lite->new(
