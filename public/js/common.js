@@ -1,0 +1,13 @@
+//JQuery add-on that add an If statement https://gist.github.com/1672273#file_jquery_if_then.js
+$.fn.ift = function(){
+    var flag = arguments[0];
+    var func = arguments[1];
+    var else_func = arguments[2];
+
+    if(flag && $.isFunction(func)){
+        func.call(this, this);
+    }else if(!flag && $.isFunction(else_func)){
+        else_func.call(this, this);
+    }
+    return this;
+}
