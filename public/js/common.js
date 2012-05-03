@@ -11,3 +11,10 @@ $.fn.ift = function(){
     }
     return this;
 }
+
+//html escape
+function h(s){return s.replace(/[&<>"']/g,function(m){return "&#"+m.charCodeAt(0)+';'})}
+
+//for InternetExplorer(don't have console.log())
+if(typeof console != 'object'){ var console = {'log': function(){}}; } // hehe
+

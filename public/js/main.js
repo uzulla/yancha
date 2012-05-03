@@ -7,9 +7,7 @@ var data = {
 };
 var debug = 0;
 var notify = false;
-if ( jwNotify.status ) {
-  notify = jwNotify.checkPermission;
-}
+
 
 
 
@@ -34,7 +32,6 @@ socket.on('error', function (e) {
 
   if(debug){message('System', e ? e : 'A unknown error occurred');}
 });
-
 
 //サーバからのアナウンス
 socket.on('announcement', function (msg) {
@@ -68,11 +65,10 @@ socket.on('no session', function (message) {
   }
 });
 
-function h(s){return s.replace(/[&<>"']/g,function(m){return "&#"+m.charCodeAt(0)+';'})}
 
 //メッセージイベント
 socket.on('user message', function(hash){
-  if ( notify && hash.nickname != data.nick && load_at < hash.created_at_ms/100 ) {
+  if ( notify && hash.nickname != data.nick && !hash.is_message_log ) {
     $.jwNotify({
       image : hash.profile_image_url,
       title: hash.nickname,
@@ -296,9 +292,6 @@ socket.on('join_tag', function(tags){
 
 });
 
-
-
-
 //メッセージ送信
 function sendMessage(){
   var message = $('#message').val();
@@ -328,9 +321,6 @@ function resizeMessageTextarea(linenum){
   $("#message").css('height', em);
   $(window).resize();
 }
-
-
-
 
 //各種初期化
 $(function () {
@@ -395,36 +385,44 @@ $(function () {
 
   //デスクトップ通知許可
   if (jwNotify.status) {
-    if (notify) {
-      $('button.allowNotify').text('Disable Notify');
+    if ( jwNotify.notifications.checkPermission() == 0 ) {
+      notify = true; // TODO cookieに保存？
+      $('button.toggleNotify').text('Disable Notify');
+    }else{
+      $('button.toggleNotify').text('Enable Notify');
     }
-    else {
-      $('button.allowNotify').text('Enable Notify');
-    }
-    $('button.allowNotify').click(function(e){
+
+    $('button.toggleNotify').click(function(e){
       e.preventDefault();
-      if (notify) {
-        $.jwNotify({
-          image: '/img/nobody.png',
-          title: 'デスクトップ通知の停止',
-          body: 'デスクトップ通知を停止します'
-        });
-        notify = false;
-        $('button.allowNotify').text('Enable Notify');
-      }
-      else {
+      if(jwNotify.notifications.checkPermission() != 0){ // Chromeが許可していない
         $.jwNotify({
           image: '/img/nobody.png',
           title: 'デスクトップ通知の許可',
-          body: 'デスクトップ通知が許可されました'
+          body: 'デスクトップ通知が許可されました',
+          onshow: function(){notify = true; $('button.toggleNotify').text('Disable Notify');}
         });
-        notify = true;
-        $('button.allowNotify').text('Disable Notify');
+      }else{
+        if (notify) {
+          $.jwNotify({
+            image: '/img/nobody.png',
+            title: 'デスクトップ通知の停止',
+            body: 'デスクトップ通知を停止します'
+          });
+          notify = false;
+          $('button.toggleNotify').text('Enable Notify');
+        } else {
+          $.jwNotify({
+            image: '/img/nobody.png',
+            title: 'デスクトップ通知の許可',
+            body: 'デスクトップ通知が許可されました'
+          });
+          notify = true;
+          $('button.toggleNotify').text('Disable Notify');
+        }
       }
     });
-  }
-  else {
-    $('button.allowNotify').remove();
+  }else{
+    $('button.toggleNotify').remove();
   }
 
 });
