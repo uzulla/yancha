@@ -13,7 +13,7 @@ for my $line (<DATA>) {
     next if $line =~ /^\s*--/;
     my ( $text, @tags ) = split/\s*,\s*/, $line;
     is( join(',', sort { $a cmp $b }
-                Yairc::build_tag_list_from_text( $text ) ), join(',', sort @tags), $text );
+                Yairc->build_tag_list_from_text( $text ) ), join(',', sort @tags), $text );
 }
 
 

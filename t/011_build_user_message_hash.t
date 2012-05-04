@@ -14,7 +14,7 @@ for my $line (<DATA>) {
     my ( $text, @tags ) = split/\s*,\s*/, $line;
 
     my $post = { text => $text };
-    my $hash = Yairc::build_user_message_hash( $post );
+    my $hash = Yairc->build_user_message_hash( $post );
 
     is( join(',', sort { $a cmp $b } @{$hash->{tags}} ), join(',', sort @tags), $text );
 }

@@ -37,19 +37,19 @@ sub send_lastlog_by_tag_lastusec {
 
     foreach my $post ( reverse( @$posts ) ){
         $post->{'is_message_log'} = JSON::true;
-        $pio->emit('user message', build_user_message_hash($post));
+        $pio->emit('user message', $self->build_user_message_hash($post));
     }
 }
 
-sub build_tag_list_from_text{
-    my ($str) = @_;
-    my %tag = map { uc($_) => 1 } $str =~ /#([a-zA-Z0-9]+)/g; #もっと良い感じのタグ判定正規表現にしないといけない
-    return keys %tag;
+sub build_tag_list_from_text {
+    my ( $self, $str ) = @_;
+    #もっと良い感じのタグ判定正規表現にしないといけない
+    return map { uc($_) } $str =~ /#([a-zA-Z0-9]+)/g;
 }
 
-sub build_user_message_hash{
-    my ($hash) = @_;
-    @{$hash->{tags}} = build_tag_list_from_text($hash->{text});
+sub build_user_message_hash {
+    my ( $self, $hash ) = @_;
+    $hash->{tags} = [ $self->build_tag_list_from_text($hash->{text}) ];
     return $hash;
 }
 
@@ -71,7 +71,7 @@ sub run {
 
         $socket->on( #接続維持のPing
             'ping pong' => sub {
-                $self->ping_pong( @_ );
+#                $self->ping_pong( @_ );
             }
         );
 
@@ -105,7 +105,7 @@ sub user_message {
     my ( $self, $socket, $message ) = @_;
 
     #メッセージ内のタグをリストに
-    my @tag_list = build_tag_list_from_text($message);
+    my @tag_list = $self->build_tag_list_from_text($message);
                 
     #タグがみつからなかったら、#PUBLICタグを付けておく
     if($#tag_list == -1){
@@ -138,7 +138,7 @@ sub user_message {
                     type => 'event',
                     data => {
                         name => 'user message',
-                        args => [ build_user_message_hash( {
+                        args => [ $self->build_user_message_hash( {
                                 %$post, 'is_message_log' => JSON::false,
                             } ) 
                         ]
