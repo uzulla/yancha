@@ -78,7 +78,7 @@ socket.on('user message', function(hash){
   }
   
   for(var i=0; hash.tags.length > i; i++){
-    if(data.tags[hash.tags[i]]){
+    if(typeof(data.tags[hash.tags[i]]) != 'undefined' ){
       data.tags[hash.tags[i]] = hash.created_at_ms ;
     }
   }
@@ -95,12 +95,16 @@ socket.on('user message', function(hash){
 
   message = message.replace(/&#62;\|javascript\|\n([\s\S]*)\n\|\|&#60;/g,
     function(whole,s1) {
+      foundShHighlight = true;
 　　　 return( '<pre class="sh_javascript">' + s1 + '</pre>' );
 　　　}
   );
+  
+  var foundShHighlight = false;
 
   message = message.replace(/&#62;\|perl\|\n([\s\S]*)\n\|\|&#60;/g,
     function(whole,s1) {
+      foundShHighlight = true;
 　　　 return( '<pre class="sh_perl">' + s1 + '</pre>' );
 　　　}
   );
@@ -147,7 +151,9 @@ socket.on('user message', function(hash){
   }
   
   $('#lines').get(0).scrollTop = 10000000;  
-  sh_highlightDocument();
+  if(foundShHighlight){
+    sh_highlightDocument();
+  }
   
   if(!hash.is_message_log){ //ログか、現在の投稿か
     soundMessage();
