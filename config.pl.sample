@@ -1,0 +1,28 @@
+# config.plのサンプル
+
+use strict;
+
++{
+    'socketio' => { # PocketIOの設定
+        heartbeat_interval => 10, # Configクラス内部でheartbeat_timeoutに変換される
+    },
+
+    'database' => {
+        'connect' => [
+            'dbi:mysql:database=name', 'user', 'password', 
+            {
+                mysql_enable_utf8 => 1 ,
+                mysql_auto_reconnect => 1,
+                RaiseError => 1,
+            }
+        ],
+    },
+
+    'twitter_appli' => {
+        consumer_key    => 'xxxx',
+        consumer_secret => 'yyyy',
+    },
+
+};
+
+

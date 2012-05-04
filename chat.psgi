@@ -32,8 +32,10 @@ use Yairc::API::Search;
 use Yairc::Login::Twitter;
 use Yairc::Login::Simple;
 use Yairc::DataStorage::DBI::mysql;
+use Yairc::Config;
 
-my $dbh = Yairc::DB->new('yairc'); # TODO: 後で弄る
+my $config = Yairc::Config->load_file( $ENV{ YAIRC_CONFIG_FILE } || 'config.pl' );
+my $dbh = Yairc::DB->new('yairc'); # TODO: 後でなくす
 my $data_storage = Yairc::DataStorage::DBI::mysql->new( dbh => $dbh );
 
 
@@ -50,7 +52,9 @@ builder {
     mount '/socket.io/static/flashsocket/WebSocketMainInsecure.swf' =>
       Plack::App::File->new(file => "$root/public/WebSocketMainInsecure.swf");
 
-    mount '/socket.io' => PocketIO->new( instance => Yairc->new( dbh => $dbh, data_storage => $data_storage ) );
+    mount '/socket.io' => PocketIO->new( socketio => $config->{ socketio },
+                                         instance => Yairc->new( config => $config, data_storage => $data_storage )  
+                          );
 
     # APIリクエストサンプル
     # https://gist.github.com/2440738
