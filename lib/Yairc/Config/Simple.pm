@@ -1,4 +1,6 @@
-package Yairc::Config;
+package Yairc::Config::Simple;
+
+# Naming comes from Amon2::Config::Simple 
 
 use strict;
 use warnings;
@@ -6,7 +8,9 @@ use Carp ();
 
 my %SOCKETIO_TABLE = (
     'heartbeat_interval' => 'heartbeat_timeout',
-    'handshake_timeout'  => 'connect_timeout',
+    'connected_timeout'  => 'connect_timeout',
+    'connection_timeout' => 'close_timeout',
+    'polling_timeout'    => 'reconnect_timeout',
 );
 
 

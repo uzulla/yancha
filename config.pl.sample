@@ -1,10 +1,16 @@
 # config.plのサンプル
+# デフォルトでchat.psgiと同じディレクトリのconfig.plが呼ばれる
+# あるいはYAIRC_CONFIG_FILEで指定する。（暫定）
 
 use strict;
 
 +{
     'socketio' => { # PocketIOの設定
-        heartbeat_interval => 10, # Configクラス内部でheartbeat_timeoutに変換される
+        'heartbeat_interval' => 15,  # heartbeatの間隔(heartbeat_timeout)
+        'connection_timeout' => 25,  # この間通信がないとコネクションが切断される(close_timeout)
+        'polling_timeout'    => 15,  # jsonp-polling, xhr-pollingにおけるpollingの有効間隔(reconnect_timeout)
+        'connected_timeout'  => 30,  # handshake(connecting)してからconnectedになるまでの制限時間(connect_timeout)
+        'max_connection'     => 100, # 最大同時接続数...現在のところPocketIO自体は利用していない
     },
 
     'database' => {

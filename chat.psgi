@@ -32,9 +32,9 @@ use Yairc::API::Search;
 use Yairc::Login::Twitter;
 use Yairc::Login::Simple;
 use Yairc::DataStorage::DBI::mysql;
-use Yairc::Config;
+use Yairc::Config::Simple;
 
-my $config = Yairc::Config->load_file( $ENV{ YAIRC_CONFIG_FILE } || "$root/config.pl" );
+my $config = Yairc::Config::Simple->load_file( $ENV{ YAIRC_CONFIG_FILE } || "$root/config.pl" );
 my $dbh = Yairc::DB->new('yairc'); # TODO: 後でなくす
 my $data_storage = Yairc::DataStorage::DBI::mysql->new( dbh => $dbh );
 
