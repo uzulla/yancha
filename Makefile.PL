@@ -20,6 +20,8 @@ WriteMakefile(
         'Plack'       => 0,
         'Config::Pit' => 0,
         'FindBin'     => 0,
+        'Digest::SHA' => 0,
+        'Net::Twitter::Lite'   => 0,
         'LWP::Protocol::https' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },

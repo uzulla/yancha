@@ -13,7 +13,7 @@ use Plack::Session;
 
 
 sub build_psgi_endpoint {
-    my ( $class, $opt ) = @_;
+    my ( $self, $opt ) = @_;
     my $name_field = $opt->{ 'name_field' } || 'nick';
 
     # Carp::croak("Invalid login endpoint root.") unless $endpoint_root =~ m{^[-./\w]*$};
@@ -33,18 +33,17 @@ sub build_psgi_endpoint {
                 return $res->finalize;
             }
 
-            #db store
-            my $token = $class->user_info_set(
-                '-:'.$nick,
-                $nick,
-                '',
-                '',
-            );
+            my $user = $self->set_user_into_storage( {
+                user_key          => '-:' . $nick,
+                nickname          => $nick,
+                profile_image_url => '',
+                sns_data_cache    => '',
+            } );
 
-            $session->set( 'token', $token );
+            $session->set( 'token', $user->{ token } );
 
             $res->cookies->{yairc_auto_login_token} = {
-                value => $token,
+                value => $user->{ token },
                 path  => "/",
                 expires => time + 24 * 60 * 60,
             };

@@ -15,7 +15,7 @@ use Net::Twitter::Lite;
 
 
 sub build_psgi_endpoint {
-    my ( $class, $opt ) = @_;
+    my ( $self, $opt ) = @_;
     my $nt = Net::Twitter::Lite->new(
         consumer_key    => $opt->{ consumer_key },
         consumer_secret => $opt->{ consumer_secret },
@@ -43,7 +43,7 @@ sub build_psgi_endpoint {
             sub {
                 my $env = shift;
                 my $req = Plack::Request->new($env);
-                my $oauth_verifier     = $req->param('oauth_verifier');
+                my $oauth_verifier = $req->param('oauth_verifier');
                 my ( $access_token, $access_token_secret, $user_id, $screen_name, $profile_image_url );
                 my $session = Plack::Session->new( $env );
         
@@ -61,14 +61,13 @@ sub build_psgi_endpoint {
                                           $nt->request_access_token( verifier => $verifier );
 
                     my $profile = eval { $nt->verify_credentials() };
-            
-                    #db store
-                    $token = $class->user_info_set(
-                      'twitter:'.$profile->{id},
-                      $screen_name,
-                      $profile->{profile_image_url},
-                      encode_json($profile),
-                    );
+                    my $user    = $self->set_user_into_storage( {
+                        user_key          => 'twitter:' . $profile->{id},
+                        nickname          => $screen_name,
+                        profile_image_url => $profile->{profile_image_url},
+                        sns_data_cache    => encode_json($profile),
+                    } );
+                    $token = $user->{ token };
                 }
 
                 my $res = Plack::Response->new();

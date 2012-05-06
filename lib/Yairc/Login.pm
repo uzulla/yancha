@@ -2,12 +2,8 @@ package Yairc::Login;
 
 use strict;
 use warnings;
-
-use Plack::Builder;
-use FindBin;
-use lib ("$FindBin::Bin/lib");
-
-use Data::UUID; # TODO: don't use
+use Digest::SHA ();
+use Time::HiRes  ();
 
 sub new {
     my ( $class, @args ) = @_;
@@ -16,20 +12,21 @@ sub new {
 
 sub data_storage { $_[0]->{ data_storage } } 
 
-sub user_info_set {
-    my ($self, $user_key,$nickname,$profile_image_url,$sns_data_cache) = @_;
-    my $ug = new Data::UUID;
-    my $token = $ug->create_str();
+sub set_user_into_storage {
+    my ( $self, $user ) = @_;
+    my $token = $self->generate_token(64);
 
-    $self->data_storage->add_or_replace_user({
-        user_key => $user_key,
-        nickname => $nickname,
-        token    => $token,
-        profile_image_url => $profile_image_url,
-        sns_data_cache    => $sns_data_cache,
-    });
+    $user->{ token } = $token;
 
-    return $token;
+    $self->data_storage->add_or_replace_user( $user );
+
+    return $user;
+}
+
+sub generate_token { # almost code are from HTTP::Session
+    my ( $class, $len, $rand_sub ) = @_;
+    my $unique = $rand_sub ? $rand_sub->() : Time::HiRes::gettimeofday() . [] . rand();
+    return substr( Digest::SHA::sha256_hex( $unique ), 0, $len );
 }
 
 
