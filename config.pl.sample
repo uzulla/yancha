@@ -14,7 +14,7 @@ use strict;
     },
 
     'database' => {
-        'connect' => [
+        'connect_info' => [
             'dbi:mysql:database=name', 'user', 'password', 
             {
                 mysql_enable_utf8 => 1 ,

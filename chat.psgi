@@ -13,30 +13,28 @@ BEGIN {
 use strict;
 use utf8;
 use warnings;
+use FindBin;
+use lib ("$FindBin::Bin/lib");
+
 use PocketIO;
 use Plack::App::File;
 use Plack::Builder;
 use Plack::Middleware::Static;
-use Encode;
 use Data::Dumper;
 
 use Plack::App::File;
 use Plack::Session;
 use Plack::Request;
 
-use FindBin;
-use lib ("$FindBin::Bin/lib");
 use Yairc;
-use Yairc::DB;
 use Yairc::API::Search;
 use Yairc::Login::Twitter;
 use Yairc::Login::Simple;
-use Yairc::DataStorage::DBI::mysql;
+use Yairc::DataStorage::DBI;
 use Yairc::Config::Simple;
 
 my $config = Yairc::Config::Simple->load_file( $ENV{ YAIRC_CONFIG_FILE } || "$root/config.pl" );
-my $dbh = Yairc::DB->new('yairc'); # TODO: 後でなくす
-my $data_storage = Yairc::DataStorage::DBI::mysql->new( dbh => $dbh );
+my $data_storage = Yairc::DataStorage::DBI->connect( connect_info => $config->{ database }->{ connect_info } );
 
 
 builder {
@@ -61,7 +59,7 @@ builder {
     mount '/api' => do ( './api.psgi' ) ;
 
     mount '/login/twitter' => Yairc::Login::Twitter->new(data_storage => $data_storage)
-                                ->build_psgi_endpoint();
+                                ->build_psgi_endpoint( $config->{ twitter_appli } );
 
     mount '/login'         => Yairc::Login::Simple->new(data_storage => $data_storage)
                                 ->build_psgi_endpoint( { name_field => 'nick' } );
