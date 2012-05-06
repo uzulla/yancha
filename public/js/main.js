@@ -91,6 +91,10 @@ socket.on('user message', function(hash){
   var from = $('<span style="font-weight:bold;">').text(hash.nickname);
   
   var message = h(hash.text);
+  //auto inline display(pyazo)
+  message = message.replace(/http(s)?:\/\/yairc.cfe.jp:5000(\/[\x21-\x7e]+)/gi, "<a href='//yairc.cfe.jp:5000$2' target='_blank'><img src='//yairc.cfe.jp:5000$2' style='max-width:300px;max-height:300px;'/></a>");
+
+  //auto link
   message = message.replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>");
 
   message = message.replace(/&#62;\|javascript\|\n([\s\S]*)\n\|\|&#60;/g,
