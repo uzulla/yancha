@@ -279,6 +279,7 @@ function removeTag(tag){
 //tag追加
 function addTag(newtag){
   newtag = newtag.toUpperCase();
+  newtag = newtag.replace(/[^A-Z0-9]/g, "");
   if(newtag.length==0 || newtag.match(/^A-Z0-9/)){
     alert('タグは /^A-Z0-9/ の必要が有ります。');
     return;
