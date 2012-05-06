@@ -12,16 +12,14 @@ use JSON;
 use FindBin;
 use lib ("$FindBin::Bin/lib");
 use Net::Twitter::Lite;
-use LWP::Protocol::https;
 
-# TODO: 外に出す
-my $nt = Net::Twitter::Lite->new(
-    consumer_key    => 'gtpTrhPdlkSqbmmG7M9lew',
-    consumer_secret => 'ayIwIXzTNSE4deChyn2p1VmXfhxjXPgj79PVMoGs',
-);
 
 sub build_psgi_endpoint {
     my ( $class, $opt ) = @_;
+    my $nt = Net::Twitter::Lite->new(
+        consumer_key    => $opt->{ consumer_key },
+        consumer_secret => $opt->{ consumer_secret },
+    );
 
     # Carp::croak("Invalid login endpoint root.") unless $endpoint_root =~ m{^[-./\w]*$};
     return builder {
