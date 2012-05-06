@@ -2,7 +2,7 @@ package Yairc::DataStorage::DBI::mysql;
 
 use strict;
 use warnings;
-use base 'Yairc::DataStorage';
+use base 'Yairc::DataStorage::DBI';
 
 our $VERSION = '0.01';
 
@@ -36,8 +36,6 @@ sub init {
         'SELECT * FROM `post` WHERE `text` like ? AND `created_at_ms` > ?
                 ORDER BY `created_at_ms` DESC LIMIT ? ');
 }
-
-sub dbh { $_[0]->{ dbh }; }
 
 sub add_user {
     my ( $self, $user ) = @_;

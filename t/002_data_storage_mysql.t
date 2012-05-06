@@ -9,7 +9,7 @@ BEGIN {
 }
 
 BEGIN {
-    use_ok('Yairc::DataStorage::DBI::mysql');
+    use_ok('Yairc::DataStorage::DBI');
 }
 
 my $mysqld = Test::mysqld->new(
@@ -25,7 +25,9 @@ for my $lines ( split/;\n/, do { <$fh>; local $/; <$fh> } ) {
 }
 
 
-my $storage = Yairc::DataStorage::DBI::mysql->new( dbh => $dbh );
+my $storage = Yairc::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn() ] );
+
+isa_ok( $storage, 'Yairc::DataStorage::DBI::mysql' );
 
 diag('user');
 
