@@ -53,6 +53,15 @@ sub build_user_message_hash {
     return $hash;
 }
 
+sub get_uniq_and_anon_nicknames_list {
+    my ( $nicknames ) = @_;
+    my $uniq_nicknames = {};
+    foreach my $nick (values(%$nicknames)) {
+      $uniq_nicknames->{$nick} = $nick;
+    }
+    return $uniq_nicknames;
+}
+
 #
 # 実処理
 #
@@ -67,12 +76,6 @@ sub run {
             'user message' => sub {
                 $self->user_message( @_ );
             }   
-        );
-
-        $socket->on( #接続維持のPing
-            'ping pong' => sub {
-#                $self->ping_pong( @_ );
-            }
         );
 
         $socket->on(
@@ -150,21 +153,6 @@ sub user_message {
     });
 }
 
-sub ping_pong {
-    my ( $self, $socket, $message ) = @_;
-
-    $socket->get('user_data' => sub {
-        my ($socket, $err, $user) = @_;
-
-        if( !defined($user) ){
-            $socket->emit('ping pong', 'FAIL');
-            return;
-        }
-
-        $socket->emit('ping pong', '(/・ω・)/にゃー');
-    });
-}
-
 sub token_login {
     my ($self, $socket, $token, $cb) = @_;
     my $user = $self->data_storage->get_user_by_token( $token );
@@ -182,9 +170,11 @@ sub token_login {
     
     $socket->set(user_data => $user);
     
+    my $socket_id = $socket->id();
+    
     #nickname listを更新し、周知
-    $nicknames->{$nickname} = $user->{nickname};
-    $socket->sockets->emit('nicknames', $nicknames);
+    $nicknames->{$socket_id} = $user->{nickname};
+    $socket->sockets->emit('nicknames', get_uniq_and_anon_nicknames_list($nicknames));
 
     #サーバー告知メッセージ
     $socket->broadcast->emit('announcement', $nickname . ' connected');
@@ -281,10 +271,10 @@ sub disconnect {
             }
             my $nickname = $user->{ nickname };
 
-            delete $nicknames->{$nickname};
+            my $socket_id = $socket->id();
+            delete $nicknames->{$socket_id};
             
             #タグ毎にできたPool等からも削除
-            my $socket_id   = $socket->id();
             my $joined_tags = $tags_reverse->{$socket_id};
             foreach my $k ( @$joined_tags ) {
                 delete $tags->{$k}->{connections}->{$socket_id};
@@ -297,7 +287,7 @@ sub disconnect {
             #w Dumper($tags_reverse);
             
             $socket->broadcast->emit('announcement', $nickname . ' disconnected');
-            $socket->broadcast->emit('nicknames', $nicknames);
+            $socket->broadcast->emit('nicknames', get_uniq_and_anon_nicknames_list($nicknames));
 
             DEBUG && w "bye ".$nickname;
         }

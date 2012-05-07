@@ -8,29 +8,25 @@ var data = {
 var debug = 0;
 var notify = false;
 
-
-
-
 //各種接続、切断、エラーイベント
 socket.on('connect', function () {
   $('#chat').addClass('connected');
-  setPingpong();
 });
 socket.on('reconnect', function () {
   if(debug){message('System', 'Reconnected to the server');}
-  socket.emit('join_tag', data.tags);
+  if(data.token){
+    console.log('try create session');
+    socket.emit('token_login', data.token);
+  }
 });
 socket.on('reconnecting', function () {
   if(debug){message('System', 'Attempting to re-connect to the server');}
 });
 socket.on('error', function (e) {
-  if(pingpongTimer != null){
+  if(debug){
     console.log("disconnected");
-    clearTimeout(pingpongTimer);
-    pingpongTimer=null;
+    message('System', e ? e : 'A unknown error occurred');
   }
-
-  if(debug){message('System', e ? e : 'A unknown error occurred');}
 });
 
 //サーバからのアナウンス
@@ -43,6 +39,7 @@ socket.on('announcement', function (msg) {
 
 //サーバから、参加ニックネームリストの更新
 socket.on('nicknames', function (nicknames) {
+  console.log(nicknames);
   $('#nicknames').empty();
   for (var i in nicknames) {
     $('#nicknames').append($('<b>').text(nicknames[i]));
@@ -178,32 +175,6 @@ function updateTitle(){
   }
   document.title = prefix+"yairc";
 }
-
-
-//ws切断回避用に、暫定的にpingpong(将来的にはpocketIO側の調整で解決予定)
-var pingpongTimer = null;
-var PINGPONG_WINDOW_MSEC = 10000;
-function setPingpong(){
-  if(pingpongTimer == null){
-    pingpongTimer = setTimeout(function(){
-      socket.emit('ping pong', '(」・ω・)」うー');
-    }, PINGPONG_WINDOW_MSEC);
-  }
-}
-socket.on('ping pong', function (msg) {
-  //console.log('pong!');
-  if(msg == 'FAIL'){
-    console.log('session not found');
-    if(data.token){
-      console.log('try create session');
-      socket.emit('token_login', data.token);
-    }
-  }
-  pingpongTimer=null;
-  setPingpong();
-  $(window).resize();
-
-});
 
 //テキスト入力欄をクリア、ただし、タグは残しておく
 function clear () {
