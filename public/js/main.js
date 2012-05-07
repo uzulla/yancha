@@ -94,6 +94,9 @@ socket.on('user message', function(hash){
   //auto inline display(pyazo)
   message = message.replace(/http(s)?:\/\/yairc.cfe.jp:5000(\/[\x21-\x7e]+)/gi, "<a href='//yairc.cfe.jp:5000$2' target='_blank'><img src='//yairc.cfe.jp:5000$2' style='max-width:300px;max-height:300px;'/></a>");
 
+  // YT thumbnail
+  message = message.replace(/http(s)?:\/\/www.youtube.com\/[\x21-\x7e]*v=([a-zA-Z0-9\-]+)/g, "<img src='//i1.ytimg.com/vi/$2/default.jpg'><br />http://www.youtube.com/watch?v=$2");
+
   //auto link
   message = message.replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>");
 
