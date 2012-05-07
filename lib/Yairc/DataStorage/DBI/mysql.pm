@@ -175,6 +175,18 @@ sub search_post {
         push @binds, map { $_ . '00000' } grep { defined } @$times;
     }
 
+    if ( exists $where->{ id } ) {
+        my $ids = ref $where->{ id } ? $where->{ id } : [ $where->{ id } ];
+        if ( $sql =~ /WHERE/ ) {
+            $sql .= ' AND ';
+        }
+        else {
+            $sql .= ' WHERE ';
+        }
+        $sql .= '( `id` IN(' . join( ',', ('?') x scalar(@$ids) ) . ' ) )';
+        push @binds, @$ids;
+    }
+
     $sql .= ' ORDER BY `created_at_ms` DESC ';
     $sql .= " LIMIT $limit ";
     $sql .= defined $offset && $offset =~ /^\d+$/ ? " OFFSET $offset" : '';

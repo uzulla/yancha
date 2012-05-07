@@ -10,16 +10,7 @@ our $VERSION = '0.01';
 
 sub search {
     my ( $self, $req ) = @_;
-    my $posts;
-
-    if ( my $id = $req->param('id') ) {
-        $id = 0 unless $id =~ /^[0-9]+$/;
-        $posts = $self->data_storage->get_post_by_id( $id );
-    }
-    else {
-        $posts = $self->_search_posts( $req );
-    }
-
+    my $posts  = $self->_search_posts( $req );
     my $format = $req->param('t') || 'json';
 
     if ( $format eq 'text' ) {
@@ -45,6 +36,10 @@ sub _search_posts {
 
     if ( my $times = $req->param('time') ) { # epoch sec
         $where->{ created_at_ms } = [ split /,/, $times ];
+    }
+
+    if ( my $ids = $req->param('id') ) {
+        $where->{ id } = [ grep { $_ =~ /^[0-9]+$/ } split /,/, $ids ];
     }
 
     return $self->data_storage->search_post( $where, $attr );
