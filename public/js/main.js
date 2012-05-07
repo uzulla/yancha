@@ -39,7 +39,6 @@ socket.on('announcement', function (msg) {
 
 //サーバから、参加ニックネームリストの更新
 socket.on('nicknames', function (nicknames) {
-  console.log(nicknames);
   $('#nicknames').empty();
   for (var i in nicknames) {
     $('#nicknames').append($('<b>').text(nicknames[i]));
