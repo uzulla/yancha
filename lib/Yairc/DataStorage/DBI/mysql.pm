@@ -10,6 +10,7 @@ sub init {
     my ( $self ) = @_;
     my $dbh = $self->dbh;
     # 本体から持ってきた
+    # TODO: ステートメントハンドル保持しなくてもいいんじゃない？
     $self->{ user_insert_or_update } = $dbh->prepare(q/
         INSERT INTO `user` (
             `user_key`,`nickname`,`profile_image_url`,
@@ -129,6 +130,65 @@ sub get_last_posts_by_tag {
         push @posts, $post;
     }
  
+    return \@posts;
+}
+
+sub get_post_by_id {
+    my ( $self, $id ) = @_;
+    return $self->dbh->selectrow_hashref( 'SELECT * FROM `post` WHERE `id` = ?', {}, $id );
+}
+
+sub search_post {
+    my ( $self, $where, $attr ) = @_;
+    # 便宜的にtagのみで絞り込みかつ手動だが、今後複雑になるならSQL::Makerなど検討
+    # っていうか使いたい。結局かかる手間たいしてかわらないし
+    my @binds;
+    my $sql    = 'SELECT * FROM `post`';
+    my $limit  = $attr->{ limit };
+    my $offset = $attr->{ offset };
+
+    unless ( $limit and $limit =~ /^\d+$/ ) {
+        $limit = 1000;
+    }
+
+    if ( $limit > 10000 ) { $limit = 10000; } # 暫定
+
+    if ( exists $where->{ tag } ) {
+        my $tags = $where->{ tag };
+        $tags  = ref $tags ? $tags : [ $tags ];
+        $sql  .= ' WHERE ( ' . join( ' OR ', (q/UPPER(`text`) LIKE UPPER(?)/) x scalar(@$tags) ) . ' )';
+        push @binds, map { '%#' . $_ . '%' } @$tags;
+    }
+
+    if ( exists $where->{ created_at_ms } ) {
+        if ( $sql =~ /WHERE/ ) {
+            $sql .= ' AND ';
+        }
+        else {
+            $sql .= ' WHERE ';
+        }
+        my $times = $where->{ created_at_ms };
+        my @sqls;
+        push @sqls, '`created_at_ms` >= ?' if $times->[0];
+        push @sqls, '`created_at_ms` <  ?' if $times->[1];
+        $sql  .= ' ( ' . join( ' AND ', @sqls ) . ' ) ';
+        push @binds, map { $_ . '00000' } grep { defined } @$times;
+    }
+
+    $sql .= ' ORDER BY `created_at_ms` DESC ';
+    $sql .= " LIMIT $limit ";
+    $sql .= defined $offset && $offset =~ /^\d+$/ ? " OFFSET $offset" : '';
+#print STDERR $sql,"\n";
+#print STDERR Data::Dumper::Dumper(\@binds);
+    my $sth = $self->dbh->prepare( $sql );
+    $sth->execute( @binds );
+
+    my @posts;
+
+    while ( my $post = $sth->fetchrow_hashref ) {
+        push @posts, $post;
+    }
+
     return \@posts;
 }
 
