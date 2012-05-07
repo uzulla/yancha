@@ -42,6 +42,8 @@ sub _search_posts {
         $where->{ id } = [ grep { $_ =~ /^[0-9]+$/ } split /,/, $ids ];
     }
 
+    $attr->{ limit } ||= 20;
+
     return $self->data_storage->search_post( $where, $attr );
 }
 

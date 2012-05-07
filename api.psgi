@@ -17,7 +17,6 @@ use Plack::Request;
 
 use FindBin;
 use lib ("$FindBin::Bin/lib");
-use Yairc::DB;
 use Yairc::API::Search;
 use Yairc::DataStorage::DBI;
 use Yairc::Config::Simple;
