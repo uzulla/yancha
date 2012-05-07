@@ -10,6 +10,28 @@ our $VERSION = '0.01';
 
 sub search {
     my ( $self, $req ) = @_;
+    my $posts;
+
+    if ( my $id = $req->param('id') ) {
+        $id = 0 unless $id =~ /^[0-9]+$/;
+        $posts = $self->data_storage->get_post_by_id( $id );
+    }
+    else {
+        $posts = $self->_search_posts( $req );
+    }
+
+    my $format = $req->param('t') || 'json';
+
+    if ( $format eq 'text' ) {
+        return $self->response_as_text( ref $posts eq 'ARRAY' ? $posts : [ $posts ] );
+    }
+    else {
+        return $self->response_as_json( $posts );
+    }
+}
+
+sub _search_posts {
+    my ( $self, $req ) = @_;
     my $where = {};
     my $attr  = {};
 
@@ -25,17 +47,7 @@ sub search {
         $where->{ created_at_ms } = [ split /,/, $times ];
     }
 
-    my $posts = $self->data_storage->search_post( $where, $attr );
-
-    my $format = $req->param('t') || 'json';
-
-    if ( $format eq 'text' ) {
-        return $self->response_as_text( $posts );
-    }
-    else {
-        return $self->response_as_json( $posts );
-    }
-
+    return $self->data_storage->search_post( $where, $attr );
 }
 
 
