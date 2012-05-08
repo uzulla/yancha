@@ -102,13 +102,13 @@ Yairc::Client - Yairc用簡易クライアント
     $client->run(sub {
         my ( $self, $socket ) = @_;
 
-        $socket->emit('token_login', $self->token);
         $socket->on('nicknames', sub {
             my ( $self, $data ) = @_;
             print Data::Dumper( $data );
             $cv->send;
         });
 
+        $socket->emit('token_login', $self->token);
     });
 
     $cv->wait;

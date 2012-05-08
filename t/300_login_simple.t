@@ -33,11 +33,12 @@ my $client = sub {
     $client->run(sub {
         my ( $self, $socket ) = @_;
 
-        $socket->emit('token_login', $self->token);
         $socket->on('nicknames', sub {
             is( $_[1]->{ test_client }, 'test_client', 'token_login' );
             $cv->send;
         });
+
+        $socket->emit('token_login', $self->token);
 
     });
 
