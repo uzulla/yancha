@@ -114,7 +114,7 @@ socket.on('user message', function(hash){
 
   message = message.replace(/&#62;\|AA\|\n([\s\S]*)\n\|\|&#60;/gi,
     function(whole,s1) {
-　　　 return( '<pre style=\'font-family: "MS Pゴシック","MS ゴシック",sans-serif;\'>' + s1 + '</pre>' );
+　　　 return( '<pre style=\'font-family: "MS Pゴシック","MS ゴシック","ＭＳ Ｐゴシック","ＭＳ ゴシック",sans-serif;\'>' + s1 + '</pre>' );
 　　　}
   );
 
