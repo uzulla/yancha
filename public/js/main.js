@@ -221,7 +221,7 @@ socket.on('token_login', function(res){
   if(res.status == 'ok'){
     var ud = res.user_data;
   
-    data.nick = ud.nick;
+    data.nick = ud.nickname;
     data.profile_image_url = ud.profile_image_url;
   
     if( $.cookie('chat_tag_list')){
