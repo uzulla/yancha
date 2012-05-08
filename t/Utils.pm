@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Plack::Builder;
 use PocketIO;
+use AnyEvent;
 
 BEGIN {
     use Test::More;
@@ -60,6 +61,42 @@ sub setup_mysqld {
     return $mysqld;
 }
 
+
+sub create_clients_and_set_tags {
+    my ( $self, $port, @users ) = @_;
+    my $cv = AnyEvent->condvar;
+    my $w  = AnyEvent->timer( after => 5 * scalar(@users), cb => sub {
+        Carp::carp("Time out.");
+        $cv->end for 1 .. scalar(@users);
+    } );
+
+    my @clients;
+
+    for my $user ( @users ) {
+        my $client   = Yairc::Client->new();
+        my $nickname = $user->{ nickname } || 'client';
+
+        $cv->begin;
+
+        $client->login( "http://localhost:$port/", => 'login', { nick => $nickname } );
+        $client->connect or Carp::croak "Can't create client.";
+
+        $client->run(sub {
+            my ( $self, $socket ) = @_;
+            my @tags = exists $user->{ tags } ? @{ $user->{ tags } } : 'PUBLIC';
+            $client->socket->on('token_login', sub {
+                $client->set_tags( @tags, sub { $cv->end; } );
+             });
+            $socket->emit('token_login', $client->token);
+        });
+
+        push @clients, $client;
+    }
+
+    $cv->wait;
+
+    return @clients;
+}
 
 
 1;
