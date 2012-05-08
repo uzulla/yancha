@@ -87,6 +87,8 @@ $posts = $storage->get_last_posts_by_tag( 'DEF', 0, 10 );
 is( scalar @$posts, 10 );
 like( $posts->[0]->{ text }, qr/ #DEF/ );
 
+$post = $storage->get_post_by_id( 10 );
+is( $post->{id}, 10 );
 
 done_testing;
 
