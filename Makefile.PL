@@ -18,7 +18,6 @@ WriteMakefile(
         'Time::HiRes' => 0,
         'PocketIO'    => 0.13,
         'Plack'       => 0,
-        'Config::Pit' => 0,
         'FindBin'     => 0,
         'Digest::SHA' => 0,
         'Net::Twitter::Lite'   => 0,

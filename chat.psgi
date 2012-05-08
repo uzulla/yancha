@@ -16,18 +16,16 @@ use warnings;
 use FindBin;
 use lib ("$FindBin::Bin/lib");
 
-use PocketIO;
-use Plack::App::File;
-use Plack::Builder;
-use Plack::Middleware::Static;
 use Data::Dumper;
 
+use PocketIO;
+use Plack::Builder;
+use Plack::Middleware::Static;
 use Plack::App::File;
 use Plack::Session;
 use Plack::Request;
 
 use Yairc;
-use Yairc::API::Search;
 use Yairc::Login::Twitter;
 use Yairc::Login::Simple;
 use Yairc::DataStorage::DBI;
