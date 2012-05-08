@@ -112,6 +112,12 @@ socket.on('user message', function(hash){
 　　　}
   );
 
+  message = message.replace(/&#62;\|AA\|\n([\s\S]*)\n\|\|&#60;/gi,
+    function(whole,s1) {
+　　　 return( '<pre styke="font-family: "MS Pゴシック","MS ゴシック",sans-serif;">' + s1 + '</pre>' );
+　　　}
+  );
+
   message = message.replace(/&#62;\|\|\n([\s\S]*)\n\|\|&#60;/g,
     function(whole,s1) {
 　　　 return( '<pre>' + s1 + '</pre>' );
@@ -341,13 +347,13 @@ $(function () {
     var height = $(window).height() - $('#send-message').height();
     $("#messages").css('height', height+'px');
     $("#lines").css('height', height+'px');
-
-
+    $("#infomation").css('height', height+'px');
 
     if (navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
       $("#messages").css('height','384px');
       $("#lines").css('height','384px');
       $("#infomation").css('height','384px');
+      $("#infomation").hide('slow');
     }
 
   });

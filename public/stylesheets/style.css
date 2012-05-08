@@ -86,8 +86,9 @@ line-height: 110%;
 }
 
 #infomation{
-  width:180px;
+  width:190px;
   float:right;
+  overflow-y:scroll;
 
 }
 
