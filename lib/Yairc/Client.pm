@@ -5,7 +5,7 @@ use warnings;
 use PocketIO::Client::IO;
 use LWP::UserAgent;
 #use HTTP::Cookies;
-
+use Carp ();
 
 sub new {
     my $class = shift;
@@ -46,18 +46,18 @@ sub connect {
     my $socket = PocketIO::Client::IO->connect( $url );
 
     unless ( $socket ) {
-        print "connection fail.\n";
+        Carp::carp("connection fail.");
         return;
     }
 
-    $socket->on('use message', sub {});
+    $socket->on('user message', sub {});
     $socket->on('join_tag', sub {});
     $socket->on('nicknames', sub {});
     $socket->on('announcement', sub {});
     $socket->on('token_login', sub {});
     $socket->on('no session', sub {});
 
-    $self->{ socket } = $socket;
+    $self->socket( $socket );
 
     return 1;
 }
@@ -73,6 +73,19 @@ sub token {
     $_[0]->{ token };    
 };
 
+sub socket {
+    $_[0]->{ socket } = $_[1] if @_ > 1;
+    $_[0]->{ socket };
+};
+
+sub set_tags {
+    my $self   = shift;
+    my $subref = pop;
+    my ( @tags ) = @_;
+    my %tag = map { uc $_ => uc $_ } @tags;
+    $self->socket->on('join_tag', $subref);
+    $self->socket->emit( 'join_tag', \%tag );
+}
 
 1;
 __END__
@@ -181,6 +194,8 @@ Yaircはログインの有無をこのトークンでチェックしている。
 =over
 
 =item Twitterログインに対応する
+
+=item reconnect
 
 =back
 

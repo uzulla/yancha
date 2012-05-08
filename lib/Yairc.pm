@@ -126,8 +126,6 @@ sub user_message {
             return;
         }
 
-        $user->{ nickname } ||= $user->{ nick }; # TODO: 後で直す
-
         #DBに保存
         my $post = $self->data_storage->add_post( { text => $message }, $user );
 
@@ -161,8 +159,6 @@ sub token_login {
     unless($user){
         $socket->emit('token_login', { "status"=>"user notfound" });
     }
-
-    $user->{ nick } = $user->{ nickname }; # TODO: 直す
 
     my $nickname = $user->{nickname};
 
