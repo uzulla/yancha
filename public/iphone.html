@@ -5,11 +5,11 @@
 <title>yairc</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <script>
-if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
-  location.href="/iphone.html";
+if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
+  location.href="/";
 }
 </script>
-<link href="/stylesheets/pc.css" rel="stylesheet">
+<link href="/stylesheets/iphone.css" rel="stylesheet">
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script src="/js/socket.io.js"></script>
 <script src="/js/common.js"></script>
@@ -19,20 +19,13 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
 <script src="/js/moment.min.js"></script>
 <script src="/js/jquery.cookie.js"></script>
 <script src="/js/ios.min.js"></script>
-<script src="/js/jquery.jwNotify.js"></script>
 <script src="/js/jquery.timeago.js"></script>
+<script src="/js/iscroll.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_main.min.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_javascript.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_perl.js"></script>
 <link type="text/css" rel="stylesheet" href="http://yairc.cfe.jp/shjs/sh_style.css">
-
-<script type="text/javascript" src="http://code.createjs.com/preloadjs-0.1.0.min.js"></script>
-<script type="text/javascript" src="/js/soundjs/SoundJS.js"></script>
-<script type="text/javascript" src="/js/soundjs/HTMLAudioPlugin.js"></script>
-<script type="text/javascript" src="/js/soundjs/FlashPlugin.js"></script>
-<script type="text/javascript" src="/js/swfobject.js"></script>
-
-<script src="/js/main_pc.js"></script>
+<script src="/js/main_iphone.js"></script>
 
 <script type="text/javascript">
 
@@ -47,6 +40,13 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
   })();
 
 </script>
+
+<style>
+#mmessages {
+	position:absolute;
+	z-index:1;
+}
+</style>
 </head>
 
 <body>
@@ -67,50 +67,58 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
   </div>
   
   <div id="infomation">
-    ONLINE
-    <div id="nicknames">
-    </div>
-    TAGS
-    <table>
-      <tr>
-        <td>
-          <input id="tagname" type="text" style="width:100px">
-        <td style="width:50px">
-          <button onclick="addTag($('#tagname').val());$('#tagname').val('');return false;">追加</button>
-    </table>
-    <div id="tags">
-    </div>
-    SETTINGS
-    <div style="border-bottom:1px #999 solid;padding:3px;">
-      <label><input type="checkbox" id="sound" checked=checked>音をならす</label>
-    </div>
-    ACTIONS
-    <div style="border-bottom:1px #999 solid;padding:3px;">
-      <button onclick="logout()">Logout</button>
-      <button class="toggleNotify">Notify</button>
-    </div>
-    HINTS
-    <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
-      Shift+Enterで改行<br>
-      ・コードハイライト<br>
-      &gt;|javascript|<br>
-      CODE<br>
-      ||&lt;<br>
-      &gt;|perl|<br>
-      CODE<br>
-      ||&lt;<br>
-      ・PRE<br>
-      &gt;&gt;<br>
-      テキスト<br>
-      &lt;&lt;<br>
-      ・画像ポスト<br>
-      <a href="http://yairc.cfe.jp:5000/" target="_blank">http://yairc.cfe.jp:5000/</a>
+  	<div id="scroller">
+  		<div>
+        ONLINE
+        <div id="nicknames">
+        </div>
+        TAGS
+        <table>
+          <tr>
+            <td>
+              <input id="tagname" type="text" style="width:100px">
+            <td style="width:50px">
+              <button onclick="addTag($('#tagname').val());$('#tagname').val('');return false;">追加</button>
+        </table>
+        <div id="tags">
+        </div>
+        SETTINGS
+        <div style="border-bottom:1px #999 solid;padding:3px;">
+          <label><input type="checkbox" id="sound" checked=checked>音をならす</label>
+        </div>
+        ACTIONS
+        <div style="border-bottom:1px #999 solid;padding:3px;">
+          <button onclick="logout()">Logout</button>
+          <button class="toggleNotify">Notify</button>
+        </div>
+        HINTS
+        <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
+          Shift+Enterで改行<br>
+          ・コードハイライト<br>
+          &gt;|javascript|<br>
+          CODE<br>
+          ||&lt;<br>
+          &gt;|perl|<br>
+          CODE<br>
+          ||&lt;<br>
+          ・PRE<br>
+          &gt;&gt;<br>
+          テキスト<br>
+          &lt;&lt;<br>
+          ・画像ポスト<br>
+          <a href="http://yairc.cfe.jp:5000/" target="_blank">http://yairc.cfe.jp:5000/</a>
+        </div>
+    	</div>
     </div>
   </div>
   
   
   <div id="messages">
-    <div id="lines"></div>
+  	<div id="scroller">
+  		<div id="lines">
+  
+  		</div>
+  	</div>
   </div>
   
   <form id="send-message">
@@ -123,7 +131,7 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
   </form>
 
 <div style="display:none" >
-  <div id="template_messagecell" class="messagecell">
+  <div id="template_messagecell" style="margin:0px;padding:0px;"  class="messagecell">
   	<img src="/img/nobody.png" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
   	<span style="float: right;"><abbr title="" class="timeago messagecell_time"></abbr></span>
   	<span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
