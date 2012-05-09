@@ -70,15 +70,6 @@ $(function () {
     $("#lines").css('height', height+'px');
     $("#infomation").css('height', height+'px');
 
-/*
-    if (navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
-      $("#messages").css('height','384px');
-      $("#lines").css('height','384px');
-      $("#infomation").css('height','384px');
-      $("#infomation").hide('slow');
-    }
-*/
-
   });
   $(window).resize();
 
