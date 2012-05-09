@@ -210,7 +210,7 @@ function logout(){
   data.nick = '';
   data.tags = {'PUBLIC':0};
   socket.emit('disconnect');
-  location.href=location.reload();
+  location.reload();
 }
 
 //クッキーがあれば、オートログインさせる
