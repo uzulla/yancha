@@ -115,7 +115,7 @@ socket.on('user message', function(hash){
 
 //タイトルに未読件数を表示する
 function updateTitle(){
-  var unreadnum = $('#lines p.unread').length;
+  var unreadnum = $('#lines div.unread').length;
   var prefix = '';
   if(unreadnum>0){
     prefix = "("+unreadnum+")";
