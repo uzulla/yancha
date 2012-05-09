@@ -71,8 +71,9 @@ margin:0px;
 }
 #send-message textarea {
   border: 1px solid gray;
-  height: 1.2em;
-  padding: 5 5px;
+  height: 1.4em;
+  margin-right:15px;
+  padding: 5px 0px;
   line-height: 1.2em;
   vertical-align: middle;
   width: 100%;

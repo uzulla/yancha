@@ -89,7 +89,8 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
       <button onclick="logout()">Logout</button>
       <button class="toggleNotify">Notify</button>
     </div>
-    HINTS
+    HINTS<br>
+    <a href="/search.html" target="_blank" style="font-size:80%;">過去ログ</a>
     <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
       Shift+Enterで改行<br>
       ・コードハイライト<br>
@@ -116,9 +117,9 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
   <form id="send-message">
   <table style="width:100%">
   <tr>
-    <td><textarea  id="message"></textarea>
-    <td style="width:60px"><button>Send</button>
-    <td style="width:60px"><button onclick='$("#infomation").toggle("slow");'>MENU</button>
+    <td style="width:100%"><textarea  id="message"></textarea>
+    <td ><button style="margin:2px 0px 2px 2px;">Send</button>
+    <td ><button style="margin:2px 0px 2px 2px;" onclick='$("#infomation").toggle("slow");'>MENU</button>
   </table>
   </form>
 
