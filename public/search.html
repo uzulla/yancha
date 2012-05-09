@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>yairc search</title>
+<script>
+//if(navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
+//  location.href="/search_iphone.html";
+//}
+</script>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<link href="/stylesheets/pc.css" rel="stylesheet" />
+<script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/filter.js"></script>
+<script src="/js/moment.min.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<script src="/js/jquery.timeago.js"></script>
+<script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_main.min.js"></script>
+<script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_javascript.js"></script>
+<script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_perl.js"></script>
+<link type="text/css" rel="stylesheet" href="http://yairc.cfe.jp/shjs/sh_style.css">
+
+<script type="text/javascript" src="/js/search.js"></script>
+<script type="text/javascript" src="/js/search_pc.js"></script>
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-19063513-4']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+
+<style>
+#searchform{
+background-color:#CCCCCC;
+}
+#lines{
+  overflow-y:auto;
+
+}
+</style>
+
+</head>
+<body>
+
+<div id="searchform">
+  <form onsubmit="return false">
+    タグ<input name='tag' value="PUBLIC"><br />
+    上限<select name="limit">
+      <option value="20">20</option>  
+      <option value="100">100</option>
+      <option value="500">500</option>
+      <option value="1000">1000</option>
+    </select><br />
+    取得期間<select name="time_window">
+      <option value="">-</option>  
+      <option value="3600">1時間</option>  
+      <option value="43200">12時間</option>
+      <option value="86400">一日</option>
+      <option value="604800">一週間</option>
+      <option value="2592000">一ヶ月</option>
+    </select><br />
+    最新を上部にする<input type="checkbox" id="check_new_is_first" checked=checked><br />
+  </form>
+  
+</div>
+<div id="controls">
+<input type="button" onclick="$('#searchform').toggle('slow', function(){$(window).resize()})" value="検索フォームを開閉">
+<input type="button" value="表示/更新" onclick="submitSearch(event);" >
+</div>
+
+<div id="messages">
+	<div id="scroller">
+		<div id="lines">
+
+		</div>
+	</div>
+</div>
+
+<div style="display:none" >
+  <div id="template_messagecell" class="messagecell">
+  	<img src="/img/nobody.png" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
+  	<span style="float: right;"><abbr title="" class="timeago messagecell_time"></abbr></span>
+  	<span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
+  	<div style="overflow: auto;" class="messagecell_text"></div><br style="clear: both;">
+  </div>
+</div>
+
+</body>
+</html>
