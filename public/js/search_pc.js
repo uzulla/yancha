@@ -47,8 +47,5 @@ $(function () {
   });
   $(window).resize();
 
-  if (navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
-    myScroll = new iScroll('messages');
-  }
 });
 
