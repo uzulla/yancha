@@ -29,7 +29,7 @@ my $data_storage = Yairc::DataStorage::DBI->connect( connect_info => $config->{ 
 my $posts = $data_storage->search_post( {}, { limit => 10000 } );
 
 for my $post ( @$posts ) {
-    my @tags = Yairc->build_tag_list_from_text( $post->{ text } );
+    my @tags = Yairc->extract_tags_from_text( $post->{ text } );
     $post->{ tags } = [ @tags ];
     $data_storage->replace_post( $post );
 }

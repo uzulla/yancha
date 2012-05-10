@@ -55,6 +55,7 @@ sub setup_mysqld {
     open( my $fh, '<', $schema_file ) or plan skip_all => "Can't open schema file $schema_file.";
 
     for my $lines ( split/;\n/, do { <$fh>; local $/; <$fh> } ) {
+        next if $lines =~ /^\r?\n$/; # empty line
         $dbh->do( $lines );
     }
 

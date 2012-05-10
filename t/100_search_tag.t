@@ -14,7 +14,7 @@ BEGIN {
 
 sub text2post {
     my ( $text ) = @_;
-    my @tags = Yairc->build_tag_list_from_text( $text );
+    my @tags = Yairc->extract_tags_from_text( $text );
 
     if ( @tags == 0 ){
         $text = $text . " #PUBLIC";

@@ -41,7 +41,7 @@ sub send_lastlog_by_tag_lastusec {
     }
 }
 
-sub build_tag_list_from_text {
+sub extract_tags_from_text {
     my ( $self, $str ) = @_;
     # 将来的にはUnicode Propertyのword(\w)にしたいが、ui側の変更も必要
     my @tags = map { uc($_) } $str =~ /(?:^| )#([a-zA-Z0-9]{1,32})(?= |$)/mg;
@@ -50,7 +50,7 @@ sub build_tag_list_from_text {
 
 sub build_user_message_hash {
     my ( $self, $hash ) = @_;
-    $hash->{tags} = [ $self->build_tag_list_from_text($hash->{text}) ];
+    $hash->{tags} = [ $self->extract_tags_from_text($hash->{text}) ];
     return $hash;
 }
 
@@ -109,7 +109,7 @@ sub user_message {
     my ( $self, $socket, $message ) = @_;
 
     #メッセージ内のタグをリストに
-    my @tags = $self->build_tag_list_from_text($message);
+    my @tags = $self->extract_tags_from_text($message);
                 
     #タグがみつからなかったら、#PUBLICタグを付けておく
     if ( @tags == 0 ){
