@@ -193,7 +193,7 @@ function sendTags(){
 //メッセージ送信
 function sendMessage(){
   var message = $('#message').val();
-  message = message.replace(/#[a-zA-Z0-9]+/g, '');
+  message = message.replace(/(?:^| )#[a-zA-Z0-9]+/g, '');
   message = message.replace(/\s/g, '');
   if(message.length>0){
     socket.emit('user message', $('#message').val());
