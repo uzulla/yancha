@@ -172,15 +172,72 @@ socket.on('token_login', function(res){
 socket.on('join_tag', function(tags){
   $('#tags').empty();
   for (var i in tags) {
-    $('#tags').append($('<b>').append( i, "&nbsp;", $('<a href="javascript:return void();">x</a>').on('click', 
-    (function(i){ 
-      return function(){removeTag(i)}
-    })(i)
-    ) ) , $("<br />") );
+    $('#tags').append(
+      $('<b class="tagcell">')
+        .attr('data-tag-name', i)
+        .append( 
+          i, 
+          "&nbsp;", 
+          $('<a href="javascript:return void();" style="text-decoration:none;">X</a>')
+            .on('click', function(e){
+              e.stopPropagation();
+              removeTag($(e.target).parent().attr('data-tag-name'));
+            })
+      ).on('click', function(e){
+        var elm = $(e.target);
+        var tag = elm.attr('data-tag-name');
+        if(elm.hasClass('disable_tag')){
+          elm.removeClass('disable_tag');
+        }else{
+          elm.addClass('disable_tag');
+        }
+        tagRefresh();
+      }),
+      $("<br />")
+    );
   }
   $(window).resize();
 
 });
+
+function tagRefresh(){
+  var enable_tag_list = [];
+  var disable_tag_list = [];
+  $('b.tagcell').each(function(){
+    var t = $(this).attr('data-tag-name');
+    if($(this).hasClass('disable_tag')){
+      disable_tag_list.push(t);
+    }else{
+      enable_tag_list.push(t);
+    }
+  });
+
+  console.log(enable_tag_list);  
+  console.log(disable_tag_list);
+
+  for(var i=0; disable_tag_list.length>i;i++){
+    var re = new RegExp(disable_tag_list[i], "i");
+    $('#lines div.messagecell').each(function(){
+      var elm = $(this);
+      if(elm.attr('data-tags').match(re)){//tagを含んでいるので、隠す
+        elm.hide();
+      }
+    });  
+  }
+  
+  for(var i=0; enable_tag_list.length>i;i++){
+    var re = new RegExp(enable_tag_list[i], "i");
+    $('#lines div.messagecell').each(function(){
+      var elm = $(this);
+      if(elm.attr('data-tags').match(re)){//tagを含んでいるので、隠す
+        elm.show();
+      }
+    });  
+  }
+  
+}
+
+
 
 //tag削除
 function removeTag(tag){
