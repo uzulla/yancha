@@ -71,6 +71,9 @@ socket.on('user message', function(hash){
   }
 
   var cell = $('#template_messagecell').clone().removeAttr('id');
+  cell.attr('data-post-id', hash.id);
+  cell.attr('data-tags', hash.tags);  
+  
   
   if(hash.profile_image_url.length>0){
     $('.messagecell_img', cell).attr('src', hash.profile_image_url);
@@ -86,24 +89,43 @@ socket.on('user message', function(hash){
     .text("("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")")
     .timeago();
   
-  $('#lines').append(
-    cell
-      .on('mouseover', function(){
-        $(this).removeClass('unread');
-        $(this).off('mouseover');
-        updateTitle();
-      })
-      .ift(!hash.is_message_log, function(){ //ログか、現在の投稿か
-        $(this).addClass('unread');
-      })
-  );
+  cell
+    .on('mouseover', function(){
+      $(this).removeClass('unread');
+      $(this).off('mouseover');
+      updateTitle();
+    })
+    .ift(!hash.is_message_log, function(){ //ログか、現在の投稿か//もういらない
+      $(this).addClass('unread');
+    });
   
-  if($('#lines p').length>100){
-    $('#lines p:first').remove();
+  if(hash.is_message_log){ //ログなので、差し込む場所を調整する  
+    var added_flg=false;
+    $('#lines div.messagecell').each(function(){
+      var _pid = parseInt($(this).attr('data-post-id'));
+      if(_pid==hash.id){ // 自分と同じPostIDがある(出力済み)なので終了
+        added_flg=true;
+        return false; //break
+      }else if(_pid<hash.id){ // 自分より古いので、一つ進める
+        return; //continue 
+      }else{ // 自分より新しい物が「初めて」でたので、その前に自分を差し込む
+        $(this).before(cell);
+        added_flg=true;
+        return false; //break
+      }
+    });
+    if(added_flg==false){ //自分より新しい物がなかったので、最後に挿入する
+      $('#lines').append(cell);
+    }
+  }else{
+    $('#lines').append( cell );
   }
   
+  if($('#lines p').length>100){ // 沢山表示すると重くなるので、古い物を消していく
+    $('#lines p:first').remove();
+  }
 
-  if( message.match(/sh_/) ){
+  if( message.match(/sh_/) ){ //sh_highlightDocument() がかなり重いので、呼び出し回数を減らす為
     sh_highlightDocument();
   }
 
