@@ -1,5 +1,7 @@
 use strict;
 use warnings;
+use utf8;
+use Encode;
 
 use Test::More;
 
@@ -16,8 +18,24 @@ for my $line (<DATA>) {
     my $post = { text => $text };
     my $hash = Yairc->build_user_message_hash( $post );
 
-    is( join(',', sort { $a cmp $b } @{$hash->{tags}} ), join(',', sort @tags), $text );
+    is( join(',', sort { $a cmp $b } @{$hash->{tags}} ), join(',', sort @tags), Encode::encode_utf8($text) );
 }
+
+my $lines =<<LINES;
+これは複数行でして #ho
+ge は#hogeではなくて#hoとしてあつかわれたい
+LINES
+
+my $hash = Yairc->build_user_message_hash( { text => $lines } );
+is( join(',', sort { $a cmp $b } @{$hash->{tags}} ), 'HO', 'mulit line' );
+
+$lines =<<LINES;
+これも複数行でして #foo #ho
+ ge は#foo,#hoとしてあつかわれたい
+LINES
+
+$hash = Yairc->build_user_message_hash( { text => $lines } );
+is( join(',', sort { $a cmp $b } @{$hash->{tags}} ), 'FOO,HO', 'mulit line' );
 
 
 done_testing;
@@ -27,8 +45,17 @@ Hello World. #HACHIOJI, HACHIOJI
 Hello. #PUBLIC #HACHIOJI, HACHIOJI, PUBLIC
 #012, 012
 # no tag
-##aa, AA
-#hoge#fuga, HOGE, FUGA
+##aa,
+#aa",
+# #aa, AA
+#hoge#fuga,
+#hoge #fuga, HOGE, FUGA
 #ascii, ASCII
-#非アスキー
+-- TODO : #非アスキー, 非アスキー
+これは#タグではないよ,
+これも　#タグではないよ,
+しかしこれは　#tag だ！, TAG
+-- TODO : #ほげascii #foo #ふが, ほげASCII, FOO, ふが
+#非常に長いタグ #01234567890123456789012345678901, 01234567890123456789012345678901
+#長すぎて不正 #012345678901234567890123456789012,
 

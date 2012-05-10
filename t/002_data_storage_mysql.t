@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use t::Utils;
 use Data::Dumper;
 
 BEGIN {
@@ -12,19 +13,7 @@ BEGIN {
     use_ok('Yairc::DataStorage::DBI');
 }
 
-my $mysqld = Test::mysqld->new(
-    my_cnf => { 'skip-networking' => '' }
-) or plan skip_all => $Test::mysqld::errstr;
-
-my $dbh = DBI->connect( $mysqld->dsn() );
-
-open( my $fh, '<', 'db/init.sql' ) or plan skip_al => "Can't open init.sql";
-
-for my $lines ( split/;\n/, do { <$fh>; local $/; <$fh> } ) {
-    $dbh->do( $lines );
-}
-
-
+my $mysqld  = t::Utils->setup_mysqld( schema => './db/init.sql' );
 my $storage = Yairc::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn() ] );
 
 isa_ok( $storage, 'Yairc::DataStorage::DBI::mysql' );
@@ -86,10 +75,18 @@ is( $storage->count_user, 2 );
 
 diag('post');
 
-ok( my $post = $storage->add_post( { text => "Hello World. #PUBLIC" }, $user ) );
+ok( my $post = $storage->add_post( { text => "Hello World. #PUBLIC", tags => ['PUBLIC'] }, $user ) );
 is( $storage->count_post, 1 );
 is( $post->{ id }, 1 );
 is( $post->{ text }, "Hello World. #PUBLIC" );
+is( $post->{ user_key }, '-:0001' );
+is( $post->{ nickname }, 'user1' );
+
+$post->{ text } = 'HOGE #PUBLIC';
+ok( $storage->replace_post( $post ) );
+is( $storage->count_post, 1 );
+is( $post->{ id }, 1 );
+is( $post->{ text }, "HOGE #PUBLIC" );
 is( $post->{ user_key }, '-:0001' );
 is( $post->{ nickname }, 'user1' );
 
@@ -99,8 +96,8 @@ is( $storage->count_post, 0 );
 my $lastusec = $storage->_get_now_micro_sec();
 
 for my $i (  1 .. 100 ) {
-    my $tag = $i % 2 ? '#ABC' : '#DEF';
-    $storage->add_post( { text => "$i $tag" }, $user2 );
+    my $tag = $i % 2 ? 'ABC' : 'DEF';
+    $storage->add_post( { text => "$i \#$tag", tags => [ $tag ] }, $user2 );
 }
 
 is( $storage->count_post, 100 );

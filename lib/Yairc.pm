@@ -2,6 +2,7 @@ package Yairc;
 
 use strict;
 use warnings;
+use utf8;
 use JSON;
 use DBI;
 use Encode;
@@ -41,15 +42,17 @@ sub send_lastlog_by_tag_lastusec {
     }
 }
 
-sub build_tag_list_from_text {
+sub extract_tags_from_text {
     my ( $self, $str ) = @_;
-    #もっと良い感じのタグ判定正規表現にしないといけない
-    return map { uc($_) } $str =~ /#([a-zA-Z0-9]+)/g;
+    # 将来的にはUnicode Propertyのword(\w)にしたいが、ui側の変更も必要
+    # タグ前のスペース、全角にも対応
+    my @tags = map { uc($_) } $str =~ /(?:^| |　)#([a-zA-Z0-9]{1,32})(?= |$)/mg;
+    return @tags > 10 ? @tags[0..9] : @tags;
 }
 
 sub build_user_message_hash {
     my ( $self, $hash ) = @_;
-    $hash->{tags} = [ $self->build_tag_list_from_text($hash->{text}) ];
+    $hash->{tags} = [ $self->extract_tags_from_text($hash->{text}) ];
     return $hash;
 }
 
@@ -108,12 +111,12 @@ sub user_message {
     my ( $self, $socket, $message ) = @_;
 
     #メッセージ内のタグをリストに
-    my @tag_list = $self->build_tag_list_from_text($message);
+    my @tags = $self->extract_tags_from_text($message);
                 
     #タグがみつからなかったら、#PUBLICタグを付けておく
-    if($#tag_list == -1){
+    if ( @tags == 0 ){
         $message = $message . " #PUBLIC";
-        push(@tag_list, "PUBLIC" );
+        push( @tags, "PUBLIC" );
     }
     
     #pocketio のソケット毎ストレージから自分のニックネームを取り出す
@@ -127,10 +130,10 @@ sub user_message {
         }
 
         #DBに保存
-        my $post = $self->data_storage->add_post( { text => $message }, $user );
+        my $post = $self->data_storage->add_post( { text => $message, tags => [ @tags ] }, $user );
 
         #タグ毎に送信処理
-        foreach my $i (@tag_list){
+        foreach my $i ( @tags) {
             if($tags->{$i}){
                 DEBUG && w "Send to ${i} from $user->{nickname} => \"${message}\"";
         
