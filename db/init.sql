@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS `post`;
 CREATE TABLE IF NOT EXISTS `post` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `text` text NOT NULL,
-  `tags` varchar(330) NOT NULL DEFAULT '', -- ex. | AA BB CC|
+  `tags` varchar(331) NOT NULL DEFAULT '', -- ex. | AA BB CC |
   `nickname` varchar(32) NOT NULL,
   `user_key` varchar(64) NOT NULL,
   `profile_image_url` varchar(128) NOT NULL,

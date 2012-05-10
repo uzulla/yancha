@@ -65,7 +65,7 @@ is( scalar(@$posts), 2 );
 $posts = $storage->search_post( { tag => [qw/tokyototyou/] } );
 is( scalar(@$posts), 1 );
 $posts = $storage->search_post( { tag => [qw/tokyoto/] } );
-is( scalar(@$posts), 2, 'zenpoitti' );
+is( scalar(@$posts), 1, 'exact matching' );
 $posts = $storage->search_post( { tag => [qw/tokyoeki/] } );
 is( scalar(@$posts), 1 );
 

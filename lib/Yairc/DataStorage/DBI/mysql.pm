@@ -98,9 +98,9 @@ sub count_user {
 
 sub add_post {
     my ( $self, $post, $user ) = @_;
-    # | TAG1 TAG2 TAG3|
+    # | TAG1 TAG2 TAG3 |
     my @tags = @{ $post->{ tags } };
-    my $tags = $post->{ tags } ? ' '. join( ' ', @tags ) : '';
+    my $tags = $post->{ tags } ? ' '. join( ' ', @tags ) . ' ' : '';
     $post = $user ? {
         text => $post->{ text },
         nickname => $user->{ nickname },
@@ -126,7 +126,7 @@ sub remove_post {
 sub replace_post {
     my ( $self, $post ) = @_;
     my $id   = $post->{ id };
-    my $tags = $post->{ tags } ? ' '. join( ' ', @{ $post->{ tags } } ) : '';
+    my $tags = $post->{ tags } ? ' '. join( ' ', @{ $post->{ tags } } ) . ' ' : '';
     my $ret  = $self->dbh->do(qq{
         UPDATE `post` SET `user_key` = ?, `nickname` = ?, `profile_image_url` = ?,
                           `text` = ?, `created_at_ms` = ?, `tags` = ? WHERE `id` = ?
@@ -140,7 +140,7 @@ sub get_last_posts_by_tag {
     $tag = uc($tag);
 
     my $sth = $self->{ get_last_posts_by_tag };
-    $sth->execute( '% ' . $tag . '%', $lastusec || 0, $num || 100 );
+    $sth->execute( '% ' . $tag . ' %', $lastusec || 0, $num || 100 );
 
     my @posts;
     while ( my $post = $sth->fetchrow_hashref ) {
@@ -174,7 +174,7 @@ sub search_post {
         my $tags = $where->{ tag };
         $tags  = ref $tags ? $tags : [ $tags ];
         $sql  .= ' WHERE ( ' . join( ' OR ', (q/UPPER(`tags`) LIKE UPPER(?)/) x scalar(@$tags) ) . ' )';
-        push @binds, map { '% ' . $_ . '%' } @$tags;
+        push @binds, map { '% ' . $_ . ' %' } @$tags;
     }
 
     if ( exists $where->{ created_at_ms } ) {

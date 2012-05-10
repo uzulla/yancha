@@ -2,6 +2,7 @@ package Yairc;
 
 use strict;
 use warnings;
+use utf8;
 use JSON;
 use DBI;
 use Encode;
@@ -44,7 +45,8 @@ sub send_lastlog_by_tag_lastusec {
 sub extract_tags_from_text {
     my ( $self, $str ) = @_;
     # 将来的にはUnicode Propertyのword(\w)にしたいが、ui側の変更も必要
-    my @tags = map { uc($_) } $str =~ /(?:^| )#([a-zA-Z0-9]{1,32})(?= |$)/mg;
+    # タグ前のスペース、全角にも対応
+    my @tags = map { uc($_) } $str =~ /(?:^| |　)#([a-zA-Z0-9]{1,32})(?= |$)/mg;
     return @tags > 10 ? @tags[0..9] : @tags;
 }
 
