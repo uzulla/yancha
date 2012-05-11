@@ -35,10 +35,12 @@ my $client = sub {
     my ( $port ) = shift;
 
     # TODO: 処理時間依存なのをなんとかする
-    my $cv = AnyEvent->condvar;
-    my $w  = AnyEvent->timer( after => 15, cb => sub {
+    my $cv  = AnyEvent->condvar;
+    my $cv2 = AnyEvent->condvar;
+    my $w   = AnyEvent->timer( after => 15, cb => sub {
         fail("Time out.");
         $cv->send;
+        $cv2->send;
     } );
 
     my $tag          = '';
@@ -51,6 +53,8 @@ my $client = sub {
             my $post = $_[1];
 
             ok(1, $post->{ tags }->[0]);
+
+            $client->update_tags_ltime_from_post( $post );
 
             if ( $post->{ tags }->[0] eq 'PUBLIC' ) {
                 $count_public++;
@@ -71,11 +75,35 @@ my $client = sub {
 
     my $timer = AnyEvent->timer( after => 5, cb => sub {
         $tag = 'foo';
-        $client->socket->emit('join tag', { 'foo' => 'foo' });
+        $client->socket->emit('join tag', { 'foo' => 0 });
     } );
 
-
     $cv->wait;
+
+    for my $i ( 101 .. 120 ) {
+        my $tag = $i % 2 ? 'PUBLIC' : 'FOO';
+       $data_storage->add_post( { text => "post $i #$tag", tags => [ $tag ] }, $user );
+    }
+
+    $count_public = 0;
+
+    $client->socket->on( 'user message', sub {
+        my $post = $_[1];
+        if ( $post->{ tags }->[0] eq 'PUBLIC' ) {
+            $count_public++;
+        }
+    } );
+
+    $client->socket->emit('join tag', { 'public' => $client->{ tags }->{ 'PUBLIC' } });
+    #$client->socket->emit('join tag', { 'public' => 0 }); # causes fail.
+
+    $timer = AnyEvent->timer( after => 5, cb => sub {
+        is( $count_public, 10, 're-join tag' );
+        $cv2->send;
+    } );
+
+    $cv2->wait;
+
 };
 
 test_pocketio $server, $client;

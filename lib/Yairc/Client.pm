@@ -12,6 +12,7 @@ sub new {
     my %opt   = @_;
 
     $opt{ ua } ||= LWP::UserAgent->new( exists $opt{ ua_opts } ? %{$opt{ ua_opts }} : () );
+    $opt{ tags } ||= { 'PUBLIC' => '0' };
 
     return bless \%opt, $class;
 }
@@ -82,9 +83,20 @@ sub set_tags {
     my $self   = shift;
     my $subref = pop;
     my ( @tags ) = @_;
-    my %tag = map { uc $_ => uc $_ } @tags;
+    my %tag = map { uc $_ => 0 } @tags;
+
+    $self->{ tags } = { %tag };
+
     $self->socket->on('join tag', $subref);
     $self->socket->emit( 'join tag', \%tag );
+}
+
+sub update_tags_ltime_from_post {
+    my ( $self, $post ) = @_;
+    for my $tag ( @{ $post->{ tags } || [] } ) {
+        $self->{ tags }->{ $tag } = $post->{ created_at_ms };
+    }
+    return;
 }
 
 1;
