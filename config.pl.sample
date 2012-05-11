@@ -29,6 +29,7 @@ use strict;
         consumer_secret => 'yyyy',
     },
 
+    'message_log_limit' => 100, # タグ毎のログ数
 };
 
 

@@ -26,15 +26,17 @@ sub new {
 
 sub data_storage { $_[0]->{ data_storage } } 
 
+sub config { $_[0]->{ config } ||= {} }
+
 sub w {
     my ($text) = @_;
     warn(encode('UTF-8', $text));
 }
 
 sub send_lastlog_by_tag_lastusec {
-    my ($self, $pio, $tag, $lastusec) = @_;
+    my ($self, $pio, $tag, $lastusec, $limit) = @_;
 
-    my $posts = $self->data_storage->get_last_posts_by_tag( $tag, $lastusec );
+    my $posts = $self->data_storage->get_last_posts_by_tag( $tag, $lastusec, $limit );
 
     foreach my $post ( reverse( @$posts ) ){
         $post->{'is_message_log'} = JSON::true;
@@ -203,7 +205,8 @@ sub join_tag { #あまりにも適当な実装なので、後でリファクタ�
     if( !$tags_reverse->{$socket_id} ) {
       $tags_reverse->{$socket_id} = ();
     }
-    
+
+    my $log_limit   = $self->config->{ message_log_limit };
     my $joined_tags = $tags_reverse->{$socket_id};
     #テンポラリ
     my @new_joined_tags = ();
@@ -216,7 +219,7 @@ sub join_tag { #あまりにも適当な実装なので、後でリファクタ�
         $tags->{$tag}->{connections}->{$socket_id} = $socket->{conn};
       
       my $lastusec = $tag_list->{$tag};
-      $self->send_lastlog_by_tag_lastusec($socket, $tag, $lastusec);
+      $self->send_lastlog_by_tag_lastusec($socket, $tag, $lastusec, $log_limit);
       
       push(@new_joined_tags, $tag);
     }
