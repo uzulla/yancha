@@ -9,7 +9,7 @@ function user_message_filter(message){
   //auto link
   message = message.replace(/(http(s)?:\/\/[\x21-\x7e]+)/gi, "<a href='$1' target='_blank'>$1</a>");
 
-  message = message.replace(/&#62;\|javascript\|\n([\s\S]*)\n\|\|&#60;/g,
+  message = message.replace(/&#62;\|javascript\|\n([\s\S]*?)\n\|\|&#60;/g,
     function(whole,s1) {
 　　　 return( '<pre class="sh_javascript">' + s1 + '</pre>' );
 　　　}
@@ -17,25 +17,25 @@ function user_message_filter(message){
   
   var foundShHighlight = false;
 
-  message = message.replace(/&#62;\|perl\|\n([\s\S]*)\n\|\|&#60;/g,
+  message = message.replace(/&#62;\|perl\|\n([\s\S]*?)\n\|\|&#60;/g,
     function(whole,s1) {
 　　　 return( '<pre class="sh_perl">' + s1 + '</pre>' );
 　　　}
   );
 
-  message = message.replace(/&#62;\|AA\|\n([\s\S]*)\n\|\|&#60;/gi,
+  message = message.replace(/&#62;\|AA\|\n([\s\S]*?)\n\|\|&#60;/gi,
     function(whole,s1) {
 　　　 return( '<pre style=\'font-family: "MS Pゴシック","MS ゴシック","ＭＳ Ｐゴシック","ＭＳ ゴシック",sans-serif;\'>' + s1 + '</pre>' );
 　　　}
   );
 
-  message = message.replace(/&#62;\|\|\n([\s\S]*)\n\|\|&#60;/g,
+  message = message.replace(/&#62;\|\|\n([\s\S]*?)\n\|\|&#60;/g,
     function(whole,s1) {
 　　　 return( '<pre>' + s1 + '</pre>' );
 　　　}
   );
   
-  message = message.replace(/&#62;&#62;\n([\s\S]*)\n&#60;&#60;/g,
+  message = message.replace(/&#62;&#62;\n([\s\S]*?)\n&#60;&#60;/g,
     function(whole,s1) {
 　　　 return( '<pre>' + s1 + '</pre>' );
 　　　}
