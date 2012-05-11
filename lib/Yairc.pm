@@ -26,15 +26,17 @@ sub new {
 
 sub data_storage { $_[0]->{ data_storage } } 
 
+sub config { $_[0]->{ config } ||= {} }
+
 sub w {
     my ($text) = @_;
     warn(encode('UTF-8', $text));
 }
 
 sub send_lastlog_by_tag_lastusec {
-    my ($self, $pio, $tag, $lastusec) = @_;
+    my ($self, $pio, $tag, $lastusec, $limit) = @_;
 
-    my $posts = $self->data_storage->get_last_posts_by_tag( $tag, $lastusec );
+    my $posts = $self->data_storage->get_last_posts_by_tag( $tag, $lastusec, $limit );
 
     foreach my $post ( reverse( @$posts ) ){
         $post->{'is_message_log'} = JSON::true;
@@ -82,13 +84,13 @@ sub run {
         );
 
         $socket->on(
-            'token_login' => sub {
+            'token login' => sub {
                 $self->token_login( @_ );
             }
         );
 
         $socket->on( #参加タグの登録（タグ毎のコネクションプールの管理）
-            'join_tag' => sub {
+            'join tag' => sub {
                 $self->join_tag( @_ );
             }
         );
@@ -160,7 +162,7 @@ sub token_login {
 
     #TODO tokenが無い場合のエラー
     unless($user){
-        $socket->emit('token_login', { "status"=>"user notfound" });
+        $socket->emit('token login', { "status"=>"user notfound" });
     }
 
     my $nickname = $user->{nickname};
@@ -178,7 +180,7 @@ sub token_login {
     #サーバー告知メッセージ
     $socket->broadcast->emit('announcement', $nickname . ' connected');
     
-    $socket->emit('token_login', {
+    $socket->emit('token login', {
       "status"    => "ok",
       "user_data" => $user,
     });
@@ -186,75 +188,49 @@ sub token_login {
     $cb->(JSON::true);
 }
 
-sub join_tag { #あまりにも適当な実装なので、後でリファクタる必要あり
-    my ($self, $socket, $tag_list, $cb) = @_;
-    
-    my $h = {};
-    foreach my $k ( keys(%$tag_list) ){
-        $h->{uc $k} = $tag_list->{$k};
-    }
-    
-    $tag_list = $h;
+sub join_tag {
+    my ($self, $socket, $tag_and_time, $cb) = @_;
 
-    #現在の（自分の）SocketIDを取得
+    unless ( $tag_and_time and ref( $tag_and_time ) eq 'HASH' ) {
+        DEBUG && w( "Invalid object was passed to join_tag." );
+        $tag_and_time = {};
+    }
+    elsif ( scalar( keys %$tag_and_time ) > 20 ) {
+        # タグの数に制限かけないとDOSアタックできる
+        DEBUG && w( "So many tags were passed to join_tag." );
+        $tag_and_time = {};
+    }
+    else {
+        %{ $tag_and_time } = map { uc($_) => $tag_and_time->{ $_ } } keys %{ $tag_and_time  };
+    }
+
     my $socket_id = $socket->id();
-    
-    #SocketID->参加Tagテーブルの初期化
-    if( !$tags_reverse->{$socket_id} ) {
-      $tags_reverse->{$socket_id} = ();
+
+    # 前と今の接続を比較して、なくなったタグをリストアップ
+    # 無くなったタグに紐づくコネクションを消していく
+    my @new_joined_tags = keys %{ $tag_and_time };
+    my %joined_tag      = map { $_ => 1 } @{ $tags_reverse->{$socket_id} ||= [] };
+
+    delete $joined_tag{ $_ } for @new_joined_tags;
+
+    for my $tag ( keys %joined_tag ) {
+        delete $tags->{ $tag }->{connections}->{ $socket_id };
     }
-    
-    my $joined_tags = $tags_reverse->{$socket_id};
-    #テンポラリ
-    my @new_joined_tags = ();
-    #タグ毎にPocketIO::Poolを作成して、自分の接続を追加
-    foreach my $tag ( keys(%$tag_list) ) {
-        #w $tag;
-        if( !$tags->{$tag} ) {
-            $tags->{$tag} = PocketIO::Pool->new();
-        }
-        $tags->{$tag}->{connections}->{$socket_id} = $socket->{conn};
-      
-      my $lastusec = $tag_list->{$tag};
-      $self->send_lastlog_by_tag_lastusec($socket, $tag, $lastusec);
-      
-      push(@new_joined_tags, $tag);
+
+    # タグ毎にPocketIO::Poolを作成して自分の接続を追加、過去ログを送る
+    my $log_limit = $self->config->{ message_log_limit };
+
+    for my $tag ( @new_joined_tags ) {
+        $tags->{ $tag } ||= PocketIO::Pool->new(); # $tags ... class variavble
+        # there is no proper api in PocketIO::Pool class, so manually set.
+        $tags->{ $tag }->{connections}->{ $socket_id } = $socket->{conn};
+        $self->send_lastlog_by_tag_lastusec($socket, $tag, $tag_and_time->{$tag}, $log_limit);
     }
-    
-    #send_lastlog_by_tags_lastusec($self, \@new_joined_tags, $lastusec);
-    
-    #前と、今の接続を比較して、なくなったタグをリストアップ
-    my $diff = {};
-    
-    foreach my $k(@$joined_tags){
-      $diff->{$k} += 1;
-    }
-    foreach my $k(@new_joined_tags){
-      $diff->{$k} += 2;
-    }
-    #w Dumper($diff);
-    
-    #無くなったタグを消していく
-    foreach my $d(keys %$diff){
-      if($diff->{$d}==1){
-        #remove
-        #w "delete tag ".$d;
-        delete $tags->{$d}->{connections}->{$socket_id}; 
-      }elsif($diff->{$d}==2){
-        #new
-      }elsif($diff->{$d}==3){
-        #exists
-      }
-    }
-    
-    #SID＞tagテーブル更新
-    @{$tags_reverse->{$socket_id}} = @new_joined_tags;
-    
+
+    # SID＞tagテーブル更新
+    @{ $tags_reverse->{$socket_id} } = @new_joined_tags;
     #更新した参加タグをレスポンス
-    $socket->emit('join_tag', $tag_list);
-    
-    #w "dump tags--";
-    #w Dumper($tags);
+    $socket->emit('join tag', $tag_and_time);
 }
 
 sub disconnect {

@@ -76,19 +76,22 @@ sub create_clients_and_set_tags {
     for my $user ( @users ) {
         my $client   = Yairc::Client->new();
         my $nickname = $user->{ nickname } || 'client';
+        my $on_connect = $user->{ on_connect };
 
         $cv->begin;
 
         $client->login( "http://localhost:$port/", => 'login', { nick => $nickname } );
         $client->connect or Carp::croak "Can't create client.";
 
+        $on_connect->( $client ) if $on_connect;
+
         $client->run(sub {
             my ( $self, $socket ) = @_;
             my @tags = exists $user->{ tags } ? @{ $user->{ tags } } : 'PUBLIC';
-            $client->socket->on('token_login', sub {
+            $client->socket->on('token login', sub {
                 $client->set_tags( @tags, sub { $cv->end; } );
              });
-            $socket->emit('token_login', $client->token);
+            $socket->emit('token login', $client->token);
         });
 
         push @clients, $client;
