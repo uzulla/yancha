@@ -14,7 +14,7 @@ socket.on('reconnect', function () {
   if(debug){message('System', 'Reconnected to the server');}
   if(data.token){
     if(debug){console.log('try create session');}
-    socket.emit('token_login', data.token);
+    socket.emit('token login', data.token);
   }
 });
 socket.on('reconnecting', function () {
@@ -49,7 +49,7 @@ socket.on('nicknames', function (nicknames) {
 socket.on('no session', function (message) {
   if(data.token){
     if(debug){console.log('try register');}
-    socket.emit('token_login', data.token, function (status) {
+    socket.emit('token login', data.token, function (status) {
       if(status && message){ //メッセージを再送する
         socket.emit('user message', message);
       }
@@ -146,7 +146,7 @@ function updateTitle(){
 }
 
 //トークンを使ってログインした後、レスポンスされる自分情報を保存
-socket.on('token_login', function(res){
+socket.on('token login', function(res){
   if(res.status == 'ok'){
     var ud = res.user_data;
   
@@ -160,7 +160,7 @@ socket.on('token_login', function(res){
         data.tags[list[i]] = 0;
       }
     }
-    socket.emit('join_tag', data.tags);
+    socket.emit('join tag', data.tags);
   }else{
     alert('自動ログインセッションが不正です、ログインをやり直してください');
     logout();
@@ -169,7 +169,7 @@ socket.on('token_login', function(res){
 });
 
 //タグ登録処理完了イベント
-socket.on('join_tag', function(tags){
+socket.on('join tag', function(tags){
   $('#tags').empty();
   for (var i in tags) {
     $('#tags').append(
@@ -265,7 +265,7 @@ function sendTags(){
   //オートログイン用に保存しておく
   $.cookie('chat_tag_list', $.keys(data.tags).join(','), { expires: 1 });
   //送信
-  socket.emit('join_tag', data.tags);
+  socket.emit('join tag', data.tags);
 }
 
 
@@ -298,7 +298,7 @@ function autologin(){
     data.token = $.cookie('yairc_auto_login_token');
     if(data.token){
       if(debug){console.log('try autologin');}
-      socket.emit('token_login', data.token, function (set) {
+      socket.emit('token login', data.token, function (set) {
         clear();
         $('#nickname').hide();
       });

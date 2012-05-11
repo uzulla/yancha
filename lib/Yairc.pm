@@ -84,13 +84,13 @@ sub run {
         );
 
         $socket->on(
-            'token_login' => sub {
+            'token login' => sub {
                 $self->token_login( @_ );
             }
         );
 
         $socket->on( #参加タグの登録（タグ毎のコネクションプールの管理）
-            'join_tag' => sub {
+            'join tag' => sub {
                 $self->join_tag( @_ );
             }
         );
@@ -162,7 +162,7 @@ sub token_login {
 
     #TODO tokenが無い場合のエラー
     unless($user){
-        $socket->emit('token_login', { "status"=>"user notfound" });
+        $socket->emit('token login', { "status"=>"user notfound" });
     }
 
     my $nickname = $user->{nickname};
@@ -180,7 +180,7 @@ sub token_login {
     #サーバー告知メッセージ
     $socket->broadcast->emit('announcement', $nickname . ' connected');
     
-    $socket->emit('token_login', {
+    $socket->emit('token login', {
       "status"    => "ok",
       "user_data" => $user,
     });
@@ -254,7 +254,7 @@ sub join_tag { #あまりにも適当な実装なので、後でリファクタ�
     @{$tags_reverse->{$socket_id}} = @new_joined_tags;
     
     #更新した参加タグをレスポンス
-    $socket->emit('join_tag', $tag_list);
+    $socket->emit('join tag', $tag_list);
     
     #w "dump tags--";
     #w Dumper($tags);

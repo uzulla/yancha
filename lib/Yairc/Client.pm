@@ -51,10 +51,10 @@ sub connect {
     }
 
     $socket->on('user message', sub {});
-    $socket->on('join_tag', sub {});
+    $socket->on('join tag', sub {});
     $socket->on('nicknames', sub {});
     $socket->on('announcement', sub {});
-    $socket->on('token_login', sub {});
+    $socket->on('token login', sub {});
     $socket->on('no session', sub {});
 
     $self->socket( $socket );
@@ -83,8 +83,8 @@ sub set_tags {
     my $subref = pop;
     my ( @tags ) = @_;
     my %tag = map { uc $_ => uc $_ } @tags;
-    $self->socket->on('join_tag', $subref);
-    $self->socket->emit( 'join_tag', \%tag );
+    $self->socket->on('join tag', $subref);
+    $self->socket->emit( 'join tag', \%tag );
 }
 
 1;
@@ -121,7 +121,7 @@ Yairc::Client - Yairc用簡易クライアント
             $cv->send;
         });
 
-        $socket->emit('token_login', $self->token);
+        $socket->emit('token login', $self->token);
     });
 
     $cv->wait;

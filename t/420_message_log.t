@@ -71,7 +71,7 @@ my $client = sub {
 
     my $timer = AnyEvent->timer( after => 5, cb => sub {
         $tag = 'foo';
-        $client->socket->emit('join_tag', { 'foo' => 'foo' });
+        $client->socket->emit('join tag', { 'foo' => 'foo' });
     } );
 
 
