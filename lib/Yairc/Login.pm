@@ -20,7 +20,7 @@ sub set_user_into_storage {
 
     $user->{ token } = $token;
 
-    $self->sys->call_hook( 'authenticated', $user );
+    $self->sys->call_hook( 'authenticated', undef, $user );
 
     $self->data_storage->add_or_replace_user( $user );
 
