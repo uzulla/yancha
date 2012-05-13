@@ -30,6 +30,11 @@ use strict;
     },
 
     'message_log_limit' => 100, # タグ毎のログ数
+
+    'plugins' => [
+        [ 'AutoDefaultTag' => [ 'public' ], ],
+    ],
+
 };
 
 
