@@ -58,9 +58,9 @@ sub token_login {
     my $socket_id = $socket->id();
     
     #nickname listを更新し、周知
-    my $nicknames = $self->sys->users;
-    $nicknames->{ $socket_id } = $user->{nickname};
-    $socket->sockets->emit('nicknames', _get_uniq_and_anon_nicknames_list($nicknames));
+    my $users = $self->sys->users;
+    $users->{ $socket_id } = $user;
+    $socket->sockets->emit('nicknames', _get_uniq_and_anon_nicknames_list($users));
 
     #サーバー告知メッセージ
     $socket->broadcast->emit('announcement', $nickname . ' connected');
@@ -165,8 +165,10 @@ sub disconnect {
     $socket->get(
         'user_data' => sub {
             my ($socket, $err, $user) = @_;
-            my $nicknames = $self->sys->users;
-            my $tags      = $self->sys->tags;
+            my $users = $self->sys->users;
+            my $tags  = $self->sys->tags;
+
+            $self->sys->call_hook( 'disconnected', $socket, $user );
 
             if( !defined($user) ){
                 DEBUG && w "bye undefined nickname user";
@@ -175,7 +177,7 @@ sub disconnect {
             my $nickname = $user->{ nickname };
 
             my $socket_id = $socket->id();
-            delete $nicknames->{$socket_id};
+            delete $users->{$socket_id};
 
             #タグ毎にできたPool等からも削除
             my $joined_tags = delete $self->sys->tags_reverse->{$socket_id};
@@ -184,7 +186,7 @@ sub disconnect {
             }
 
             $socket->broadcast->emit('announcement', $nickname . ' disconnected');
-            $socket->broadcast->emit('nicknames', _get_uniq_and_anon_nicknames_list($nicknames));
+            $socket->broadcast->emit('nicknames', _get_uniq_and_anon_nicknames_list($users));
 
             DEBUG && w "bye ".$nickname;
         }
@@ -207,12 +209,8 @@ sub _send_lastlog_by_tag_lastusec {
 }
 
 sub _get_uniq_and_anon_nicknames_list {
-    my ( $nicknames ) = @_;
-    my $uniq_nicknames = {};
-    foreach my $nick (values(%$nicknames)) {
-      $uniq_nicknames->{$nick} = $nick;
-    }
-    return $uniq_nicknames;
+    my ( $users ) = @_;
+    return { map { $_->{ nickname } => $_->{ nickname } } values %$users };
 }
 
 1;
