@@ -202,42 +202,23 @@ socket.on('join tag', function(tags){
 
 function tagRefresh(){
   var enable_tag_list = [];
-  var disable_tag_list = [];
   $('b.tagcell').each(function(){
     var t = $(this).attr('data-tag-name');
-    if($(this).hasClass('disable_tag')){
-      disable_tag_list.push(t);
-    }else{
-      enable_tag_list.push(t);
-    }
+    ($(this).hasClass('disable_tag')) ? 0 : enable_tag_list.push(t) ;
   });
 
-  console.log(enable_tag_list);  
-  console.log(disable_tag_list);
-
-  for(var i=0; disable_tag_list.length>i;i++){
-    var re = new RegExp(disable_tag_list[i], "i");
-    $('#lines div.messagecell').each(function(){
-      var elm = $(this);
-      if(elm.attr('data-tags').match(re)){//tagを含んでいるので、隠す
-        elm.hide();
-      }
-    });  
-  }
-  
+  //まずすべてPostを隠して、その後で必要なものだけ復活させる。
+  $('#lines div.messagecell').hide();
   for(var i=0; enable_tag_list.length>i;i++){
     var re = new RegExp(enable_tag_list[i], "i");
     $('#lines div.messagecell').each(function(){
       var elm = $(this);
-      if(elm.attr('data-tags').match(re)){//tagを含んでいるので、隠す
+      if(elm.attr('data-tags').match(re)){ //tagを含んでいるので、表示させる
         elm.show();
       }
     });  
   }
-  
 }
-
-
 
 //tag削除
 function removeTag(tag){
