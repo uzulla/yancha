@@ -87,12 +87,16 @@ sub load_plugins {
 }
 
 sub register_hook {
-    my ( $self, $class, $hook_name, $subref ) = @_;
-    push @{ $self->{ hooks }->{ $hook_name } }, $subref;
+    my ( $self, $hook_name, $subref, $args ) = @_;
+    push @{ $self->{ hooks }->{ $hook_name } }, [$subref, $args];
 }
 
 sub call_hook {
-    #
+    my ( $self, $hook_name, @args ) = @_;
+    for ( @{ $self->{ hooks }->{ $hook_name } || [] } ) {
+        my ($subref, $args) = @$_;
+        $subref->( $self, @args, @$args );
+    }
 }
 
 sub register_calling_tag {
