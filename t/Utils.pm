@@ -24,20 +24,21 @@ sub server_with_dbi {
     my $config       = $opt{ config } || {};
     my $data_storage = Yairc::DataStorage::DBI->connect(
                             connect_info => $config->{ database }->{ connect_info } );
+    my $sys = Yairc->new( config => $config, data_storage => $data_storage );
 
     builder {
         enable 'Session';
 
         mount '/socket.io' => PocketIO->new(
                 socketio => $config->{ socketio },
-                instance => Yairc->new( config => $config, data_storage => $data_storage ) 
+                instance => $sys,
         );
 
-        mount '/login/twitter' => Yairc::Login::Twitter->new(data_storage => $data_storage)
-                                ->build_psgi_endpoint( $config->{ twitter_appli } );
+        mount '/login/twitter' => $sys->login('Twitter')
+                                      ->build_psgi_endpoint( $config->{ twitter_appli } );
 
-        mount '/login' => Yairc::Login::Simple->new(data_storage => $data_storage)
-                                ->build_psgi_endpoint( { name_field => 'nick' } );
+        mount '/login' => $sys->login('Simple')
+                              ->build_psgi_endpoint( { name_field => 'nick' } );
     };
 }
 

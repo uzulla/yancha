@@ -121,15 +121,12 @@ sub join_tag { #参加タグの登録（タグ毎のコネクションプール�
 sub user_message {
     my ( $self, $socket, $message ) = @_;
 
-    #メッセージ内のタグをリストに
-    my @tags = $self->sys->extract_tags_from_text($message);
-                
-    #タグがみつからなかったら、#PUBLICタグを付けておく
-    if ( @tags == 0 ){
-        $message = $message . " #PUBLIC";
-        push( @tags, "PUBLIC" );
-    }
-    
+    $self->sys->call_hook( 'user_message', \$message );
+
+    my @tags = $self->sys->extract_tags_from_text( $message );
+
+    $self->sys->tag_trigger( \@tags, $socket, \$message );
+
     #pocketio のソケット毎ストレージから自分のニックネームを取り出す
     $socket->get('user_data' => sub {
         my ($socket, $err, $user) = @_;

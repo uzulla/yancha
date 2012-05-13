@@ -12,11 +12,15 @@ sub new {
 
 sub data_storage { $_[0]->{ data_storage } } 
 
+sub sys { $_[0]->{ sys } }
+
 sub set_user_into_storage {
     my ( $self, $user ) = @_;
     my $token = $self->generate_token(64);
 
     $user->{ token } = $token;
+
+    $self->sys->call_hook( 'authenticated', $user );
 
     $self->data_storage->add_or_replace_user( $user );
 

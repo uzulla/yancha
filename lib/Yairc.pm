@@ -26,7 +26,7 @@ my $tags_reverse = {}; #クライアントコネクション->参加Tag リス�
 sub new {
     my ( $class, @args ) = @_;
     my $self = bless { @args }, $class;
-    $self->load_plugins( $self->config->{ plugnis } );
+    $self->load_plugins( $self->config->{ plugins } );
     return $self;
 }
 
@@ -69,13 +69,59 @@ sub login {
 }
 
 sub load_plugins {
-    # not yet implemented
+    my ( $self, $plugins ) = @_;
+    return unless $plugins and ref($plugins) eq 'ARRAY';
+
+    for my $plugin_and_args ( @{ $plugins } ) {
+        my ( $plugin, $args ) = @{ $plugin_and_args };
+        if ( $plugin !~ s/^\+// ) {
+            $plugin = __PACKAGE__ . '::Plugin::' . $plugin;
+        }
+        eval { ( my $path = $plugin . '.pm' ) =~ s{::}{/}g; require $path };
+        if ( $@ ) {
+            Carp::carp $@;
+            next;
+        }
+        $plugin->setup( $self, @$args );
+    }
 }
 
 sub register_hook {
     my ( $self, $class, $hook_name, $subref ) = @_;
     push @{ $self->{ hooks }->{ $hook_name } }, $subref;
 }
+
+sub call_hook {
+    #
+}
+
+sub register_calling_tag {
+    my ( $self, $tag, $subref, $args ) = @_;
+    if ( defined $tag ) {
+        push @{ $self->{ tag_trigger }->{ $tag } }, [$subref, $args];
+    }
+    else {
+        push @{ $self->{ tag_trigger_no_tag } }, [$subref, $args];
+    }
+}
+
+sub tag_trigger {
+    my ( $self, $tags, $socket, $message_ref ) = @_;
+
+    unless ( scalar( @$tags ) ) {
+        for ( @{ $self->{ tag_trigger_no_tag } || [] } ) {
+            my ($subref, $args) = @$_;
+            $subref->( $self, $socket, undef, $message_ref, $tags, @$args );
+        }
+    }
+
+    for ( @$tags ) {
+        next unless exists $self->{ tag_trigger }->{ $_ };
+        my ($subref, $args) = @{ $self->{ tag_trigger }->{ $_ } };
+        $subref->( $self, $socket, $_, $message_ref, $tags, @$args );
+    }
+}
+
 
 #
 # PocketIO まわり
