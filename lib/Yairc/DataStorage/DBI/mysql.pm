@@ -161,6 +161,7 @@ sub search_post {
     my ( $self, $where, $attr ) = @_;
     # 便宜的にtagのみで絞り込みかつ手動だが、今後複雑になるならSQL::Makerなど検討
     # っていうか使いたい。結局かかる手間たいしてかわらないし
+    # →さすがに限界なので次回から使う方向で修正
     my @binds;
     my $sql    = 'SELECT * FROM `post`';
     my $limit  = $attr->{ limit };
@@ -202,11 +203,24 @@ sub search_post {
         else {
             $sql .= ' WHERE ';
         }
-        $sql .= '( `id` IN(' . join( ',', ('?') x scalar(@$ids) ) . ' ) )';
+        if ( ref $ids eq 'ARRAY' ) {
+            $sql .= '( `id` IN(' . join( ',', ('?') x scalar(@$ids) ) . ' ) )';
+        }
+        else { # ex. { '>=', 132 }
+            my ( $op ) = keys %$ids;
+            $sql .= "`id` $op ?";
+            $ids = [ $ids->{ $op } ];
+        }
         push @binds, @$ids;
     }
 
-    $sql .= ' ORDER BY `created_at_ms` DESC ';
+    if ( my $order_by = $attr->{ order_by } ) {
+        $sql .= " ORDER BY $order_by ";
+    }
+    else {
+        $sql .= ' ORDER BY `created_at_ms` DESC ';
+    }
+
     $sql .= " LIMIT $limit ";
     $sql .= defined $offset && $offset =~ /^\d+$/ ? " OFFSET $offset" : '';
 #print STDERR $sql,"\n";
