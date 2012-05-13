@@ -143,17 +143,16 @@ sub user_message {
 
         $post->{is_message_log} = JSON::false;
 
+        my $event = PocketIO::Message->new(
+            type => 'event',
+            data => { name => 'user message', args => [ $post ] }
+        );
+
         my $tags = $self->sys->tags;
         #タグ毎に送信処理
         for my $tag ( @tags ) {
             next unless $tags->{ $tag };
             DEBUG && w "Send to ${tag} from $user->{nickname} => \"${message}\"";
-
-            #ちょいとややこしいPocketIOの直接Poolを触る場合
-            my $event = PocketIO::Message->new(
-                type => 'event',
-                data => { name => 'user message', args => [ $post ] }
-            );
             $tags->{ $tag }->send( $event );
         }
     });
