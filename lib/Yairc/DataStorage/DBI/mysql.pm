@@ -144,6 +144,8 @@ sub get_last_posts_by_tag {
 
     my @posts;
     while ( my $post = $sth->fetchrow_hashref ) {
+        $post->{ tags } =~ s{^ | $}{}g;
+        $post->{ tags } = [ split / /, $post->{ tags } ];
         push @posts, $post;
     }
  
@@ -229,6 +231,8 @@ sub search_post {
     my @posts;
 
     while ( my $post = $sth->fetchrow_hashref ) {
+        $post->{ tags } =~ s{^ | $}{}g;
+        $post->{ tags } = [ split / /, $post->{ tags } ];
         push @posts, $post;
     }
 

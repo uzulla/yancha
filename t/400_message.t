@@ -12,7 +12,12 @@ BEGIN {
 }
 
 my $mysqld = t::Utils->setup_mysqld( schema => './db/init.sql' );
-my $config = { database => { connect_info => [ $mysqld->dsn ] } };
+my $config = {
+    database => { connect_info => [ $mysqld->dsn ] },
+    'plugins' => [
+        [ 'AutoDefaultTag' => [ 'public' ], ],
+    ],
+};
 my $server = t::Utils->server_with_dbi( config => $config );
 
 my $client = sub {
