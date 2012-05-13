@@ -60,7 +60,7 @@ sub token_login {
     #nickname listを更新し、周知
     my $users = $self->sys->users;
     $users->{ $socket_id } = $user;
-    $socket->sockets->emit('nicknames', _get_uniq_and_anon_nicknames_list($users));
+    $socket->sockets->emit('nicknames', _get_uniq_and_anon_nicknames($users));
 
     #サーバー告知メッセージ
     $socket->broadcast->emit('announcement', $nickname . ' connected');
@@ -186,7 +186,7 @@ sub disconnect {
             }
 
             $socket->broadcast->emit('announcement', $nickname . ' disconnected');
-            $socket->broadcast->emit('nicknames', _get_uniq_and_anon_nicknames_list($users));
+            $socket->broadcast->emit('nicknames', _get_uniq_and_anon_nicknames($users));
 
             DEBUG && w "bye ".$nickname;
         }
@@ -208,7 +208,7 @@ sub _send_lastlog_by_tag_lastusec {
     }
 }
 
-sub _get_uniq_and_anon_nicknames_list {
+sub _get_uniq_and_anon_nicknames {
     my ( $users ) = @_;
     return { map { $_->{ nickname } => $_->{ nickname } } values %$users };
 }
