@@ -63,12 +63,13 @@ is( $storage->get_user_by_userkey( $user->{ user_key } )->{ token }, $user->{ to
 $user->{nick} = 'user1_modified';
 
 is( $storage->count_user, 2 );
-
+my $token = $user->{ token };
 $user->{ token } = 'aaaaa';
 
 ok( $storage->add_or_replace_user( $user ), 'add_or_replace_user' );
 
-is( $storage->get_user_by_userkey( $user->{ user_key } )->{ token }, $user->{ token } );
+is( $storage->get_user_by_userkey( $user->{ user_key } )->{ token }, $token );
+# TODO 最終的にtokenはなんらかの形で変更されうる
 
 is( $storage->count_user, 2 );
 

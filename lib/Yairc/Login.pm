@@ -19,12 +19,11 @@ sub set_user_into_storage {
     my $token = $self->generate_token(64);
 
     $user->{ token } = $token;
+    # 現状初回に発行されたtokenが使われ続ける。いずれ変更
 
     $self->sys->call_hook( 'authenticated', undef, $user );
 
-    $self->data_storage->add_or_replace_user( $user );
-
-    return $user;
+    return $self->data_storage->add_or_replace_user( $user );
 }
 
 sub generate_token { # almost code are from HTTP::Session

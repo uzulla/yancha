@@ -19,7 +19,7 @@ sub init {
         ON DUPLICATE KEY UPDATE `sns_data_cache`=values(`sns_data_cache`),
         `nickname`=values(`nickname`),
         `profile_image_url`=values(`profile_image_url`),
-        `updated_at`=now(), `token`=values(`token`);
+        `updated_at`=now();
     /); # / .. for poor editor syntax hilight
 
     $self->{ user_select_by_userkey } = $dbh->prepare(
