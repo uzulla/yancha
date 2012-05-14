@@ -34,6 +34,11 @@ sub _search_posts {
         $where->{ tag } = [ split /,/, $tags ];
     }
 
+    if ( my $keywords = $req->param('keyword') ) {
+        #TODO 全角スペースで単語を区切る
+        $where->{ text } = [ grep { $_ ne '' } split(/[,\x20]/, $keywords) ];
+    }
+
     if ( my $times = $req->param('time') ) { # epoch sec
         $where->{ created_at_ms } = [ split /,/, $times ];
     }
