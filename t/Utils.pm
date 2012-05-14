@@ -90,7 +90,13 @@ sub create_clients_and_set_tags {
             my ( $self, $socket ) = @_;
             my @tags = exists $user->{ tags } ? @{ $user->{ tags } } : 'PUBLIC';
             $client->socket->on('token login', sub {
-                $client->set_tags( @tags, sub { $cv->end; } );
+                my $status = $_[1]->{ status };
+                if ( $_[1]->{ status } ne 'ok' ) {
+                    Carp::carp $nickname . " login fail.";
+                }
+                else {
+                    $client->set_tags( @tags, sub { $cv->end; } );
+                }
              });
             $socket->emit('token login', $client->token);
         });
