@@ -50,6 +50,8 @@ sub token_login {
         return;
     }
 
+    $self->sys->call_hook( 'token_logined', $socket, $user );
+
     my $nickname = $user->{nickname};
 
     DEBUG && w "hello $nickname";
