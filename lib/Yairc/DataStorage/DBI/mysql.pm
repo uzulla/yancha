@@ -180,6 +180,13 @@ sub search_post {
         push @binds, map { '% ' . $_ . ' %' } @$tags;
     }
 
+    if ( exists $where->{ text } ) {
+        my $keywords = $where->{ text };
+        $sql .= ($sql =~ m/ WHERE /) ? ' AND ':' WHERE ';
+        $sql .= ' ( ' . join( ' OR ', (q/UPPER(`text`) LIKE UPPER(?)/) x scalar(@$keywords) ) . ' )';
+        push @binds, map { '%' . $_ . '%' } @$keywords;
+    }
+
     if ( exists $where->{ created_at_ms } ) {
         if ( $sql =~ /WHERE/ ) {
             $sql .= ' AND ';
