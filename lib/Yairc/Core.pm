@@ -47,6 +47,7 @@ sub token_login {
     #TODO tokenが無い場合のエラー
     unless($user){
         $socket->emit('token login', { "status"=>"user notfound" });
+        return;
     }
 
     my $nickname = $user->{nickname};
