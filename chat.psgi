@@ -1,3 +1,9 @@
+use strict;
+use utf8;
+use warnings;
+use FindBin;
+use lib ("$FindBin::Bin/lib");
+
 my $root;
 
 BEGIN {
@@ -10,30 +16,19 @@ BEGIN {
     unshift @INC, "$root/../../lib";
 }
 
-use strict;
-use utf8;
-use warnings;
-use FindBin;
-use lib ("$FindBin::Bin/lib");
-
-use Data::Dumper;
-
-use PocketIO;
 use Plack::Builder;
 use Plack::Middleware::Static;
 use Plack::App::File;
 use Plack::Session;
-use Plack::Request;
 
+use PocketIO;
 use Yairc;
-use Yairc::Login::Twitter;
-use Yairc::Login::Simple;
 use Yairc::DataStorage::DBI;
 use Yairc::Config::Simple;
 
 my $config = Yairc::Config::Simple->load_file( $ENV{ YAIRC_CONFIG_FILE } || "$root/config.pl" );
 my $data_storage = Yairc::DataStorage::DBI->connect( connect_info => $config->{ database }->{ connect_info } );
-
+my $yairc  = Yairc->new( config => $config, data_storage => $data_storage );
 
 builder {
     enable 'Session';
@@ -48,19 +43,17 @@ builder {
     mount '/socket.io/static/flashsocket/WebSocketMainInsecure.swf' =>
       Plack::App::File->new(file => "$root/public/WebSocketMainInsecure.swf");
 
-    mount '/socket.io' => PocketIO->new( socketio => $config->{ socketio },
-                                         instance => Yairc->new( config => $config, data_storage => $data_storage )  
-                          );
+    mount '/socket.io' => PocketIO->new( socketio => $config->{ socketio }, instance => $yairc );
 
     # APIリクエストサンプル
     # https://gist.github.com/2440738
     mount '/api' => do ( './api.psgi' ) ;
 
-    mount '/login/twitter' => Yairc::Login::Twitter->new(data_storage => $data_storage)
-                                ->build_psgi_endpoint( $config->{ twitter_appli } );
+    mount '/login/twitter' => $yairc->login('Twitter')
+                                    ->build_psgi_endpoint( $config->{ twitter_appli } );
 
-    mount '/login'         => Yairc::Login::Simple->new(data_storage => $data_storage)
-                                ->build_psgi_endpoint( { name_field => 'nick' } );
+    mount '/login'         => $yairc->login('Simple')
+                                    ->build_psgi_endpoint( { name_field => 'nick' } );
 
     mount '/' => builder {
         enable "Static",

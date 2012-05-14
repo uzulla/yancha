@@ -5,13 +5,14 @@ use warnings;
 use PocketIO::Client::IO;
 use LWP::UserAgent;
 #use HTTP::Cookies;
-
+use Carp ();
 
 sub new {
     my $class = shift;
     my %opt   = @_;
 
     $opt{ ua } ||= LWP::UserAgent->new( exists $opt{ ua_opts } ? %{$opt{ ua_opts }} : () );
+    $opt{ tags } ||= { 'PUBLIC' => '0' };
 
     return bless \%opt, $class;
 }
@@ -46,18 +47,18 @@ sub connect {
     my $socket = PocketIO::Client::IO->connect( $url );
 
     unless ( $socket ) {
-        print "connection fail.\n";
+        Carp::carp("connection fail.");
         return;
     }
 
-    $socket->on('use message', sub {});
-    $socket->on('join_tag', sub {});
+    $socket->on('user message', sub {});
+    $socket->on('join tag', sub {});
     $socket->on('nicknames', sub {});
     $socket->on('announcement', sub {});
-    $socket->on('token_login', sub {});
+    $socket->on('token login', sub {});
     $socket->on('no session', sub {});
 
-    $self->{ socket } = $socket;
+    $self->socket( $socket );
 
     return 1;
 }
@@ -73,6 +74,30 @@ sub token {
     $_[0]->{ token };    
 };
 
+sub socket {
+    $_[0]->{ socket } = $_[1] if @_ > 1;
+    $_[0]->{ socket };
+};
+
+sub set_tags {
+    my $self   = shift;
+    my $subref = pop;
+    my ( @tags ) = @_;
+    my %tag = map { uc $_ => 0 } @tags;
+
+    $self->{ tags } = { %tag };
+
+    $self->socket->on('join tag', $subref);
+    $self->socket->emit( 'join tag', \%tag );
+}
+
+sub update_tags_ltime_from_post {
+    my ( $self, $post ) = @_;
+    for my $tag ( @{ $post->{ tags } || [] } ) {
+        $self->{ tags }->{ $tag } = $post->{ created_at_ms };
+    }
+    return;
+}
 
 1;
 __END__
@@ -108,7 +133,7 @@ Yairc::Client - Yairc用簡易クライアント
             $cv->send;
         });
 
-        $socket->emit('token_login', $self->token);
+        $socket->emit('token login', $self->token);
     });
 
     $cv->wait;
@@ -181,6 +206,8 @@ Yaircはログインの有無をこのトークンでチェックしている。
 =over
 
 =item Twitterログインに対応する
+
+=item reconnect
 
 =back
 

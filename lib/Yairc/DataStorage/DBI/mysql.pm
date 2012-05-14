@@ -30,11 +30,11 @@ sub init {
     );
     $self->{ insert_post } = $dbh->prepare(
         'INSERT INTO `post` (
-            `user_key`, `nickname`, `profile_image_url`, `text`, `created_at_ms`)
-            VALUES (?, ?, ?, ?, ?) '
+            `user_key`, `nickname`, `profile_image_url`, `text`, `tags`, `created_at_ms`)
+            VALUES (?, ?, ?, ?, ?, ?) '
     );
-    $self->{ get_posts_by_tag } = $dbh->prepare(
-        'SELECT * FROM `post` WHERE `text` like ? AND `created_at_ms` > ?
+    $self->{ get_last_posts_by_tag } = $dbh->prepare(
+        'SELECT * FROM `post` WHERE `tags` like ? AND `created_at_ms` > ?
                 ORDER BY `created_at_ms` DESC LIMIT ? ');
 }
 
@@ -98,17 +98,22 @@ sub count_user {
 
 sub add_post {
     my ( $self, $post, $user ) = @_;
+    # | TAG1 TAG2 TAG3 |
+    my @tags = @{ $post->{ tags } };
+    my $tags = $post->{ tags } ? ' '. join( ' ', @tags ) . ' ' : '';
     $post = $user ? {
         text => $post->{ text },
         nickname => $user->{ nickname },
         user_key => $user->{ user_key },
         profile_image_url => $user->{ profile_image_url },
         created_at_ms     => $self->_get_now_micro_sec(),
+        tags              => $tags,
     } : { %$post, created_at_ms => $self->_get_now_micro_sec() };
 
     $self->{ insert_post }->execute(
-                    @{$post}{ qw/user_key nickname profile_image_url text created_at_ms/ } );
+                    @{$post}{ qw/user_key nickname profile_image_url text tags created_at_ms/ } );
     $post->{ id } = $self->dbh->last_insert_id(undef, undef, 'post', 'id');
+    $post->{ tags } = [ @tags ]; # restore
     return $post;
 }
 
@@ -118,15 +123,29 @@ sub remove_post {
     return $self->dbh->do(q{DELETE FROM `post` WHERE id = ? }, {}, $id);
 }
 
+sub replace_post {
+    my ( $self, $post ) = @_;
+    my $id   = $post->{ id };
+    my $tags = $post->{ tags } ? ' '. join( ' ', @{ $post->{ tags } } ) . ' ' : '';
+    my $ret  = $self->dbh->do(qq{
+        UPDATE `post` SET `user_key` = ?, `nickname` = ?, `profile_image_url` = ?,
+                          `text` = ?, `created_at_ms` = ?, `tags` = ? WHERE `id` = ?
+    }, {}, @{$post}{ qw/user_key nickname profile_image_url text created_at_ms/ }, $tags, $id );
+
+    return $ret ? $post : undef;
+}
+
 sub get_last_posts_by_tag {
     my ( $self, $tag, $lastusec, $num ) = @_;
     $tag = uc($tag);
 
-    my $sth = $self->{ get_posts_by_tag };
-    $sth->execute( '%#' . $tag . '%', $lastusec || 0, $num || 100 );
+    my $sth = $self->{ get_last_posts_by_tag };
+    $sth->execute( '% ' . $tag . ' %', $lastusec || 0, $num || 100 );
 
     my @posts;
     while ( my $post = $sth->fetchrow_hashref ) {
+        $post->{ tags } =~ s{^ | $}{}g;
+        $post->{ tags } = [ split / /, $post->{ tags } ];
         push @posts, $post;
     }
  
@@ -142,6 +161,7 @@ sub search_post {
     my ( $self, $where, $attr ) = @_;
     # 便宜的にtagのみで絞り込みかつ手動だが、今後複雑になるならSQL::Makerなど検討
     # っていうか使いたい。結局かかる手間たいしてかわらないし
+    # →さすがに限界なので次回から使う方向で修正
     my @binds;
     my $sql    = 'SELECT * FROM `post`';
     my $limit  = $attr->{ limit };
@@ -156,8 +176,8 @@ sub search_post {
     if ( exists $where->{ tag } ) {
         my $tags = $where->{ tag };
         $tags  = ref $tags ? $tags : [ $tags ];
-        $sql  .= ' WHERE ( ' . join( ' OR ', (q/UPPER(`text`) LIKE UPPER(?)/) x scalar(@$tags) ) . ' )';
-        push @binds, map { '%#' . $_ . '%' } @$tags;
+        $sql  .= ' WHERE ( ' . join( ' OR ', (q/UPPER(`tags`) LIKE UPPER(?)/) x scalar(@$tags) ) . ' )';
+        push @binds, map { '% ' . $_ . ' %' } @$tags;
     }
 
     if ( exists $where->{ created_at_ms } ) {
@@ -183,11 +203,24 @@ sub search_post {
         else {
             $sql .= ' WHERE ';
         }
-        $sql .= '( `id` IN(' . join( ',', ('?') x scalar(@$ids) ) . ' ) )';
+        if ( ref $ids eq 'ARRAY' ) {
+            $sql .= '( `id` IN(' . join( ',', ('?') x scalar(@$ids) ) . ' ) )';
+        }
+        else { # ex. { '>=', 132 }
+            my ( $op ) = keys %$ids;
+            $sql .= "`id` $op ?";
+            $ids = [ $ids->{ $op } ];
+        }
         push @binds, @$ids;
     }
 
-    $sql .= ' ORDER BY `created_at_ms` DESC ';
+    if ( my $order_by = $attr->{ order_by } ) {
+        $sql .= " ORDER BY $order_by ";
+    }
+    else {
+        $sql .= ' ORDER BY `created_at_ms` DESC ';
+    }
+
     $sql .= " LIMIT $limit ";
     $sql .= defined $offset && $offset =~ /^\d+$/ ? " OFFSET $offset" : '';
 #print STDERR $sql,"\n";
@@ -198,6 +231,8 @@ sub search_post {
     my @posts;
 
     while ( my $post = $sth->fetchrow_hashref ) {
+        $post->{ tags } =~ s{^ | $}{}g;
+        $post->{ tags } = [ split / /, $post->{ tags } ];
         push @posts, $post;
     }
 

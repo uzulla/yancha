@@ -1,112 +1,67 @@
-body{
+div, body{
 padding:0px;
 margin:0px;
 }
 
-pre{
-margin: 0.5em;
-padding: 0.2em 0.2em;
-background-color: #EEEEFF;
-overflow: auto;
-line-height: 110%;
-}
 
-#chat,
-#nickname,
-#messages {
-  width: 100%;
-}
-
-#chat {
-  position: relative;
-}
-#nickname,
-#connecting {
+#nickname, #connecting {
   position: absolute;
-  height: 410px;
+  width: 100%;
+  height: 2000px;
   z-index: 100;
   left: 0;
   top: 0;
   background: #fff;
   text-align: center;
-  width: 100％;
   font: 15px Georgia;
   color: #666;
   display: block;
 }
-#nickname .wrap,
-#connecting .wrap {
-  padding-top: 150px;
-}
+
 #nickname input {
   border: 1px solid #ccc;
   padding: 10px;
 }
-#nickname input:focus {
-  border-color: #999;
-  outline: 0;
-}
-#nickname #nickname-err {
-  color: #8b0000;
+
+
+#messages div.messagecell{
   font-size: 12px;
-  visibility: hidden;
+  background: #eeeeee;
+  padding:3px;
 }
-.connected #connecting {
-  display: none;
-}
-.nickname-set #nickname {
-  display: none;
-}
-#messages {
-  height: 390px;
-  background: #eee;
-}
-#messages em {
-  text-shadow: 0 1px 0 #fff;
-  color: #999;
-}
-#messages p {
-  padding: 0;
-  margin: 0;
-  font: 12px Helvetica, Arial;
-  padding: 5px 10px;
-}
-#messages p b {
-  display: inline-block;
-  padding-right: 10px;
-}
-#messages p.unread {
-  background: #ffaaaa;
-}
-#messages p:nth-child(even) {
+#messages div.messagecell:nth-child(even) {
   background: #fafafa;
 }
-#messages p.unread:nth-child(even) {
+#messages div.unread {
+  background: #ffaaaa;
+}
+#messages div.unread:nth-child(even) {
   background: #ff9999;
+}
+
+#lines {
+  overflow: auto;
+  overflow-x: auto;
+  overflow-y: scroll;
+  padding:0px;
+  margin:0px;
 }
 
 #infomation{
   width:190px;
   float:right;
   overflow-y:scroll;
-
 }
 
 #infomation #nicknames ,#infomation #tags {
   border-bottom:1px #999 solid;padding:3px;
-  bbackground: #ccc;
-  ppadding: 2px 4px 4px;
   font: 11px Helvetica;
 }
 
-
-#infomation #nicknames span ,#infomation #tags span {
-  color: #000;
-}
-#infomation #nicknames b,#infomation #tags b {
+#infomation #nicknames b{ 
   display: inline-block;
   color: #fff;
-  background: #999;
+  background: gray;
   padding: 3px 6px;
   margin-right: 5px;
   margin-bottom: 5px;
@@ -115,42 +70,24 @@ line-height: 110%;
   border-radius: 10px;
   text-shadow: 0 1px 0 #666;
 }
-#messages #lines {
-  height: 340px;
-  overflow: auto;
-  overflow-x: auto;
-  overflow-y: scroll;
+
+#infomation #tags b.tagcell {
+  display: inline-block;
+  color: #fff;
+  background: red;
+  padding: 3px 6px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  border-radius: 10px;
+  text-shadow: 0 1px 0 #666;
 }
-#messages #lines::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+
+#infomation #tags b.disable_tag {
+  background: gray;
 }
-#messages #lines::-webkit-scrollbar-button:start:decrement,
-#messages #lines::-webkit-scrollbar-button:end:increment {
-  display: block;
-  height: 10px;
-}
-#messages #lines::-webkit-scrollbar-button:vertical:increment {
-  background-color: #fff;
-}
-#messages #lines::-webkit-scrollbar-track-piece {
-  background-color: #fff;
-  -webkit-border-radius: 3px;
-}
-#messages #lines::-webkit-scrollbar-thumb:vertical {
-  height: 50px;
-  background-color: #ccc;
-  -webkit-border-radius: 3px;
-}
-#messages #lines::-webkit-scrollbar-thumb:horizontal {
-  width: 50px;
-  background-color: #fff;
-  -webkit-border-radius: 3px;
-}
-#send-message {
-  background: #fff;
-  position: relative;
-}
+
 #send-message textarea {
   border: 1px solid gray;
   height: 1.2em;
@@ -163,14 +100,12 @@ line-height: 110%;
   border-radius: 10px;
   
 }
-#send-message input:focus {
-  outline: 0;
-}
 #send-message button {
   margin-top: 5px;
-  ffloat:right;
   margin-right: 5px;
 }
+
+/* generic button css */
 button {
   margin: 0;
   -webkit-user-select: none;

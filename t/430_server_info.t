@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use PocketIO::Test;
+use Yairc;
 use t::Utils;
 use AnyEvent;
 use Yairc::Client;
@@ -17,38 +18,37 @@ my $server = t::Utils->server_with_dbi( config => $config );
 
 my $client = sub {
     my ( $port ) = shift;
-    my $client = Yairc::Client->new();
 
     my $cv = AnyEvent->condvar;
-    my $w; $w = AnyEvent->timer( after => 30, cb => sub {
+    my $w  = AnyEvent->timer( after => 10, cb => sub {
         fail("Time out.");
         $cv->send;
     } );
 
-    ok( $client->login(
-            "http://localhost:$port/", => 'login', { nick => 'test_client' }
-      ), 'login' );
-    ok( $client->connect, 'connect' );
+    my $on_connect = sub {
+        my ( $client ) = @_;
+        my $count = 0;
 
-    $client->run(sub {
-        my ( $self, $socket ) = @_;
-
-        $socket->on('nicknames', sub {
-            is( $_[1]->{ test_client }, 'test_client', 'token login' );
+        $client->socket->on('server info' => sub {
+            is_deeply( $_[1], $Yairc::SERVER_INFO, 'server info' );
             $cv->send;
         });
 
-        $socket->emit('token login', $self->token);
+    };
 
-    });
+    my ( $client ) = t::Utils->create_clients_and_set_tags(
+        $port,
+        { nickname => 'client', on_connect => $on_connect }, 
+    );
+
+    $client->socket->emit('server info');
 
     $cv->wait;
-
 };
 
 test_pocketio $server, $client;
 
+ok(1, 'test done');
 
 done_testing;
-
 

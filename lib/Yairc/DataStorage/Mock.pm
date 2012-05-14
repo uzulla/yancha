@@ -98,6 +98,11 @@ sub get_last_posts_by_tag {
     return $num ? [ @posts[ 0 .. $num - 1 ] ] : \@posts;
 }
 
+sub get_post_by_id {
+    my ( $self, $id ) = @_;
+    return $POST{$id};
+}
+
 sub count_post { scalar @POSTS; }
 
 

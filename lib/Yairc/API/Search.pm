@@ -42,6 +42,22 @@ sub _search_posts {
         $where->{ id } = [ grep { $_ =~ /^[0-9]+$/ } split /,/, $ids ];
     }
 
+    if ( my $newer = $req->param('newer') ) {
+        $attr->{ limit } = $newer;
+        delete $attr->{ offset };
+        $where->{ id } = $where->{ id }->[0] if ref $where->{ id };
+        $where->{ id } = { '>' => $where->{ id } };
+        $attr->{ order_by } = 'id ASC';
+    }
+    elsif ( my $older = $req->param('older') ) {
+        $attr->{ limit } = $older;
+        delete $attr->{ offset };
+        $where->{ id } = $where->{ id }->[0] if ref $where->{ id };
+        $where->{ id } = { '<' => $where->{ id } };
+        $attr->{ order_by } = 'id DESC';
+    }
+
+
     $attr->{ limit } ||= 20;
 
     my $posts = $self->data_storage->search_post( $where, $attr );
