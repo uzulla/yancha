@@ -18,9 +18,9 @@ our $SERVER_INFO =  {
     'login_endpoint' => {},
 };
 
-my $nicknames    = {}; #共有ニックネームリスト
-my $tags         = {}; #参加タグ->コネクションプールリスト
-my $tags_reverse = {}; #クライアントコネクション->参加Tag リスト
+my $users        = {}; # session id -> user data
+my $tags         = {}; # 参加タグ->コネクションプールリスト
+my $tags_reverse = {}; # クライアントコネクション->参加Tag リスト
 
 
 sub new {
@@ -43,7 +43,7 @@ sub data_storage { $_[0]->{ data_storage } }
 
 sub config { $_[0]->{ config } ||= {} }
 
-sub users { $nicknames; }
+sub users { $users; }
 
 sub tags { $tags; }
 
