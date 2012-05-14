@@ -32,6 +32,12 @@ sub setup {
         $USERS->{ $user->{ user_key } } = $user;
     } );
 
+    $sys->register_hook( 'disconnected', sub {
+        my ( $sys, $socket, $user ) = @_;
+        return unless $user;
+        delete $USERS->{ $user->{ user_key } };
+    } );
+
 }
 
 
