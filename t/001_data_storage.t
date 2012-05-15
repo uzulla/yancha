@@ -10,8 +10,6 @@ BEGIN {
 
 my $storage = Yairc::DataStorage::Mock->new();
 
-diag('user');
-
 ok( my $user = $storage->add_user({
     user_key => '-:0001',
     nickname => 'user1',
@@ -60,8 +58,6 @@ ok( $storage->add_or_replace_user( $user ), 'add_or_replace_user' );
 is_deeply( $storage->get_user_by_userkey( $user->{ user_key } ), $user );
 
 is( $storage->count_user, 2 );
-
-diag('post');
 
 
 ok( my $post = $storage->add_post( { text => "Hello World. #PUBLIC" }, $user ) );
