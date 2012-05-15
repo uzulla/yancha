@@ -19,7 +19,7 @@ sub setup {
         return unless exists $target_sns_key{ $sns_key };
 
         SEARCH: {
-            my @users = values $USERS;
+            my @users = values %$USERS;
             for my $connected_user ( @users ) {
                 next unless $connected_user->{ user_key } eq $user->{ user_key };
                 $user->{ nickname } .= $mark;
