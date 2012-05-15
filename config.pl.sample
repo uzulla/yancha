@@ -33,6 +33,7 @@ use strict;
 
     'plugins' => [
         [ 'AutoDefaultTag' => [ 'public' ], ],
+        [ 'WelcomeMessage', [ message => 'Hi, %s. This is Hachioji.pm!' ] ],
     ],
 
 };
