@@ -32,11 +32,13 @@ sub dispatch {
     my ( $self ) = @_;
     return sub {
         my ($socket, $env) = @_;
+        # $env is empty until PocketIO version 0.14
         $socket->on( 'server info'  => sub { $self->sys->server_info( @_ ) } );
         $socket->on( 'user message' => sub { $self->user_message( @_ ); } );
         $socket->on( 'token login'  => sub { $self->token_login( @_ ); } );
         $socket->on( 'join tag'     => sub { $self->join_tag( @_ ); } );
         $socket->on( 'disconnect'   => sub { $self->disconnect( @_ ); } );
+        $self->sys->call_hook( 'connected', $socket, $env );
     };
 }
 

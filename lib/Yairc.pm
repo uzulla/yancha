@@ -133,6 +133,7 @@ sub tag_trigger {
 
 sub run {
     my ( $self ) = @_;
+    $self->call_hook( 'run', undef );
     return $self->app->dispatch();
 }
 
