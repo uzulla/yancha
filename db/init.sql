@@ -18,8 +18,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `sns_data_cache` blob NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`user_key`),
-  UNIQUE KEY `token` (`token`)
+  PRIMARY KEY (`user_key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `session`;
