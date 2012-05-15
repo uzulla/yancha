@@ -158,71 +158,68 @@ sub get_post_by_id {
 }
 
 sub search_post {
-    my ( $self, $where, $attr ) = @_;
-    # 便宜的にtagのみで絞り込みかつ手動だが、今後複雑になるならSQL::Makerなど検討
-    # っていうか使いたい。結局かかる手間たいしてかわらないし
-    # →さすがに限界なので次回から使う方向で修正
-    my @binds;
-    my $sql    = 'SELECT * FROM `post`';
+    my ( $self, $params, $attr ) = @_;
+    # 後でラッパー使う
+    my $maker  = SQL::Maker->new( driver => 'mysql' );
     my $limit  = $attr->{ limit };
-    my $offset = $attr->{ offset };
 
     unless ( $limit and $limit =~ /^\d+$/ ) {
-        $limit = 1000;
+        $attr->{ limit } = 1000;
     }
+    elsif  ( $limit > 10000 ) {
+        $attr->{ limit } = 10000;
+    } # 暫定
 
-    if ( $limit > 10000 ) { $limit = 10000; } # 暫定
+    $attr->{ order_by } ||= 'created_at_ms DESC';
 
-    if ( exists $where->{ tag } ) {
-        my $tags = $where->{ tag };
+    my $where;
+    my $where_tag;
+    if ( exists $params->{ tag } ) {
+        $where_tag = _sql_maker_cond();
+        my $tags = $params->{ tag };
         $tags  = ref $tags ? $tags : [ $tags ];
-        $sql  .= ' WHERE ( ' . join( ' OR ', (q/UPPER(`tags`) LIKE UPPER(?)/) x scalar(@$tags) ) . ' )';
-        push @binds, map { '% ' . $_ . ' %' } @$tags;
+        $where_tag->add('tags', [ map { { 'like' => '% ' . uc($_) . ' %' } } @$tags ]);
     }
 
-    if ( exists $where->{ created_at_ms } ) {
-        if ( $sql =~ /WHERE/ ) {
-            $sql .= ' AND ';
+    my $where_time;
+    if ( exists $params->{ created_at_ms } ) {
+        $where_time = _sql_maker_cond();
+        my $times = $params->{ created_at_ms };
+        if ( ref $times eq 'ARRAY' ) {
+            my $where = [ '-and' ];
+            push @{ $where }, { '>=', => $times->[0] } if $times->[0];
+            push @{ $where }, { '<=', => $times->[1] } if $times->[1];
+            $where_time->add( 'created_at_ms', $where );
         }
-        else {
-            $sql .= ' WHERE ';
+        elsif ( ref $times eq 'HASH' ) {
+            $where_time->add( 'created_at_ms', $times );
         }
-        my $times = $where->{ created_at_ms };
-        my @sqls;
-        push @sqls, '`created_at_ms` >= ?' if $times->[0];
-        push @sqls, '`created_at_ms` <  ?' if $times->[1];
-        $sql  .= ' ( ' . join( ' AND ', @sqls ) . ' ) ';
-        push @binds, map { $_ . '00000' } grep { defined } @$times;
     }
 
-    if ( exists $where->{ id } ) {
-        my $ids = ref $where->{ id } ? $where->{ id } : [ $where->{ id } ];
-        if ( $sql =~ /WHERE/ ) {
-            $sql .= ' AND ';
-        }
-        else {
-            $sql .= ' WHERE ';
-        }
+    my $where_id;
+    if ( exists $params->{ id } ) {
+        $where_id = _sql_maker_cond();
+        my $ids = ref $params->{ id } ? $params->{ id } : [ $params->{ id } ];
         if ( ref $ids eq 'ARRAY' ) {
-            $sql .= '( `id` IN(' . join( ',', ('?') x scalar(@$ids) ) . ' ) )';
+            $where_id->add( 'id', $ids );
         }
-        else { # ex. { '>=', 132 }
+        else {
             my ( $op ) = keys %$ids;
-            $sql .= "`id` $op ?";
-            $ids = [ $ids->{ $op } ];
+            $where_id->add( 'id', { $op => $ids->{ $op } });
         }
-        push @binds, @$ids;
     }
 
-    if ( my $order_by = $attr->{ order_by } ) {
-        $sql .= " ORDER BY $order_by ";
-    }
-    else {
-        $sql .= ' ORDER BY `created_at_ms` DESC ';
+    for ( $where_tag , $where_time, $where_id ) {
+        if ( !$where and $_ ) {
+            $where = $_;
+            next;
+        }
+        next unless $_;
+        $where = $where & $_;
     }
 
-    $sql .= " LIMIT $limit ";
-    $sql .= defined $offset && $offset =~ /^\d+$/ ? " OFFSET $offset" : '';
+    my ( $sql, @binds ) = $maker->select( 'post', ['*'], $where, $attr );
+
 #print STDERR $sql,"\n";
 #print STDERR Data::Dumper::Dumper(\@binds);
     my $sth = $self->dbh->prepare( $sql );
@@ -243,6 +240,10 @@ sub count_post {
     return $_[0]->dbh->selectrow_array('SELECT count(*) FROM `post`');
 }
 
+
+sub _sql_maker_cond {
+    SQL::Maker::Condition->new( name_sep => '.', quote_char => '`' );
+}
 
 1;
 __END__

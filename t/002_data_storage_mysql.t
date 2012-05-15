@@ -18,8 +18,6 @@ my $storage = Yairc::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn()
 
 isa_ok( $storage, 'Yairc::DataStorage::DBI::mysql' );
 
-diag('user');
-
 ok( my $user = $storage->add_user({
     user_key => '-:0001',
     nickname => 'user1',
@@ -74,8 +72,6 @@ is( $storage->get_user_by_userkey( $user->{ user_key } )->{ token }, $token );
 is( $storage->count_user, 2 );
 
 
-diag('post');
-
 ok( my $post = $storage->add_post( { text => "Hello World. #PUBLIC", tags => ['PUBLIC'] }, $user ) );
 is( $storage->count_post, 1 );
 is( $post->{ id }, 1 );
@@ -122,17 +118,20 @@ is( scalar(@$posts), 100 );
 $posts = $storage->search_post();
 is( scalar(@$posts), 100 );
 
-$posts = $storage->search_post( { created_at_ms => [ time + 100 ] } );
+my $micro = $storage->_get_now_micro_sec;
+
+$posts = $storage->search_post( { created_at_ms => [ $micro + 10000000 ] } );
 is( scalar(@$posts), 0 );
 
-$posts = $storage->search_post( { created_at_ms => [ undef, time + 100 ] } );
+$posts = $storage->search_post( { created_at_ms => [ undef, $micro ] } );
 is( scalar(@$posts), 100 );
 
-$posts = $storage->search_post( { tag => 'ABC', created_at_ms => [ time - 100, time + 100 ] } );
+$posts = $storage->search_post( { tag => 'ABC', created_at_ms
+                                    => [ $micro - 10000000, $micro + 10000000 ] } );
 is( scalar(@$posts), 50 );
 
 $posts = $storage->search_post(
-    { tag => 'ABC', created_at_ms => [ time - 100, time + 100 ] },
+    { tag => 'ABC', created_at_ms => [ $micro - 10000000, $micro + 10000000 ] },
     { limit => 10, offset => '5' }
 );
 is( scalar(@$posts), 10 );

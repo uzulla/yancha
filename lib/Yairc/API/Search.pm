@@ -35,28 +35,42 @@ sub _search_posts {
     }
 
     if ( my $times = $req->param('time') ) { # epoch sec
-        $where->{ created_at_ms } = [ split /,/, $times ];
+        $where->{ created_at_ms } = [ map { $_ .= '00000' if defined; $_ } split /,/, $times ];
     }
 
     if ( my $ids = $req->param('id') ) {
         $where->{ id } = [ grep { $_ =~ /^[0-9]+$/ } split /,/, $ids ];
     }
 
-    if ( my $newer = $req->param('newer') ) {
+    my $newer = $req->param('newer');
+    my $older = $req->param('older');
+
+    if ( $newer ) {
         $attr->{ limit } = $newer;
         delete $attr->{ offset };
-        $where->{ id } = $where->{ id }->[0] if ref $where->{ id };
-        $where->{ id } = { '>' => $where->{ id } };
-        $attr->{ order_by } = 'id ASC';
+        if ( ref $where->{ id } ) {
+            $where->{ id } = $where->{ id }->[0];
+            $where->{ id } = { '>' => $where->{ id } };
+            $attr->{ order_by } = 'id ASC';
+        }
+        elsif ( ref $where->{ created_at_ms } ) {
+            $where->{ created_at_ms } = { '>' => $where->{ created_at_ms }->[0] };
+            $attr->{ order_by } = 'created_at_ms ASC';
+        }
     }
-    elsif ( my $older = $req->param('older') ) {
+    elsif ( $older ) {
         $attr->{ limit } = $older;
         delete $attr->{ offset };
-        $where->{ id } = $where->{ id }->[0] if ref $where->{ id };
-        $where->{ id } = { '<' => $where->{ id } };
-        $attr->{ order_by } = 'id DESC';
+        if ( ref $where->{ id } ) {
+            $where->{ id } = $where->{ id }->[0];
+            $where->{ id } = { '<' => $where->{ id } };
+            $attr->{ order_by } = 'id DESC';
+        }
+        elsif ( ref $where->{ created_at_ms } ) {
+            $where->{ created_at_ms } = { '<' => $where->{ created_at_ms }->[0] };
+            $attr->{ order_by } = 'created_at_ms DESC';
+        }
     }
-
 
     $attr->{ limit } ||= 20;
 

@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use base 'Yairc::DataStorage';
 use DBI;
+use SQL::Maker;
 use Carp ();
 
 our $VERSION = '0.01';
