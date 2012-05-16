@@ -13,13 +13,19 @@ CREATE TABLE IF NOT EXISTS `post` (
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE IF NOT EXISTS `user` (
   `user_key` varchar(64) NOT NULL,
-  `token` varchar(64) NOT NULL,
   `nickname` varchar(32) NOT NULL,
   `profile_image_url` varchar(128) NOT NULL,
   `sns_data_cache` blob NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
-  PRIMARY KEY (`user_key`),
-  UNIQUE KEY `token` (`token`)
+  PRIMARY KEY (`user_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `session`;
+CREATE TABLE IF NOT EXISTS `session` (
+  `token` varchar(64) NOT NULL,
+  `user_key` varchar(64) NOT NULL,
+  `expire_at` datetime NOT NULL,
+  PRIMARY KEY (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

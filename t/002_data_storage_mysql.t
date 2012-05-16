@@ -56,7 +56,7 @@ is( $storage->count_user, 1 );
 
 ok( $storage->add_or_replace_user( $user ), 'add_or_replace_user' );
 
-is( $storage->get_user_by_userkey( $user->{ user_key } )->{ token }, $user->{ token } );
+is( $storage->get_user_by_userkey( $user->{ user_key } )->{ nickname }, $user->{ nickname } );
 
 $user->{nick} = 'user1_modified';
 
@@ -66,8 +66,25 @@ $user->{ token } = 'aaaaa';
 
 ok( $storage->add_or_replace_user( $user ), 'add_or_replace_user' );
 
-is( $storage->get_user_by_userkey( $user->{ user_key } )->{ token }, $token );
-# TODO 最終的にtokenはなんらかの形で変更されうる
+
+my $token2 = 'ABC123';
+ok($storage->add_session($user, $token2), 'add_session');
+my $sth = $storage->dbh->prepare('SELECT * FROM `session` WHERE `token` = ? ');
+$sth->execute( $token2 );
+is($sth->rows(), 1, 'add_session success');
+
+my $session = $storage->get_session_by_token($token2);
+#print Dumper($session);
+is($session->{user_key}, $user->{user_key}, 'compare session' );
+
+
+$storage->dbh->do(q{INSERT INTO `session` (`user_key`, `token`, `expire_at`) VALUES ('session_expire_user_key', 'session_expire_token', now()-10) }, {});
+ok($storage->clear_expire_token(), 'clear_expire_token');
+
+$sth = $storage->dbh->prepare('SELECT * FROM `session` WHERE `token` = ? ');
+$sth->execute( 'session_expire_token' );
+is($sth->rows, 0, 'clean_expire_session');
+
 
 is( $storage->count_user, 2 );
 
