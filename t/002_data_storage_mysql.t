@@ -67,6 +67,8 @@ $user->{ token } = 'aaaaa';
 ok( $storage->add_or_replace_user( $user ), 'add_or_replace_user' );
 
 
+
+
 my $token2 = 'ABC123';
 ok($storage->add_session($user, $token2), 'add_session');
 my $sth = $storage->dbh->prepare('SELECT * FROM `session` WHERE `token` = ? ');
@@ -77,6 +79,7 @@ my $session = $storage->get_session_by_token($token2);
 #print Dumper($session);
 is($session->{user_key}, $user->{user_key}, 'compare session' );
 
+is($storage->get_user_by_token('EVER_NOT_MATCH_TOKEN'), undef, 'fake token session check');
 
 $storage->dbh->do(q{INSERT INTO `session` (`user_key`, `token`, `expire_at`) VALUES ('session_expire_user_key', 'session_expire_token', now()-10) }, {});
 ok($storage->clear_expire_token(), 'clear_expire_token');

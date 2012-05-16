@@ -70,7 +70,9 @@ sub get_user_by_token {
     $sth->execute( $token );
     my $row = $sth->fetchrow_hashref;
     my $_user = $self->get_user_by_userkey($row->{user_key});
-    $_user->{ token } = $token;
+    if($_user){
+        $_user->{ token } = $token;
+    }
     return $_user;
 }
 
