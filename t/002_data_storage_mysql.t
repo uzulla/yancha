@@ -79,7 +79,7 @@ is($session->{user_key}, $user->{user_key}, 'compare session' );
 
 
 $storage->dbh->do(q{INSERT INTO `session` (`user_key`, `token`, `expire_at`) VALUES ('session_expire_user_key', 'session_expire_token', now()-10) }, {});
-ok($storage->clean_expire_session(), 'clean_expire_session');
+ok($storage->clear_expire_token(), 'clear_expire_token');
 
 $sth = $storage->dbh->prepare('SELECT * FROM `session` WHERE `token` = ? ');
 $sth->execute( 'session_expire_token' );

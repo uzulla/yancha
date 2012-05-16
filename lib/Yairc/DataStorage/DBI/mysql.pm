@@ -123,7 +123,7 @@ sub get_session_by_token {
     return $sth->fetchrow_hashref;
 }
 
-sub clean_expire_session {
+sub clear_expire_token {
     my ( $self ) = @_;
     return $self->dbh->do(q{DELETE FROM `session` WHERE expire_at < now() }, {});
 }
