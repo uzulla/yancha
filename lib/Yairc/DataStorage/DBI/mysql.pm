@@ -130,6 +130,18 @@ sub clear_expire_token {
     return $self->dbh->do(q{DELETE FROM `session` WHERE expire_at < now() }, {});
 }
 
+sub revoke_token {
+    my ( $self, $user ) = @_;
+    my $token = ref $user ? $user->{ token } : $user;
+    return $self->dbh->do(q{DELETE FROM `session` WHERE `token` = ?}, {}, $token);
+}
+
+sub revoke_user_tokens {
+    my ( $self, $user ) = @_;
+    my $userkey = ref $user ? $user->{ user_key } : $user;
+    return $self->dbh->do(q{DELETE FROM `session` WHERE `user_key` = ?}, {}, $user);
+}
+
 
 # post
 
