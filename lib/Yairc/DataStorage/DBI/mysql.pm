@@ -86,11 +86,11 @@ sub replace_user {
 }
 
 sub add_or_replace_user {
-    my ( $self, $user ) = @_;
+    my ( $self, $user, $extra ) = @_;
     my $sth = $self->{ user_insert_or_update };
     $sth->execute( @{$user}{qw/user_key nickname profile_image_url sns_data_cache/} );
     my $_user = $self->get_user_by_userkey( $user->{ user_key } );
-    $self->add_session($user->{user_key}, $user->{token});
+    $self->add_session( $user->{user_key}, $user->{token}, $extra );
     $_user->{token} = $user->{token};
     return $_user;
 }
@@ -107,13 +107,15 @@ sub count_user {
 }
 
 sub add_session {
-    my ( $self, $user, $token ) = @_;
+    my ( $self, $user, $token, $extra ) = @_;
     my $userkey = ref $user ? $user->{ user_key } : $user;
-    return $self->dbh->do(q{
+    $extra ||= {};
+    my $exp = $extra->{ token_expiration_sec } ||= 604800; # 7 days
+    return $self->dbh->do(sprintf(q{
         INSERT INTO `session` (
             `user_key`,`token`,`expire_at`
-        ) VALUES ( ?, ?, ADDDATE( now(), INTERVAL 7 DAY ) )
-    }, {}, ($userkey, $token) );
+        ) VALUES ( ?, ?, ADDDATE( now(), INTERVAL %d SECOND ) )
+    }, $exp), {}, ($userkey, $token) );
 }
 
 sub get_session_by_token {

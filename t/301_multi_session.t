@@ -13,7 +13,10 @@ BEGIN {
 }
 
 my $mysqld = t::Utils->setup_mysqld( schema => './db/init.sql' );
-my $config = { database => { connect_info => [ $mysqld->dsn ] } };
+my $config = {
+    database => { connect_info => [ $mysqld->dsn ] },
+    token_expiration_sec => 10,
+};
 my $server = t::Utils->server_with_dbi( config => $config );
 
 my $storage = Yairc::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn ] );
@@ -62,8 +65,17 @@ my $client = sub {
     ok( $user1->{ token } ne $user2->{ token } );
 
     my $sessions = $storage->dbh->selectall_arrayref('SELECT * FROM session');
-
     is( scalar(@$sessions), 2 );
+
+    my $cv = AnyEvent->condvar;
+    my $timer = AnyEvent->timer( after => 10, cb => sub {
+        $storage->clear_expire_token();
+        $cv->send;
+    } );
+    $cv->wait;
+
+    $sessions = $storage->dbh->selectall_arrayref('SELECT * FROM session');
+    is( scalar(@$sessions), 0 );
 
 };
 
