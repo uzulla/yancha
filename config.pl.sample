@@ -31,6 +31,8 @@ use strict;
 
     'message_log_limit' => 100, # タグ毎のログ数
 
+    'token_expiration_sec' => 10, # default 604800 sec = 7 days
+
     'plugins' => [
         [ 'AutoDefaultTag' => [ 'public' ], ],
         [ 'WelcomeMessage', [ message => 'Hi, %s. This is Hachioji.pm!' ] ],

@@ -14,8 +14,8 @@ sub init {
     $self->{ user_insert_or_update } = $dbh->prepare(q/
         INSERT INTO `user` (
             `user_key`,`nickname`,`profile_image_url`,
-            `sns_data_cache`,`token`,`created_at`,`updated_at`
-        ) VALUES ( ?, ?, ?, ?, ?, now(), now() )
+            `sns_data_cache`,`created_at`,`updated_at`
+        ) VALUES ( ?, ?, ?, ?, now(), now() )
         ON DUPLICATE KEY UPDATE `sns_data_cache`=values(`sns_data_cache`),
         `nickname`=values(`nickname`),
         `profile_image_url`=values(`profile_image_url`),
@@ -25,8 +25,8 @@ sub init {
     $self->{ user_select_by_userkey } = $dbh->prepare(
         'SELECT * FROM `user` WHERE `user_key`=? '
     );
-    $self->{ user_select_by_token } = $dbh->prepare(
-        'SELECT * FROM `user` WHERE `token`=? '
+    $self->{ user_key_select_by_token } = $dbh->prepare(
+        'SELECT * FROM `session` WHERE `token`=? '
     );
     $self->{ insert_post } = $dbh->prepare(
         'INSERT INTO `post` (
@@ -36,6 +36,9 @@ sub init {
     $self->{ get_last_posts_by_tag } = $dbh->prepare(
         'SELECT * FROM `post` WHERE `tags` like ? AND `created_at_ms` > ?
                 ORDER BY `created_at_ms` DESC LIMIT ? ');
+    $self->{ get_session_by_token } = $dbh->prepare(
+        'SELECT * FROM `session` WHERE `token` = ? AND `expire_at` > now() ');
+
 }
 
 sub add_user {
@@ -43,11 +46,13 @@ sub add_user {
     my $ret = $self->dbh->do(q{
         INSERT INTO `user` (
             `user_key`,`nickname`,`profile_image_url`,
-            `sns_data_cache`,`token`,`created_at`,`updated_at`
-        ) VALUES ( ?, ?, ?, ?, ?, now(), now() )
-    }, {}, @{$user}{qw/user_key nickname profile_image_url sns_data_cache token/} );
+            `sns_data_cache`,`created_at`,`updated_at`
+        ) VALUES ( ?, ?, ?, ?, now(), now() )
+    }, {}, @{$user}{qw/user_key nickname profile_image_url sns_data_cache/} );
 
-    return $ret ? $user : undef;
+    my $ret_session = $self->add_session($user->{user_key},$user->{token});
+
+    return ($ret && $ret_session) ? $user : undef;
 }
 
 sub get_user_by_userkey {
@@ -61,9 +66,12 @@ sub get_user_by_userkey {
 sub get_user_by_token {
     my ( $self, $user ) = @_;
     my $token = ref $user ? $user->{ token } : $user;
-    my $sth = $self->{ user_select_by_token };
+    my $sth = $self->{ user_key_select_by_token };
     $sth->execute( $token );
-    return $sth->fetchrow_hashref;
+    my $row = $sth->fetchrow_hashref;
+    my $_user = $self->get_user_by_userkey($row->{user_key});
+    $_user->{ token } = $token;
+    return $_user;
 }
 
 sub replace_user {
@@ -71,28 +79,69 @@ sub replace_user {
     my $sth = $self->dbh->prepare(q{
         UPDATE `user` SET
         `nickname` = ?, `profile_image_url` = ?,
-        `sns_data_cache` = ?, `token` = ?, `updated_at` = now()
+        `sns_data_cache` = ?, `updated_at` = now()
         WHERE `user_key` = ?
     });
-    return $sth->execute(@{$user}{qw/nickname profile_image_url sns_data_cache token user_key/});
+    return $sth->execute(@{$user}{qw/nickname profile_image_url sns_data_cache user_key/});
 }
 
 sub add_or_replace_user {
-    my ( $self, $user ) = @_;
+    my ( $self, $user, $extra ) = @_;
     my $sth = $self->{ user_insert_or_update };
-    $sth->execute( @{$user}{qw/user_key nickname profile_image_url sns_data_cache token/} );
-    $self->get_user_by_userkey( $user->{ user_key } );
+    $sth->execute( @{$user}{qw/user_key nickname profile_image_url sns_data_cache/} );
+    my $_user = $self->get_user_by_userkey( $user->{ user_key } );
+    $self->add_session( $user->{user_key}, $user->{token}, $extra );
+    $_user->{token} = $user->{token};
+    return $_user;
 }
 
 sub remove_user {
     my ( $self, $user ) = @_;
     my $userkey = $user->{ user_key };
+    $self->dbh->do(q{DELETE FROM `session` WHERE user_key = ? }, {}, $userkey);
     return $self->dbh->do(q{DELETE FROM `user` WHERE user_key = ? }, {}, $userkey);
 }
 
 sub count_user {
     return $_[0]->dbh->selectrow_array('SELECT count(*) FROM `user`');
 }
+
+sub add_session {
+    my ( $self, $user, $token, $extra ) = @_;
+    my $userkey = ref $user ? $user->{ user_key } : $user;
+    $extra ||= {};
+    my $exp = $extra->{ token_expiration_sec } ||= 604800; # 7 days
+    return $self->dbh->do(sprintf(q{
+        INSERT INTO `session` (
+            `user_key`,`token`,`expire_at`
+        ) VALUES ( ?, ?, ADDDATE( now(), INTERVAL %d SECOND ) )
+    }, $exp), {}, ($userkey, $token) );
+}
+
+sub get_session_by_token {
+    my ( $self, $token ) = @_;
+    my $sth = $self->{ get_session_by_token };
+    $sth->execute($token);
+    return $sth->fetchrow_hashref;
+}
+
+sub clear_expire_token {
+    my ( $self ) = @_;
+    return $self->dbh->do(q{DELETE FROM `session` WHERE expire_at < now() }, {});
+}
+
+sub revoke_token {
+    my ( $self, $user ) = @_;
+    my $token = ref $user ? $user->{ token } : $user;
+    return $self->dbh->do(q{DELETE FROM `session` WHERE `token` = ?}, {}, $token);
+}
+
+sub revoke_user_tokens {
+    my ( $self, $user ) = @_;
+    my $userkey = ref $user ? $user->{ user_key } : $user;
+    return $self->dbh->do(q{DELETE FROM `session` WHERE `user_key` = ?}, {}, $user);
+}
+
 
 # post
 

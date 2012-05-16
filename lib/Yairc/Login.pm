@@ -23,7 +23,11 @@ sub set_user_into_storage {
 
     $self->sys->call_hook( 'authenticated', undef, $user );
 
-    return $self->data_storage->add_or_replace_user( $user );
+    my $extra    = { token_expiration_sec => $self->sys->config->{ token_expiration_sec } };
+    my $ret_user = $self->data_storage->add_or_replace_user( $user, $extra );
+    $ret_user->{token} = $token;
+
+    return $ret_user;
 }
 
 sub generate_token { # almost code are from HTTP::Session
