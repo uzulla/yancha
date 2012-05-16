@@ -69,7 +69,9 @@ sub get_user_by_token {
     my $sth = $self->{ user_key_select_by_token };
     $sth->execute( $token );
     my $row = $sth->fetchrow_hashref;
-    return $self->get_user_by_userkey($row->{user_key});
+    my $_user = $self->get_user_by_userkey($row->{user_key});
+    $_user->{ token } = $token;
+    return $_user;
 }
 
 sub replace_user {
