@@ -25,7 +25,7 @@ sub DESTROY {
 
 sub w ($) {
     my ($text) = @_;
-    warn(encode('UTF-8', $text));
+    print STDERR encode('UTF-8', $text), "\n";
 }
 
 sub dispatch {
@@ -56,7 +56,7 @@ sub token_login {
 
     my $nickname = $user->{nickname};
 
-    DEBUG && w "hello $nickname";
+    DEBUG && w sprintf('%s: hello %s (%s)', $socket->id, $nickname, $user->{ token });
     
     $socket->set(user_data => $user);
     
@@ -157,7 +157,8 @@ sub user_message {
         #タグ毎に送信処理
         for my $tag ( @tags ) {
             next unless $tags->{ $tag };
-            DEBUG && w "Send to ${tag} from $user->{nickname} => \"${message}\"";
+            DEBUG && w sprintf('Send to %s from %s (%s) => "%s"',
+                                    $tag, $user->{ nickname }, $user->{ token}, $message);
             $tags->{ $tag }->send( $event );
         }
     });
@@ -175,7 +176,7 @@ sub disconnect {
             $self->sys->call_hook( 'disconnected', $socket, $user );
 
             if( !defined($user) ){
-                DEBUG && w "bye undefined nickname user";
+                DEBUG && w sprintf('%s: bye unlogined user', $socket->id);
                 return;
             }
             my $nickname = $user->{ nickname };
@@ -192,7 +193,7 @@ sub disconnect {
             $socket->broadcast->emit('announcement', $nickname . ' disconnected');
             $socket->broadcast->emit('nicknames', _get_uniq_and_anon_nicknames($users));
 
-            DEBUG && w "bye ".$nickname;
+            DEBUG && w sprintf('%s: bye %s (%s)', $socket->id, $nickname, $user->{ token });
         }
     );
 }
