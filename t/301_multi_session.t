@@ -69,7 +69,7 @@ my $client = sub {
 
     my $cv = AnyEvent->condvar;
     my $timer = AnyEvent->timer( after => 10, cb => sub {
-        $storage->clear_expire_token();
+        $storage->clear_expired_session();
         $cv->send;
     } );
     $cv->wait;

@@ -82,7 +82,7 @@ is($session->{user_key}, $user->{user_key}, 'compare session' );
 is($storage->get_user_by_token('EVER_NOT_MATCH_TOKEN'), undef, 'fake token session check');
 
 $storage->dbh->do(q{INSERT INTO `session` (`user_key`, `token`, `expire_at`) VALUES ('session_expire_user_key', 'session_expire_token', now()-10) }, {});
-ok($storage->clear_expire_token(), 'clear_expire_token');
+ok($storage->clear_expired_session(), 'clear_expired_session');
 
 $sth = $storage->dbh->prepare('SELECT * FROM `session` WHERE `token` = ? ');
 $sth->execute( 'session_expire_token' );
