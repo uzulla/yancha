@@ -15,7 +15,6 @@ our $SERVER_INFO =  {
     'version' => $VERSION,
     'name'    => 'Yairc(kari)',
     'introduction'   => 'Hello Hachioji.pm',
-    'login_endpoint' => {},
 };
 
 my $users        = {}; # session id -> user data
@@ -66,6 +65,23 @@ sub login {
         Carp::croak( $@ ) if $@;
         $module->new( data_storage => $self->data_storage, sys => $self );
     };
+}
+
+sub build_auth_endpoint_from_server_info {
+    my ( $self, $conf ) = @_;
+    $conf ||= $self->config->{ server_info };
+
+    unless ( $conf and $conf->{ auth_endpoint } ) {
+        Carp::carp( "No auth endpoint config" );
+        return;
+    }
+
+    use Plack::Builder;
+#    Plack::Builder->import;
+    for my $endpoint ( keys %{ $conf->{ auth_endpoint } } ) {
+        my ( $name, $arg ) = @{ $conf->{ auth_endpoint }->{ $endpoint } };
+        mount $endpoint => $self->login( $name )->build_psgi_endpoint( $arg );
+    }
 }
 
 sub load_plugins {
@@ -139,9 +155,32 @@ sub run {
 
 sub server_info {
     my ( $self, $socket ) = @_;
-    $socket->emit( 'server info', $_[0]->config->{ server_info } || $SERVER_INFO );
+    my $config = $self->config;
+    my $server_info = $self->{server_info} ||= do {
+        if ( my $info = $config->{ server_info } ) {
+            $self->_server_info( $info );
+        }
+        else {
+            $SERVER_INFO;
+        }
+    };
+    $socket->emit( 'server info', $server_info );
 }
 
+sub _server_info {
+    my ( $self, $info ) = @_;
+    {
+        name          => $info->{ name },
+        version       => $info->{ version },
+        introduction  => $info->{ introduction },
+        default_tag   => $info->{ default_tag },
+        auth_endpoint => +{
+            map {
+                $_ => $info->{ auth_endpoint }->{$_}->[2] || ''
+            } keys %{ $info->{ auth_endpoint } }
+        },
+    };
+}
 
 1;
 __END__

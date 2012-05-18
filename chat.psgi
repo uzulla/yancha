@@ -49,11 +49,7 @@ builder {
     # https://gist.github.com/2440738
     mount '/api' => do ( './api.psgi' ) ;
 
-    mount '/login/twitter' => $yairc->login('Twitter')
-                                    ->build_psgi_endpoint( $config->{ twitter_appli } );
-
-    mount '/login'         => $yairc->login('Simple')
-                                    ->build_psgi_endpoint( { name_field => 'nick' } );
+    $yairc->build_auth_endpoint_from_server_info();
 
     mount '/' => builder {
         enable "Static",

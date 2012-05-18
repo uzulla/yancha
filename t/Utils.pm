@@ -29,10 +29,14 @@ sub server_with_dbi {
     builder {
         enable 'Session';
 
+        $sys->build_auth_endpoint_from_server_info
+                if $config->{ server_info } && $config->{ server_info }->{ auth_endpoint };
+
         mount '/socket.io' => PocketIO->new(
                 socketio => $config->{ socketio },
                 instance => $sys,
         );
+
 
         mount '/login/twitter' => $sys->login('Twitter')
                                       ->build_psgi_endpoint( $config->{ twitter_appli } );
