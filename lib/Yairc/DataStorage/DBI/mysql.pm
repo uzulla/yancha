@@ -232,6 +232,14 @@ sub search_post {
         $where_tag->add('tags', [ map { { 'like' => '% ' . uc($_) . ' %' } } @$tags ]);
     }
 
+    my $where_text;
+    if ( exists $params->{ text } ) {
+        $where_text = _sql_maker_cond();
+        my $keywords = $params->{ text };
+        $keywords = ref $keywords ? $keywords : [ $keywords ];
+        $where_text->add( 'text', [ map { { 'like', => '%' . $_ . '%' } } grep { $_ ne '' } @$keywords ] );
+    }
+
     my $where_time;
     if ( exists $params->{ created_at_ms } ) {
         $where_time = _sql_maker_cond();
@@ -260,7 +268,7 @@ sub search_post {
         }
     }
 
-    for ( $where_tag , $where_time, $where_id ) {
+    for ( $where_text, $where_tag , $where_time, $where_id ) {
         if ( !$where and $_ ) {
             $where = $_;
             next;
