@@ -7,7 +7,9 @@ use Time::HiRes  ();
 
 sub new {
     my ( $class, @args ) = @_;
-    return bless { @args }, $class;
+    my $self = bless { @args }, $class;
+    $self->setup() if $self->can('setup');
+    return $self;
 }
 
 sub data_storage { $_[0]->{ data_storage } } 
