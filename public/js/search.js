@@ -8,6 +8,8 @@ function submitSearch(){
 
   var f = $("#searchform");
   var keyword = $('input[name=keyword]', f).val();
+  keyword = keyword.replace(/　/g, ' '); // 全角→半角
+
   var tag = $('input[name=tag]', f).val();
   var limit = parseInt($('select[name=limit]', f).val());
   var time ;
@@ -23,7 +25,7 @@ function submitSearch(){
   
   $.ajax({
     type: 'POST',
-    url: location.href.split('/search')[0]+"/api/", // todo
+    url: location.href.split('/search')[0]+"/api/search", // todo
     data: {
       keyword:keyword,
       tag:tag,
