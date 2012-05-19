@@ -8,7 +8,7 @@ use parent qw(Yairc::API);
 our $VERSION = '0.01';
 
 
-sub search {
+sub run {
     my ( $self, $req ) = @_;
     my $posts  = $self->_search_posts( $req );
     my $format = $req->param('t') || 'json';
@@ -78,7 +78,7 @@ sub _search_posts {
 
     $attr->{ limit } ||= 20;
 
-    return $self->data_storage->search_post( $where, $attr );
+    return $self->sys->data_storage->search_post( $where, $attr );
 }
 
 

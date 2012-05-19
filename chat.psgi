@@ -45,9 +45,7 @@ builder {
 
     mount '/socket.io' => PocketIO->new( socketio => $config->{ socketio }, instance => $yairc );
 
-    # APIリクエストサンプル
-    # https://gist.github.com/2440738
-    mount '/api' => do ( './api.psgi' ) ;
+    $yairc->build_psgi_endpoint_from_server_info('api');
 
     mount '/login/twitter' => $yairc->login('Twitter')
                                     ->build_psgi_endpoint( $config->{ twitter_appli } );

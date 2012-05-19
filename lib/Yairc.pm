@@ -68,6 +68,55 @@ sub login {
     };
 }
 
+sub build_psgi_endpoint_from_server_info {
+    my ( $self, $name, $conf ) = @_;
+
+    unless ( $conf and ref( $conf ) eq 'HASH' ) {
+        $conf = $self->config->{ server_info } || {};
+        $conf = $conf->{ $name . '_endpoint' };
+    }
+
+    unless ( $conf ) {
+        Carp::croak( "No $name endpoint config" );
+    }
+
+    require Plack::Builder;
+    # Plack::Builder->import; # why it does not export 'mount'?
+    for my $endpoint ( keys %{ $conf } ) {
+        my ( $name, $arg, undef ) = @{ $conf->{ $endpoint } };
+        my $module = $self->load_module( 'API' => $name );
+        unless ( $module->can('build_psgi_endpoint') ) {
+            Carp::croak( "$module must have build_psgi_endpoint." );
+        }
+        my $builder = $module->new( sys => $self );
+        Plack::Builder::mount $endpoint => $builder->build_psgi_endpoint( $arg );
+    }
+}
+
+sub load_module {
+    my ( $self, $type, $module ) = @_;
+
+    if ( @_ == 2 ) {
+        $module = $type;
+        $module = '+' . $module if $module !~ /^\+/;
+    }
+
+    if ( $module !~ s/^\+// ) {
+        $module = __PACKAGE__ . '::' . $type . '::' . $module;
+    }
+
+    eval {
+        ( my $path = $module . '.pm' ) =~ s{::}{/}g;
+        require $path;
+        $path->import();
+    };
+    if ( $@ ) {
+        Carp::croak $@;
+    }
+
+    return $module;
+}
+
 sub load_plugins {
     my ( $self, $plugins ) = @_;
     return unless $plugins and ref($plugins) eq 'ARRAY';
