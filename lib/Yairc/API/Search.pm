@@ -35,8 +35,7 @@ sub _search_posts {
     }
 
     if ( my $keywords = $req->param('keyword') ) {
-        #TODO 全角スペースで単語を区切る
-        $where->{ text } = [ grep { $_ ne '' } split(/[\,\x20]/, $keywords) ];
+        $where->{ text } = [ grep { $_ ne '' } split(/[,\x20]/, $keywords) ];
     }
 
     if ( my $times = $req->param('time') ) { # epoch sec

@@ -237,7 +237,7 @@ sub search_post {
         $where_text = _sql_maker_cond();
         my $keywords = $params->{ text };
         $keywords = ref $keywords ? $keywords : [ $keywords ];
-        $where_text->add( 'text', [ map { { 'like', => '%' . $_ . '%' } } grep { $_ ne '' } @$keywords ] );
+        $where_text->add( 'text', [ '-and', map { { 'like', => '%' . $_ . '%' } } grep { $_ ne '' } @$keywords ] );
     }
 
     my $where_time;
@@ -268,7 +268,7 @@ sub search_post {
         }
     }
 
-    for ( $where_text, $where_tag , $where_time, $where_id ) {
+    for ( $where_id, $where_tag, $where_text, $where_time ) {
         if ( !$where and $_ ) {
             $where = $_;
             next;
