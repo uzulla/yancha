@@ -13,6 +13,16 @@ use strict;
         'max_connection'     => 100, # 最大同時接続数...現在のところPocketIO自体は利用していない
     },
 
+    'server_info' => {
+        version       => '1.00',
+        name          => 'Hachoji.pm',
+        default_tag   => 'PUBLIC',
+        introduction  => 'テストサーバ',
+        api_endpoint => {
+            '/api/search'  => [ 'Search' => {} => 'user message検索用api' ],
+        },
+    },
+
     'database' => {
         'connect_info' => [
             'dbi:mysql:database=name', 'user', 'password', 
