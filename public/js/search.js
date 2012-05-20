@@ -8,8 +8,6 @@ function submitSearch(){
 
   var f = $("#searchform");
   var keyword = $('input[name=keyword]', f).val();
-  keyword = keyword.replace(/　/g, ' '); // 全角→半角
-
   var tag = $('input[name=tag]', f).val();
   var limit = parseInt($('select[name=limit]', f).val());
   var time ;

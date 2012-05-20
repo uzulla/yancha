@@ -2,8 +2,10 @@ package Yairc::API::Search;
 
 use strict;
 use warnings;
+use utf8;
 use Yairc::API;
 use parent qw(Yairc::API);
+use Encode ();
 
 our $VERSION = '0.01';
 
@@ -35,7 +37,7 @@ sub _search_posts {
     }
 
     if ( my $keywords = $req->param('keyword') ) {
-        $where->{ text } = [ grep { $_ ne '' } split(/[,\x20]/, $keywords) ];
+        $where->{ text } = [ grep { $_ ne '' } split(/[,\x20　]/, Encode::decode_utf8($keywords)) ];
     }
 
     if ( my $times = $req->param('time') ) { # epoch sec
