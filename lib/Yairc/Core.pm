@@ -56,7 +56,7 @@ sub token_login {
 
     my $nickname = $user->{nickname};
 
-    DEBUG && w sprintf('%s: hello %s (%s)', $socket->id, $nickname, $user->{ token });
+    DEBUG && w sprintf('%s: hello %s (%s)', $socket->id, _nickname_and_token( $user, 8 ));
     
     $socket->set(user_data => $user);
     
@@ -149,7 +149,7 @@ sub user_message {
         $post->{is_message_log} = JSON::false;
 
         DEBUG && w sprintf('Send message from %s (%s) => "%s"',
-                                    $user->{ nickname }, $user->{ token}, $message);
+                                    _nickname_and_token( $user, 8 ), $message);
 
         #タグ毎に送信処理
         $self->sys->send_post_to_tag_joined( $post => \@tags );
@@ -185,7 +185,7 @@ sub disconnect {
             $socket->broadcast->emit('announcement', $nickname . ' disconnected');
             $socket->broadcast->emit('nicknames', _get_uniq_and_anon_nicknames($users));
 
-            DEBUG && w sprintf('%s: bye %s (%s)', $socket->id, $nickname, $user->{ token });
+            DEBUG && w sprintf('%s: bye %s (%s)', $socket->id, _nickname_and_token( $user, 8 ));
         }
     );
 }
@@ -208,6 +208,16 @@ sub _send_lastlog_by_tag_lastusec {
 sub _get_uniq_and_anon_nicknames {
     my ( $users ) = @_;
     return { map { $_->{ nickname } => $_->{ nickname } } values %$users };
+}
+
+sub _nickname_and_token {
+    my ( $user, $num ) = @_;
+    if ( $num ) {
+        return ( $user->{ nickname }, substr( $user->{ token }, 0, $num ) . '...' );
+    }
+    else {
+        return ( $user->{ nickname }, $user->{ token } );
+    }
 }
 
 1;
