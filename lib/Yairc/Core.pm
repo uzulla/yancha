@@ -148,19 +148,11 @@ sub user_message {
 
         $post->{is_message_log} = JSON::false;
 
-        my $event = PocketIO::Message->new(
-            type => 'event',
-            data => { name => 'user message', args => [ $post ] }
-        );
+        DEBUG && w sprintf('Send message from %s (%s) => "%s"',
+                                    $user->{ nickname }, $user->{ token}, $message);
 
-        my $tags = $self->sys->tags;
         #タグ毎に送信処理
-        for my $tag ( @tags ) {
-            next unless $tags->{ $tag };
-            DEBUG && w sprintf('Send to %s from %s (%s) => "%s"',
-                                    $tag, $user->{ nickname }, $user->{ token}, $message);
-            $tags->{ $tag }->send( $event );
-        }
+        $self->sys->send_post_to_tag_joined( $post => \@tags );
     });
 }
 

@@ -193,6 +193,35 @@ sub server_info {
     $socket->emit( 'server info', $_[0]->config->{ server_info } || $SERVER_INFO );
 }
 
+# misc
+
+sub send_post_to_tag_joined {
+    my ( $self, $post, $tags ) = @_;
+    my $event = $self->post_to_event( $post );
+    $self->send_event_to_tag_joined( $event, $tags );
+}
+
+sub post_to_event {
+    my ( $self, $post ) = @_;
+    return PocketIO::Message->new(
+        type => 'event',
+        data => { name => 'user message', args => [ $post ] }
+    );
+}
+
+sub send_event_to_tag_joined {
+    my ( $self, $event, $target_tags ) = @_;
+    my $tags = $self->tags;
+
+    $target_tags = [ $target_tags ] unless ref $target_tags;
+
+    for my $tag ( @{ $target_tags } ) {
+        next unless exists $tags->{ $tag };
+        DEBUG && print STDERR sprintf("Send event to tag %s\n", $tag);
+        $tags->{ $tag }->send( $event );
+    }
+}
+
 
 1;
 __END__
