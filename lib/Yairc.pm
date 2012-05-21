@@ -170,8 +170,10 @@ sub tag_trigger {
 
     for ( @$tags ) {
         next unless exists $self->{ tag_trigger }->{ $_ };
-        my ($subref, $args) = @{ $self->{ tag_trigger }->{ $_ } };
-        $subref->( $self, $socket, $_, $message_ref, $tags, @$args );
+        for ( @{ $self->{ tag_trigger }->{ $_ } } ) {
+            my ($subref, $args) = @{ $_ };
+            $subref->( $self, $socket, $_, $message_ref, $tags, @$args );
+        }
     }
 }
 
