@@ -198,7 +198,7 @@ sub server_info {
 sub send_post_to_tag_joined {
     my ( $self, $post, $tags ) = @_;
     my $event = $self->post_to_event( $post );
-    $self->send_event_to_tag_joined( $event, $tags );
+    $self->send_event_to_tag_joined( $event, $tags, 'no_dup' );
 }
 
 sub post_to_event {
@@ -210,15 +210,22 @@ sub post_to_event {
 }
 
 sub send_event_to_tag_joined {
-    my ( $self, $event, $target_tags ) = @_;
+    my ( $self, $event, $target_tags, $no_dup ) = @_;
     my $tags = $self->tags;
+    my %sent; # if $no_dup, we shall send the event to users once.
 
     $target_tags = [ $target_tags ] unless ref $target_tags;
 
     for my $tag ( @{ $target_tags } ) {
         next unless exists $tags->{ $tag };
         DEBUG && print STDERR sprintf("Send event to tag %s\n", $tag);
-        $tags->{ $tag }->send( $event );
+        my $conns = $tags->{ $tag }->{ connections };
+        for my $socket_id ( keys %{ $conns } ) {
+            next if $no_dup && exists $sent{ $socket_id };
+            next unless $conns->{ $socket_id }->is_connected;
+            $conns->{ $socket_id }->socket->send( $event );
+            $sent{ $socket_id }++;
+        }
     }
 }
 
