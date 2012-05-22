@@ -94,31 +94,17 @@ sub join_tag { #参加タグの登録（タグ毎のコネクションプール�
         %{ $tag_and_time } = map { uc($_) => $tag_and_time->{ $_ } } keys %{ $tag_and_time  };
     }
 
-    my $socket_id = $socket->id();
+    my $log_limit = $self->sys->config->{ message_log_limit };
+    my $on_added  = sub {
+        my ( $socket, $tag ) = @_;
+        $self->_send_lastlog_by_tag_lastusec( $socket, $tag, $tag_and_time->{$tag}, $log_limit );
+    };
 
     # 前と今の接続を比較して、なくなったタグをリストアップ
     my @new_joined_tags = keys %{ $tag_and_time };
-    my %joined_tag      = map { $_ => 1 } @{ $self->sys->tags_reverse->{$socket_id} ||= [] };
 
-    # タグ毎にPocketIO::Poolを作成して自分の接続を追加、過去ログを送る
-    my $log_limit = $self->sys->config->{ message_log_limit };
-    my $tags      = $self->sys->tags;
+    $self->sys->add_tag_socket( $socket, \@new_joined_tags, { on_added => $on_added } );
 
-    for my $tag ( @new_joined_tags ) {
-        $tags->{ $tag } ||= PocketIO::Pool->new();
-        # there is no proper api in PocketIO::Pool class, so manually set.
-        $tags->{ $tag }->{connections}->{ $socket_id } = $socket->{conn};
-        $self->_send_lastlog_by_tag_lastusec( $socket, $tag, $tag_and_time->{$tag}, $log_limit);
-        delete $joined_tag{ $tag };
-    }
-
-    # 無くなったタグに紐づくコネクションを消していく
-    for my $tag ( keys %joined_tag ) {
-        delete $tags->{ $tag }->{connections}->{ $socket_id };
-    }
-
-    # SID＞tagテーブル更新
-    @{ $self->sys->tags_reverse->{$socket_id} } = @new_joined_tags;
     #更新した参加タグをレスポンス
     $socket->emit('join tag', $tag_and_time);
 }
@@ -171,18 +157,10 @@ sub disconnect {
                 DEBUG && w sprintf('%s: bye unlogined user', $socket->id);
                 return;
             }
-            my $nickname = $user->{ nickname };
 
-            my $socket_id = $socket->id();
-            delete $users->{$socket_id};
+            $self->sys->remove_tag_socket( $socket );
 
-            #タグ毎にできたPool等からも削除
-            my $joined_tags = delete $self->sys->tags_reverse->{$socket_id};
-            foreach my $k ( @$joined_tags ) {
-                delete $tags->{$k}->{connections}->{$socket_id};
-            }
-
-            $socket->broadcast->emit('announcement', $nickname . ' disconnected');
+            $socket->broadcast->emit('announcement', $user->{ nickname } . ' disconnected');
             $socket->broadcast->emit('nicknames', _get_uniq_and_anon_nicknames($users));
 
             DEBUG && w sprintf('%s: bye %s (%s)', $socket->id, _nickname_and_token( $user, 8 ));
