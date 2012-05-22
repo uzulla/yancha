@@ -56,7 +56,7 @@ sub token_login {
 
     my $nickname = $user->{nickname};
 
-    DEBUG && w sprintf('%s: hello %s (%s)', $socket->id, $nickname, $user->{ token });
+    DEBUG && w sprintf('%s: hello %s (%s)', $socket->id, _nickname_and_token( $user, 8 ));
     
     $socket->set(user_data => $user);
     
@@ -126,7 +126,7 @@ sub join_tag { #参加タグの登録（タグ毎のコネクションプール�
 sub user_message {
     my ( $self, $socket, $message ) = @_;
 
-    $self->sys->call_hook( 'user_message', \$message );
+    $self->sys->call_hook( 'user_message', $socket, \$message );
 
     my @tags = $self->sys->extract_tags_from_text( $message );
 
@@ -148,19 +148,11 @@ sub user_message {
 
         $post->{is_message_log} = JSON::false;
 
-        my $event = PocketIO::Message->new(
-            type => 'event',
-            data => { name => 'user message', args => [ $post ] }
-        );
+        DEBUG && w sprintf('Send message from %s (%s) => "%s"',
+                                    _nickname_and_token( $user, 8 ), $message);
 
-        my $tags = $self->sys->tags;
         #タグ毎に送信処理
-        for my $tag ( @tags ) {
-            next unless $tags->{ $tag };
-            DEBUG && w sprintf('Send to %s from %s (%s) => "%s"',
-                                    $tag, $user->{ nickname }, $user->{ token}, $message);
-            $tags->{ $tag }->send( $event );
-        }
+        $self->sys->send_post_to_tag_joined( $post => \@tags );
     });
 }
 
@@ -193,7 +185,7 @@ sub disconnect {
             $socket->broadcast->emit('announcement', $nickname . ' disconnected');
             $socket->broadcast->emit('nicknames', _get_uniq_and_anon_nicknames($users));
 
-            DEBUG && w sprintf('%s: bye %s (%s)', $socket->id, $nickname, $user->{ token });
+            DEBUG && w sprintf('%s: bye %s (%s)', $socket->id, _nickname_and_token( $user, 8 ));
         }
     );
 }
@@ -216,6 +208,16 @@ sub _send_lastlog_by_tag_lastusec {
 sub _get_uniq_and_anon_nicknames {
     my ( $users ) = @_;
     return { map { $_->{ nickname } => $_->{ nickname } } values %$users };
+}
+
+sub _nickname_and_token {
+    my ( $user, $num ) = @_;
+    if ( $num ) {
+        return ( $user->{ nickname }, substr( $user->{ token }, 0, $num ) . '...' );
+    }
+    else {
+        return ( $user->{ nickname }, $user->{ token } );
+    }
 }
 
 1;

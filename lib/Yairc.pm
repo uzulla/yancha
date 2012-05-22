@@ -67,21 +67,55 @@ sub login {
     };
 }
 
-sub build_auth_endpoint_from_server_info {
-    my ( $self, $conf ) = @_;
-    $conf ||= $self->config->{ server_info };
 
-    unless ( $conf and $conf->{ auth_endpoint } ) {
-        Carp::carp( "No auth endpoint config" );
-        return;
+sub build_psgi_endpoint_from_server_info {
+    my ( $self, $name, $conf ) = @_;
+
+    unless ( $conf and ref( $conf ) eq 'HASH' ) {
+        $conf = $self->config->{ server_info } || {};
+        $conf = $conf->{ $name . '_endpoint' };
     }
 
-    use Plack::Builder;
-#    Plack::Builder->import;
-    for my $endpoint ( keys %{ $conf->{ auth_endpoint } } ) {
-        my ( $name, $arg ) = @{ $conf->{ auth_endpoint }->{ $endpoint } };
-        mount $endpoint => $self->login( $name )->build_psgi_endpoint( $arg );
+    unless ( $conf ) {
+        Carp::croak( "No $name endpoint config" );
     }
+
+    require Plack::Builder;
+    # Plack::Builder->import; # why it does not export 'mount'?
+    for my $endpoint ( keys %{ $conf } ) {
+        my ( $module_name, $arg, undef ) = @{ $conf->{ $endpoint } };
+        my $type   = length $name <= 3 ? uc( $name ) : ucfirst( $name ); # API対策…いけてない
+        my $module = $self->load_module( $type => $module_name );
+        unless ( $module->can('build_psgi_endpoint') ) {
+            Carp::croak( "$module must have build_psgi_endpoint." );
+        }
+        my $builder = $module->new( sys => $self );
+        Plack::Builder::mount $endpoint => $builder->build_psgi_endpoint( $arg );
+    }
+}
+
+sub load_module {
+    my ( $self, $type, $module ) = @_;
+
+    if ( @_ == 2 ) {
+        $module = $type;
+        $module = '+' . $module if $module !~ /^\+/;
+    }
+
+    if ( $module !~ s/^\+// ) {
+        $module = __PACKAGE__ . '::' . $type . '::' . $module;
+    }
+
+    eval {
+        ( my $path = $module . '.pm' ) =~ s{::}{/}g;
+        require $path;
+        $path->import();
+    };
+    if ( $@ ) {
+        Carp::croak $@;
+    }
+
+    return $module;
 }
 
 sub load_plugins {
@@ -137,8 +171,10 @@ sub tag_trigger {
 
     for ( @$tags ) {
         next unless exists $self->{ tag_trigger }->{ $_ };
-        my ($subref, $args) = @{ $self->{ tag_trigger }->{ $_ } };
-        $subref->( $self, $socket, $_, $message_ref, $tags, @$args );
+        for ( @{ $self->{ tag_trigger }->{ $_ } } ) {
+            my ($subref, $args) = @{ $_ };
+            $subref->( $self, $socket, $_, $message_ref, $tags, @$args );
+        }
     }
 }
 
@@ -180,6 +216,35 @@ sub _server_info {
             } keys %{ $info->{ auth_endpoint } }
         },
     };
+}
+
+# misc
+
+sub send_post_to_tag_joined {
+    my ( $self, $post, $tags ) = @_;
+    my $event = $self->post_to_event( $post );
+    $self->send_event_to_tag_joined( $event, $tags );
+}
+
+sub post_to_event {
+    my ( $self, $post ) = @_;
+    return PocketIO::Message->new(
+        type => 'event',
+        data => { name => 'user message', args => [ $post ] }
+    );
+}
+
+sub send_event_to_tag_joined {
+    my ( $self, $event, $target_tags ) = @_;
+    my $tags = $self->tags;
+
+    $target_tags = [ $target_tags ] unless ref $target_tags;
+
+    for my $tag ( @{ $target_tags } ) {
+        next unless exists $tags->{ $tag };
+        DEBUG && print STDERR sprintf("Send event to tag %s\n", $tag);
+        $tags->{ $tag }->send( $event );
+    }
 }
 
 1;

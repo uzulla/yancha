@@ -2,13 +2,15 @@ package Yairc::API::Search;
 
 use strict;
 use warnings;
+use utf8;
 use Yairc::API;
 use parent qw(Yairc::API);
+use Encode ();
 
 our $VERSION = '0.01';
 
 
-sub search {
+sub run {
     my ( $self, $req ) = @_;
     my $posts  = $self->_search_posts( $req );
     my $format = $req->param('t') || 'json';
@@ -32,6 +34,10 @@ sub _search_posts {
 
     if ( my $tags = $req->param('tag') ) {
         $where->{ tag } = [ split /,/, $tags ];
+    }
+
+    if ( my $keywords = $req->param('keyword') ) {
+        $where->{ text } = [ grep { $_ ne '' } split(/[,\x20　]/, Encode::decode_utf8($keywords)) ];
     }
 
     if ( my $times = $req->param('time') ) { # epoch sec
@@ -74,7 +80,7 @@ sub _search_posts {
 
     $attr->{ limit } ||= 20;
 
-    return $self->data_storage->search_post( $where, $attr );
+    return $self->sys->data_storage->search_post( $where, $attr );
 }
 
 

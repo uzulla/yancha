@@ -7,6 +7,7 @@ function submitSearch(){
   (!$('#check_new_is_first').prop('checked')) ? $('#loading_top').show() : $('#loading_bottom').show(); // loading indicator
 
   var f = $("#searchform");
+  var keyword = $('input[name=keyword]', f).val();
   var tag = $('input[name=tag]', f).val();
   var limit = parseInt($('select[name=limit]', f).val());
   var time ;
@@ -22,8 +23,9 @@ function submitSearch(){
   
   $.ajax({
     type: 'POST',
-    url: location.href.split('/search')[0]+"/api/", // todo
+    url: location.href.split('/search')[0]+"/api/search", // todo
     data: {
+      keyword:keyword,
       tag:tag,
       limit:limit,
       time:time,
