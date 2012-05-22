@@ -126,7 +126,7 @@ sub join_tag { #参加タグの登録（タグ毎のコネクションプール�
 sub user_message {
     my ( $self, $socket, $message ) = @_;
 
-    $self->sys->call_hook( 'user_message', \$message );
+    $self->sys->call_hook( 'user_message', $socket, \$message );
 
     my @tags = $self->sys->extract_tags_from_text( $message );
 
