@@ -178,7 +178,6 @@ sub tag_trigger {
     }
 }
 
-
 #
 # PocketIO まわり
 #
@@ -218,12 +217,63 @@ sub _server_info {
     };
 }
 
-# misc
+#
+# CONNECTION
+#
+
+sub add_tag_socket {
+    my ( $self, $socket, $new_joined_tags, $opt ) = @_;
+    my $socket_id = ref $socket ? $socket->id : $socket;
+
+    my %joined_tag = map { $_ => 1 } @{ $self->tags_reverse->{ $socket_id } ||= [] };
+
+    # タグ毎にPocketIO::Poolを作成して自分の接続を追加、過去ログを送る
+    $opt ||= {};
+    my $tags       = $self->tags;
+    my $on_added   = $opt->{ on_added };
+    my $on_removed = $opt->{ on_removed };
+
+    for my $tag ( @{ $new_joined_tags } ) {
+        $tags->{ $tag } ||= PocketIO::Pool->new();
+        # there is no proper api in PocketIO::Pool class, so manually set.
+        $tags->{ $tag }->{connections}->{ $socket_id } = $socket->{conn};
+        $on_added->( $socket, $tag ) if $on_added;
+        delete $joined_tag{ $tag };
+    }
+
+    # 無くなったタグに紐づくコネクションを消していく
+    for my $tag ( keys %joined_tag ) {
+        $on_removed->( $socket, $tag ) if $on_removed;
+        delete $tags->{ $tag }->{connections}->{ $socket_id };
+    }
+
+    # SID => tagテーブル更新
+    $self->tags_reverse->{ $socket_id } = [ @{ $new_joined_tags } ];
+}
+
+sub remove_tag_socket {
+    my ( $self, $socket, $joined_tags, $opt ) = @_;
+    my $socket_id = ref $socket ? $socket->id : $socket;
+
+    delete $self->users->{$socket_id};
+
+    $joined_tags ||= delete $self->tags_reverse->{$socket_id};
+
+    #タグ毎にできたPool等からも削除
+    $opt ||= {};
+    my $tags       = $self->tags;
+    my $on_removed = $opt->{ on_removed };
+
+    foreach my $tag ( @$joined_tags ) {
+        $on_removed->( $socket, $tag ) if $on_removed;
+        delete $tags->{ $tag }->{connections}->{ $socket_id };
+    }
+}
 
 sub send_post_to_tag_joined {
     my ( $self, $post, $tags ) = @_;
     my $event = $self->post_to_event( $post );
-    $self->send_event_to_tag_joined( $event, $tags );
+    $self->send_event_to_tag_joined( $event, $tags, 'no_dup' );
 }
 
 sub post_to_event {
@@ -235,15 +285,22 @@ sub post_to_event {
 }
 
 sub send_event_to_tag_joined {
-    my ( $self, $event, $target_tags ) = @_;
+    my ( $self, $event, $target_tags, $no_dup ) = @_;
     my $tags = $self->tags;
+    my %sent; # if $no_dup, we shall send the event to users once.
 
     $target_tags = [ $target_tags ] unless ref $target_tags;
 
     for my $tag ( @{ $target_tags } ) {
         next unless exists $tags->{ $tag };
         DEBUG && print STDERR sprintf("Send event to tag %s\n", $tag);
-        $tags->{ $tag }->send( $event );
+        my $conns = $tags->{ $tag }->{ connections };
+        for my $socket_id ( keys %{ $conns } ) {
+            next if $no_dup && exists $sent{ $socket_id };
+            next unless $conns->{ $socket_id }->is_connected;
+            $conns->{ $socket_id }->socket->send( $event );
+            $sent{ $socket_id }++;
+        }
     }
 }
 

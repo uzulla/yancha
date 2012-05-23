@@ -3,8 +3,7 @@ var data = {
   token:false,
   nick:false,
   profile_image_url:false,
-  tags:{PUBLIC:0},
-  prev_post_id:0
+  tags:{PUBLIC:0}
 };
 
 //各種接続、切断、エラーイベント
@@ -69,14 +68,6 @@ socket.on('user message', function(hash){
     if(typeof(data.tags[hash.tags[i]]) != 'undefined' ){
       data.tags[hash.tags[i]] = hash.created_at_ms ;
     }
-  }
-
-  if ( hash.id > 0 ) {
-    // 複数タグで閲覧時に複数タグメッセージが重複するのを回避
-    if ( data.prev_post_id == hash.id ) {
-        return;
-    }
-    data.prev_post_id = hash.id
   }
 
   var cell = $('#template_messagecell').clone().removeAttr('id');

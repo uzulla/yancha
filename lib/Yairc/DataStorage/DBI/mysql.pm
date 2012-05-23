@@ -152,6 +152,7 @@ sub add_post {
     # | TAG1 TAG2 TAG3 |
     my @tags = @{ $post->{ tags } };
     my $tags = $post->{ tags } ? ' '. join( ' ', @tags ) . ' ' : '';
+    $post->{ tags } = $tags unless $user; # TODO: $userを引数としてとらないようにする
     $post = $user ? {
         text => $post->{ text },
         nickname => $user->{ nickname },
