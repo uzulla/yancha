@@ -7,6 +7,7 @@ Yairc (仮名) はログの保全、リアルタイム性、モバイル端末�
 サーバサイドはPerl、クライアントサイトはHTML＋JSで作成され、PocketIOによりWebsocketで通信しています。
 
 
+
 ## yaircの目標 ##
 IRCなどの不便な点をカバーするチャットシステムを作る事です。
 
@@ -19,8 +20,10 @@ IRCなどの不便な点をカバーするチャットシステムを作る事�
 * 外部連携 → 利用しやすいAPIを用意
 * ログの再利用 → チャットログの引用機能
 * 外部SNSとの連携 → retweet的機能
+
 などが目標となっています。
 （上記は実装中や、構想段階で実装されていないものも含みます）
+
 
 
 ## サーバサイド動作環境 ##
@@ -28,10 +31,12 @@ Perl 5.12以降（サンプルサイトは5.14で運用しています）
 必要なモジュールは Makefile.pl を参照下さい。
 
 
+
 ## クライアント動作環境 ##
 Websocketをサポートするモダンブラウザ(Chrome,Firefox等)
 iOS5以降、MobileSafari(iPhone/iPad)
 Android 2.3以降、Webview等
+
 
 
 ## インストール方法 ##
@@ -42,12 +47,14 @@ config.pl.sampleをconfig.plにコピーし必要な情報を設定下さい。�
 start.shを実行することで起動ができます。
 
 
+
 ## 備考 ##
 start.shを以下のように記述することで、各種ログが取得出来ます
-    #!/bin/sh
-    export POCKETIO_CONNECTION_DEBUG=1
-    export YAIRC_DEBUG=1
-    twiggy -l :3000 --access-log access_log chat.psgi >> yairc_log 2>&1
+`#!/bin/sh
+export POCKETIO_CONNECTION_DEBUG=1
+export YAIRC_DEBUG=1
+twiggy -l :3000 --access-log access_log chat.psgi >> yairc_log 2>&1
+`
 
 
 ## ライセンスについて ##
