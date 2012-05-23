@@ -1,3 +1,56 @@
-sample
-http://yairc.cfe.jp:3000/
+# Yairc(仮名) README
+Yairc (仮名) はログの保全、リアルタイム性、モバイル端末への対応を重視した、Perlで作成されたチャットシステムです。
+
+サンプル
+[http://yairc.cfe.jp:3000/](http://yairc.cfe.jp:3000/)
+
+サーバサイドはPerl、クライアントサイトはHTML＋JSで作成され、PocketIOによりWebsocketで通信しています。
+
+
+## yaircの目標 ##
+IRCなどの不便な点をカバーするチャットシステムを作る事です。
+
+具体的には
+* ログの消失 → 全件をDBに永続保存
+* 多チャンネル接続時の一覧性 → チャンネルではなく、ストリームとタグを採用
+* 高度な引用方法 → コード貼り付け時のシンタックスハイライトや、インライン画像表示など
+* セキュリティ → 認証によりユーザ詐称の回避、通信の暗号化
+* モバイル端末への対応 → スマートフォン対応
+* 外部連携 → 利用しやすいAPIを用意
+* ログの再利用 → チャットログの引用機能
+* 外部SNSとの連携 → retweet的機能
+などが目標となっています。
+（上記は実装中や、構想段階で実装されていないものも含みます）
+
+
+## サーバサイド動作環境 ##
+Perl 5.12以降（サンプルサイトは5.14で運用しています）
+必要なモジュールは Makefile.pl を参照下さい。
+
+
+## クライアント動作環境 ##
+Websocketをサポートするモダンブラウザ(Chrome,Firefox等)
+iOS5以降、MobileSafari(iPhone/iPad)
+Android 2.3以降、Webview等
+
+
+## インストール方法 ##
+データベースを用意し（現在はMysqlのみ）、db/init.sqlにて初期化を行って下さい。
+
+config.pl.sampleをconfig.plにコピーし必要な情報を設定下さい。最低限DB接続情報の設定が必要です。
+
+start.shを実行することで起動ができます。
+
+
+## 備考 ##
+start.shを以下のように記述することで、各種ログが取得出来ます
+    #!/bin/sh
+    export POCKETIO_CONNECTION_DEBUG=1
+    export YAIRC_DEBUG=1
+    twiggy -l :3000 --access-log access_log chat.psgi >> yairc_log 2>&1
+
+
+## ライセンスについて ##
+近日中に決定する予定です。
+
 
