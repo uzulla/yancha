@@ -33,28 +33,27 @@ Perl 5.12以降（サンプルサイトは5.14で運用しています）
 
 
 ## クライアント動作環境 ##
-Websocketをサポートするモダンブラウザ(Chrome,Firefox等)
-iOS5以降、MobileSafari(iPhone/iPad)
-Android 2.3以降、Webview等
+* Websocketをサポートするモダンブラウザ(Chrome,Firefox等)
+* iOS5以降、MobileSafari(iPhone/iPad)
+* Android 2.3以降、Webview等
 
 
 
 ## インストール方法 ##
-データベースを用意し（現在はMysqlのみ）、db/init.sqlにて初期化を行って下さい。
-
-config.pl.sampleをconfig.plにコピーし必要な情報を設定下さい。最低限DB接続情報の設定が必要です。
-
-start.shを実行することで起動ができます。
+1. データベースを用意し（現在はMysqlのみ）、db/init.sqlにて初期化を行って下さい。
+2. config.pl.sampleをconfig.plにコピーし必要な情報を設定下さい。最低限DB接続情報の設定が必要です。
+3. start.shを実行することで起動ができます。
 
 
 
 ## 備考 ##
 start.shを以下のように記述することで、各種ログが取得出来ます
-`#!/bin/sh
+```
+#!/bin/sh
 export POCKETIO_CONNECTION_DEBUG=1
 export YAIRC_DEBUG=1
 twiggy -l :3000 --access-log access_log chat.psgi >> yairc_log 2>&1
-`
+```
 
 
 ## ライセンスについて ##
