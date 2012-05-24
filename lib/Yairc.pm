@@ -209,10 +209,10 @@ sub _server_info {
         version       => $info->{ version },
         introduction  => $info->{ introduction },
         default_tag   => $info->{ default_tag },
-        login_endpoint => +{
+        auth_endpoint => +{
             map {
-                $_ => $info->{ login_endpoint }->{$_}->[2] || ''
-            } keys %{ $info->{ login_endpoint } }
+                $_ => $info->{ auth_endpoint }->{$_}->[2] || ''
+            } keys %{ $info->{ auth_endpoint } }
         },
     };
 }

@@ -1,4 +1,4 @@
-package Yairc::Login::Twitter;
+package Yairc::Auth::Twitter;
 
 use strict;
 use warnings;

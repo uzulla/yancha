@@ -47,7 +47,7 @@ builder {
 
     $yairc->build_psgi_endpoint_from_server_info('api');
 
-    $yairc->build_psgi_endpoint_from_server_info('login');
+    $yairc->build_psgi_endpoint_from_server_info('auth');
 
     mount '/' => builder {
         enable "Static",
