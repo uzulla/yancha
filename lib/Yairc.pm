@@ -81,7 +81,7 @@ sub build_psgi_endpoint_from_server_info {
     }
 
     require Plack::Builder;
-    # Plack::Builder->import; # why it does not export 'mount'?
+    Plack::Builder->import;
     for my $endpoint ( keys %{ $conf } ) {
         my ( $module_name, $arg, undef ) = @{ $conf->{ $endpoint } };
         my $type   = length $name <= 3 ? uc( $name ) : ucfirst( $name ); # API対策…いけてない
@@ -90,7 +90,7 @@ sub build_psgi_endpoint_from_server_info {
             Carp::croak( "$module must have build_psgi_endpoint." );
         }
         my $builder = $module->new( sys => $self );
-        Plack::Builder::mount $endpoint => $builder->build_psgi_endpoint( $arg );
+        mount( $endpoint => $builder->build_psgi_endpoint( $arg ) );
     }
 }
 
@@ -209,10 +209,10 @@ sub _server_info {
         version       => $info->{ version },
         introduction  => $info->{ introduction },
         default_tag   => $info->{ default_tag },
-        auth_endpoint => +{
+        login_endpoint => +{
             map {
-                $_ => $info->{ auth_endpoint }->{$_}->[2] || ''
-            } keys %{ $info->{ auth_endpoint } }
+                $_ => $info->{ login_endpoint }->{$_}->[2] || ''
+            } keys %{ $info->{ login_endpoint } }
         },
     };
 }

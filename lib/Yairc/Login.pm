@@ -12,8 +12,6 @@ sub new {
     return $self;
 }
 
-sub data_storage { $_[0]->{ data_storage } } 
-
 sub sys { $_[0]->{ sys } }
 
 sub set_user_into_storage {
@@ -26,7 +24,7 @@ sub set_user_into_storage {
     $self->sys->call_hook( 'authenticated', undef, $user );
 
     my $extra    = { token_expiration_sec => $self->sys->config->{ token_expiration_sec } };
-    my $ret_user = $self->data_storage->add_or_replace_user( $user, $extra );
+    my $ret_user = $self->sys->data_storage->add_or_replace_user( $user, $extra );
     $ret_user->{token} = $token;
 
     return $ret_user;

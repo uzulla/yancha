@@ -20,7 +20,7 @@ my $config = {
         name          => 'Hachoji.pm',
         default_tag   => 'PUBLIC',
         introduction  => 'テストサーバ',
-        auth_endpoint => {
+        login_endpoint => {
             '/login' => [ 'Simple'  => { name_field => 'nick' } => "simpleなログインです" ],
         }
     },
@@ -47,7 +47,7 @@ my $client = sub {
                 name          => 'Hachoji.pm',
                 default_tag   => 'PUBLIC',
                 introduction  => 'テストサーバ',
-                auth_endpoint => {
+                login_endpoint => {
                     '/login' => 'simpleなログインです',
                 }
             }, 'server info' );

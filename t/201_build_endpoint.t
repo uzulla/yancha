@@ -23,7 +23,7 @@ my $config = {
         name          => 'Hachoji.pm',
         default_tag   => 'PUBLIC',
         introduction  => 'テストサーバ',
-        auth_endpoint => {
+        login_endpoint => {
             '/login' => [ 'Simple'  => { name_field => 'nick' } => "test" ],
         }
     },
@@ -37,7 +37,7 @@ my $sys = Yairc->new( config => $config, data_storage => $data_storage );
 my $server = builder {
     enable 'Session';
 
-    $sys->build_auth_endpoint_from_server_info;
+    $sys->build_psgi_endpoint_from_server_info('login');
 
     mount '/socket.io' => PocketIO->new(
             socketio => $config->{ socketio },
