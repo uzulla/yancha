@@ -59,13 +59,38 @@ $(function () {
 
   //各エレメントのサイズ計算
   $(window).resize(function(){
-      $("#infomation").hide('slow');
   });
   $(window).resize();
 
   var timeagoTimer = setInterval(function(){
     $('abbr.timeago').timeago();
   },60000);
+  
+  $("#messages").touchwipe({
+       wipeLeft: function() { showControlpad(); },
+       wipeRight: function() { showmenu(); },
+       //wipeUp: function() { alert("up"); },
+       //wipeDown: function() { alert("down"); },
+       min_move_x: 30,
+       min_move_y: 30,
+       preventDefaultEvents: false
+  });  
+
+
+  $("#infomation").touchwipe({
+       wipeLeft: function() { hidemenu(); },
+       min_move_x: 30,
+       min_move_y: 30,
+       preventDefaultEvents: false
+  });  
+
+
+  $("#controlpad").touchwipe({
+       wipeRight: function() { hideControlpad(); },
+       min_move_x: 30,
+       min_move_y: 30,
+       preventDefaultEvents: false
+  });  
 
 });
 

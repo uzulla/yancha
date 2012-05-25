@@ -19,7 +19,7 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
 <script src="/js/moment.min.js"></script>
 <script src="/js/jquery.cookie.js"></script>
 <script src="/js/jquery.timeago.js"></script>
-<script src="/js/jquery.touchwipe.1.1.1.js"></script>
+<script src="/js/jquery.touchwipe.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_main.min.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_javascript.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_perl.js"></script>
@@ -77,8 +77,54 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
 		</div>
   </div>
   
+  <div id="controlpad" style="width:100%">
+    <table>
+    <tr>
+      <td colspan="2" style="text-align:center">
+        <button style="margin:5px;width:200px;" onclick='hideControlpad()'>閉じる</button>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align:center">
+        <button style="margin:5px;width:200px;" onclick='$(window).scrollTop(0);'>スクロールトップ</button>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align:center">
+        <button style="margin:5px;width:200px;" onclick='$(window).scrollTop(10000000);'>スクロールボトム</button>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" style="text-align:center">
+        <button style="margin:5px;width:200px;" onclick='hideControlpad()'>閉じる</button>
+      </td>
+    </tr>
+    </table>    
+  </div>
+  
+  <script>
+    function showControlpad(){
+      $('#controlpad').css('top', $(window).scrollTop() + ( $(window).height()-$('#controlpad').height()-150) +'px');
+      $('#controlpad').css('right', '-'+$('#controlpad').width()+'px');
+      $('#controlpad').show();
+      $('#controlpad').animate({right:"0px"}, 'slow');
+    }
+  
+    function hideControlpad(){
+      $('#controlpad').animate({right:'-'+$('#infomation').width()+'px'}, 'slow', function(){
+        $('#controlpad').hide();
+      });
+    }
+  </script>  
+  
    <div id="infomation" style="width:100%">
     <table>
+    <tr>
+      <td colspan="2" style="text-align:center">
+        <button style="margin:5px;width:200px;" onclick='hidemenu()'>閉じる</button>
+      </td>
+    </tr>
+    
     <tr>
       <td>
 
@@ -126,15 +172,47 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
           <a href="http://yairc.cfe.jp:5000/" target="_blank">http://yairc.cfe.jp:5000/</a>
         </div>
     </tr>
+
+    <tr>
+      <td colspan="2" style="text-align:center">
+        <button style="margin:5px;width:200px;" onclick='hidemenu()'>閉じる</button>
+      </td>
+    </tr>
+
     </table>
+
   </div> 
+  
+  <script>
+    function togglemenu(){
+      if($('#infomation').css('display')=='none'){
+        showmenu();
+      }else{
+        hidemenu();
+      }
+    }
+    
+    function showmenu(){
+      $('#infomation').css('top', $(window).scrollTop()+'px');
+      $('#infomation').css('left', '-'+$('#infomation').width()+'px');
+      $('#infomation').show();
+      $('#infomation').animate({left:"0px"}, 'slow');
+    }
+  
+    function hidemenu(){
+      $('#infomation').animate({left:'-'+$('#infomation').width()+'px'}, 'slow', function(){
+        $('#infomation').hide();
+      });
+    }
+  </script>
+  
   
   <form id="send-message">
   <table style="width:100%">
   <tr>
     <td style="width:100%"><textarea  id="message"></textarea>
     <td ><button style="margin:2px 0px 2px 2px;">Send</button>
-    <td ><button style="margin:2px 0px 2px 2px;" onclick='$("#infomation").toggle("slow",function(){$(window).scrollTop(10000000);});'>MENU</button>
+    <td ><button style="margin:2px 0px 2px 2px;" onclick='togglemenu()'>MENU</button>
   </table>
   </form>
 

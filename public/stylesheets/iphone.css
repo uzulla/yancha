@@ -46,10 +46,13 @@ margin:0px;
   margin:0px;
 }
 
-#infomation{
-  width:190px;
-  float:right;
-  overflow-y:scroll;
+#infomation, #controlpad{
+  display:none;
+  position: absolute;
+  background-color: #dbdbdb;
+  top:0px;
+  border-top:3px solid #717171;
+  border-bottom:3px solid #717171;
 }
 
 #infomation #nicknames ,#infomation #tags {
