@@ -5,10 +5,7 @@
 <title>yairc</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <script>
-if(navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
-  location.href="/iphone.html";
-}
-if(navigator.userAgent.match(/(Android)/)) {
+if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
   location.href="/android.html";
 }
 </script>
@@ -54,10 +51,6 @@ if(navigator.userAgent.match(/(Android)/)) {
 
 <body>
 
-  <div id="connecting">
-    <div class="wrap">Connecting to server...</div>
-  </div>
-
   <div id="nickname">
     <br />
     <form id="set-nickname" class="wrap">
@@ -67,6 +60,14 @@ if(navigator.userAgent.match(/(Android)/)) {
     <form action="./login" method="post">
       <p>or simple login</p><input type="text" name="nick"><input type="submit" name="login" value="login">
     </form>
+  </div>
+
+  <div id="loading">
+    <div class="wrap">please wait...</div>
+  </div>
+  
+  <div id="connecting">
+    <div class="wrap">Connecting to server...</div>
   </div>
   
   <div id="infomation">

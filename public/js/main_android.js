@@ -9,6 +9,10 @@ hook.addHook('onUserMessage', function(hash){
   $(window).scrollTop(10000000); //TODO 
 });
 
+hook.addHook('onConnect', function(hash){
+  //Cookieがあれば、オートログインさせる
+  autologin();
+});
 
 //入力欄の高さ調整
 function resizeMessageTextarea(linenum){
@@ -63,8 +67,5 @@ $(function () {
     $('abbr.timeago').timeago();
   },60000);
 
-  //Cookieがあれば、オートログインさせる
-  autologin();
-  
 });
 

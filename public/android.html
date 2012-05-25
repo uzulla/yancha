@@ -19,6 +19,7 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
 <script src="/js/moment.min.js"></script>
 <script src="/js/jquery.cookie.js"></script>
 <script src="/js/jquery.timeago.js"></script>
+<script src="/js/jquery.touchwipe.1.1.1.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_main.min.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_javascript.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_perl.js"></script>
@@ -48,10 +49,6 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
 
 <body>
 
-  <div id="connecting">
-    <div class="wrap">Connecting to server...</div>
-  </div>
-
   <div id="nickname">
     <br />
     <form id="set-nickname" class="wrap">
@@ -62,10 +59,14 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
       <p>or simple login</p><input type="text" name="nick"><input type="submit" name="login" value="login">
     </form>
   </div>
-  
 
-
+  <div id="loading">
+    <div class="wrap">please wait...</div>
+  </div>
   
+  <div id="connecting">
+    <div class="wrap">Connecting to server...</div>
+  </div>  
   
   <div id="messages" style="overflow-y:auto">
 		<div id="lines" style="overflow-y:auto">

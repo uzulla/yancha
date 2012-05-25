@@ -9,6 +9,7 @@ var data = {
 //各種接続、切断、エラーイベント
 socket.on('connect', function () {
   $('#connecting').hide();
+  hook.doHook('onConnect', undefined);
 });
 socket.on('reconnect', function () {
   if(debug){message('System', 'Reconnected to the server');}
@@ -278,13 +279,15 @@ function autologin(){
   if($.cookie('yairc_auto_login_token')){
     data.token = $.cookie('yairc_auto_login_token');
     if(data.token){
+      $('#nickname').hide();
       if(debug){console.log('try autologin');}
       socket.emit('token login', data.token, function (set) {
         clear();
-        $('#nickname').hide();
+        $('#loading').hide();
       });
     }
   }
+  $('#loading').hide();
 }
 
 //テキスト入力欄をクリア、ただし、タグは残しておく
