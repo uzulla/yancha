@@ -1,4 +1,4 @@
-package Yairc::Login::Simple;
+package Yairc::Auth::Simple;
 
 # Simple and Yairc core login function
 

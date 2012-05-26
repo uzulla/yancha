@@ -47,11 +47,7 @@ builder {
 
     $yairc->build_psgi_endpoint_from_server_info('api');
 
-    mount '/login/twitter' => $yairc->login('Twitter')
-                                    ->build_psgi_endpoint( $config->{ twitter_appli } );
-
-    mount '/login'         => $yairc->login('Simple')
-                                    ->build_psgi_endpoint( { name_field => 'nick' } );
+    $yairc->build_psgi_endpoint_from_server_info('auth');
 
     mount '/' => builder {
         enable "Static",

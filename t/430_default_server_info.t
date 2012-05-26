@@ -25,23 +25,17 @@ my $client = sub {
         $cv->send;
     } );
 
-    my $on_connect = sub {
-        my ( $client ) = @_;
-        my $count = 0;
+    my $client = Yairc::Client->new();
 
+    $client->connect("http://localhost:$port/");
+
+    $client->run( sub {
         $client->socket->on('server info' => sub {
             is_deeply( $_[1], $Yairc::SERVER_INFO, 'server info' );
             $cv->send;
         });
-
-    };
-
-    my ( $client ) = t::Utils->create_clients_and_set_tags(
-        $port,
-        { nickname => 'client', on_connect => $on_connect }, 
-    );
-
-    $client->socket->emit('server info');
+        $client->socket->emit('server info');
+    } );
 
     $cv->wait;
 };
