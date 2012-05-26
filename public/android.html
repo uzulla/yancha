@@ -39,12 +39,6 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
 
 </script>
 
-<style>
-#mmessages {
-	position:absolute;
-	z-index:1;
-}
-</style>
 </head>
 
 <body>
@@ -95,29 +89,14 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
       </td>
     </tr>
     <tr>
-      <td colspan="2" style="text-align:center">
+      <td colspan="2" style="text-align:center;">
         <button style="margin:5px;width:200px;" onclick='hideControlpad()'>閉じる</button>
       </td>
     </tr>
     </table>    
   </div>
   
-  <script>
-    function showControlpad(){
-      $('#controlpad').css('top', $(window).scrollTop() + ( $(window).height()-$('#controlpad').height()-150) +'px');
-      $('#controlpad').css('right', '-'+$('#controlpad').width()+'px');
-      $('#controlpad').show();
-      $('#controlpad').animate({right:"0px"}, 'slow');
-    }
-  
-    function hideControlpad(){
-      $('#controlpad').animate({right:'-'+$('#infomation').width()+'px'}, 'slow', function(){
-        $('#controlpad').hide();
-      });
-    }
-  </script>  
-  
-   <div id="infomation" style="width:100%">
+  <div id="infomation" style="width:100%">
     <table>
     <tr>
       <td colspan="2" style="text-align:center">
@@ -127,7 +106,7 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
     
     <tr>
       <td>
-
+    
         ONLINE
         <div id="nicknames">
         </div>
@@ -152,7 +131,7 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
           <button class="toggleNotify">Notify</button>
         </div>
       <td>
-
+    
         HINTS<br>
       	<a href="/search.html" target="_blank" style="font-size:80%;">過去ログ</a><br>
         <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
@@ -172,39 +151,16 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
           <a href="http://yairc.cfe.jp:5000/" target="_blank">http://yairc.cfe.jp:5000/</a>
         </div>
     </tr>
-
+    
     <tr>
       <td colspan="2" style="text-align:center">
         <button style="margin:5px;width:200px;" onclick='hidemenu()'>閉じる</button>
       </td>
     </tr>
-
+    
     </table>
-
   </div> 
   
-  <script>
-    function togglemenu(){
-      if($('#infomation').css('display')=='none'){
-        showmenu();
-      }else{
-        hidemenu();
-      }
-    }
-    
-    function showmenu(){
-      $('#infomation').css('top', $(window).scrollTop()+'px');
-      $('#infomation').css('left', '-'+$('#infomation').width()+'px');
-      $('#infomation').show();
-      $('#infomation').animate({left:"0px"}, 'slow');
-    }
-  
-    function hidemenu(){
-      $('#infomation').animate({left:'-'+$('#infomation').width()+'px'}, 'slow', function(){
-        $('#infomation').hide();
-      });
-    }
-  </script>
   
   
   <form id="send-message">

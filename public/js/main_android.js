@@ -94,3 +94,42 @@ $(function () {
 
 });
 
+
+//--ui
+function showControlpad(){
+  $('#controlpad').css('width', '100%');
+
+  var w = $('#controlpad').width();
+  $('#controlpad').css('top', $(window).scrollTop() + ( $(window).height()-$('#controlpad').height()-150) +'px');
+  $('#controlpad').css('right', '-'+w+'px');
+  $('#controlpad').css('width', '0px');
+  $('#controlpad').show();
+  $('#controlpad').animate({right:"0px", width:w+"px"}, 'slow');
+}
+
+function hideControlpad(){
+  $('#controlpad').animate({right:'-'+$('#infomation').width()+'px'}, 'slow', function(){
+    $('#controlpad').hide();
+    $('#controlpad').css('width', '0px');
+  });
+}
+function togglemenu(){
+  if($('#infomation').css('display')=='none'){
+    showmenu();
+  }else{
+    hidemenu();
+  }
+}
+
+function showmenu(){
+  $('#infomation').css('top', $(window).scrollTop()+'px');
+  $('#infomation').css('left', '-'+$('#infomation').width()+'px');
+  $('#infomation').show();
+  $('#infomation').animate({left:"0px"}, 'slow');
+}
+
+function hidemenu(){
+  $('#infomation').animate({left:'-'+$('#infomation').width()+'px'}, 'slow', function(){
+    $('#infomation').hide();
+  });
+}
