@@ -157,6 +157,7 @@ function startSelectPost(){
 }
 
 function endSelectPost(){
+  $('.messagecell').off('click');
   var post_id_list = [];
   $('.selectedMessageCell').each(function(){
     post_id_list.push($(this).attr('data-post-id'));
