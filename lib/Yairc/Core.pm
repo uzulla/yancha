@@ -100,7 +100,6 @@ sub join_tag { #参加タグの登録（タグ毎のコネクションプール�
         $self->_send_lastlog_by_tag_lastusec( $socket, $tag, $tag_and_time->{$tag}, $log_limit );
     };
 
-    # 前と今の接続を比較して、なくなったタグをリストアップ
     my @new_joined_tags = keys %{ $tag_and_time };
 
     $self->sys->add_tag_socket( $socket, \@new_joined_tags, { on_added => $on_added } );

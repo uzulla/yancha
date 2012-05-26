@@ -15,7 +15,6 @@ our $SERVER_INFO =  {
     'version' => $VERSION,
     'name'    => 'Yairc(kari)',
     'introduction'   => 'Hello Hachioji.pm',
-    'login_endpoint' => {},
 };
 
 my $users        = {}; # session id -> user data
@@ -68,6 +67,7 @@ sub login {
     };
 }
 
+
 sub build_psgi_endpoint_from_server_info {
     my ( $self, $name, $conf ) = @_;
 
@@ -81,15 +81,16 @@ sub build_psgi_endpoint_from_server_info {
     }
 
     require Plack::Builder;
-    # Plack::Builder->import; # why it does not export 'mount'?
+    Plack::Builder->import;
     for my $endpoint ( keys %{ $conf } ) {
-        my ( $name, $arg, undef ) = @{ $conf->{ $endpoint } };
-        my $module = $self->load_module( 'API' => $name );
+        my ( $module_name, $arg, undef ) = @{ $conf->{ $endpoint } };
+        my $type   = length $name <= 3 ? uc( $name ) : ucfirst( $name ); # API対策…いけてない
+        my $module = $self->load_module( $type => $module_name );
         unless ( $module->can('build_psgi_endpoint') ) {
             Carp::croak( "$module must have build_psgi_endpoint." );
         }
         my $builder = $module->new( sys => $self );
-        Plack::Builder::mount $endpoint => $builder->build_psgi_endpoint( $arg );
+        mount( $endpoint => $builder->build_psgi_endpoint( $arg ) );
     }
 }
 
@@ -189,7 +190,31 @@ sub run {
 
 sub server_info {
     my ( $self, $socket ) = @_;
-    $socket->emit( 'server info', $_[0]->config->{ server_info } || $SERVER_INFO );
+    my $config = $self->config;
+    my $server_info = $self->{server_info} ||= do {
+        if ( my $info = $config->{ server_info } ) {
+            $self->_server_info( $info );
+        }
+        else {
+            $SERVER_INFO;
+        }
+    };
+    $socket->emit( 'server info', $server_info );
+}
+
+sub _server_info {
+    my ( $self, $info ) = @_;
+    {
+        name          => $info->{ name },
+        version       => $info->{ version },
+        introduction  => $info->{ introduction },
+        default_tag   => $info->{ default_tag },
+        auth_endpoint => +{
+            map {
+                $_ => $info->{ auth_endpoint }->{$_}->[2] || ''
+            } keys %{ $info->{ auth_endpoint } }
+        },
+    };
 }
 
 #
@@ -278,7 +303,6 @@ sub send_event_to_tag_joined {
         }
     }
 }
-
 
 1;
 __END__
