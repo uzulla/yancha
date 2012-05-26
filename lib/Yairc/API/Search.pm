@@ -28,6 +28,12 @@ sub _search_posts {
     my $where = {};
     my $attr  = {};
 
+    if(my $page = $req->param('page')) {
+        my $rows = $req->param('rows') || 20;
+        my $offset = $rows * ( $page - 1 );
+        @{ $attr }{ qw/limit offset/ } = ($rows, $offset);
+    }
+    
     if ( my $limit_param = $req->param('limit') ) {
         @{ $attr }{ qw/limit offset/ } = split /\s*,\s*/, $limit_param, 2;
     }
