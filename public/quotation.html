@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>yairc search</title>
+  <script>
+  //if(navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
+  //  location.href="/search_iphone.html";
+  //}
+  </script>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <link href="/stylesheets/pc.css" rel="stylesheet" />
+  <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+  <script src="/js/common.js"></script>
+  <script src="/js/filter.js"></script>
+  <script src="/js/moment.min.js"></script>
+  <script src="/js/jquery.cookie.js"></script>
+  <script src="/js/jquery.timeago.js"></script>
+  <script src="/js/jquery.scrollto.js"></script>
+  <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_main.min.js"></script>
+  <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_javascript.js"></script>
+  <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_perl.js"></script>
+  <link type="text/css" rel="stylesheet" href="http://yairc.cfe.jp/shjs/sh_style.css">
+
+  <script type="text/javascript" src="/js/search.js"></script>
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19063513-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+  
+$(function () {
+  var hash=window.location.hash;
+  
+  var hashes = getUrlVars()
+  
+  console.log(hashes);
+  if(hashes.id){
+    $('input[name=id]', $('#searchform')).val(hashes.id);
+    submitSearch($('#form'));
+    $('#searchform').hide();
+    $('#controls').hide();
+  }
+});
+
+
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
+}
+  
+  </script>
+</head>
+<body>
+
+<div id="searchform" style="background-color:#CCCCCC;">
+  <form onsubmit="return false">
+    post_id<input name='id' value=""><br />
+    <input type="hidden" name="tag" value="">
+    <input type="hidden" name="limit" value="1000">
+    <input type="hidden" name="keyword" value="">
+  </form>
+  
+</div>
+<div id="controls">
+  <input type="button" onclick="$('#searchform').toggle('slow', function(){$(window).resize()})" value="検索フォームを開閉">
+  <input type="button" value="表示/更新" onclick="submitSearch(event);" >
+</div>
+
+<div id="messages">
+	<div id="scroller">
+		<div id="lines" style="overflow-y:auto;">
+		</div>
+	</div>
+</div>
+
+<div style="display:none" >
+  <div id="template_messagecell" class="messagecell">
+  	<img src="/img/nobody.png" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
+  	<span style="float: right;"><abbr title="" class="timeago messagecell_time"></abbr></span>
+  	<span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
+  	<div style="overflow: auto;" class="messagecell_text"></div><br style="clear: both;">
+  </div>
+</div>
+
+</body>
+</html>

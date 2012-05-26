@@ -8,12 +8,13 @@ function submitSearch(){
 
   var f = $("#searchform");
   var keyword = $('input[name=keyword]', f).val();
+  var id = $('input[name=id]', f).val();
   var tag = $('input[name=tag]', f).val();
-  var limit = parseInt($('select[name=limit]', f).val());
+  var limit = $('select[name=limit]', f).val();
   var time ;
   var time_window = parseInt($('select[name=time_window]', f).val());
 
-  if(time_window!=0){
+  if(time_window && time_window != 0){
     var end_epoch = moment().unix();
     var start_epoch = end_epoch - time_window;
     time = start_epoch+','+end_epoch;
@@ -23,10 +24,11 @@ function submitSearch(){
   
   $.ajax({
     type: 'POST',
-    url: location.href.split('/search')[0]+"/api/search", // todo
+    url: location.href.split('/')[0]+"/api/search", // todo
     data: {
       keyword:keyword,
       tag:tag,
+      id:id,
       limit:limit,
       time:time,
     },
