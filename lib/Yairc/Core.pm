@@ -35,6 +35,7 @@ sub dispatch {
         # $env is empty until PocketIO version 0.14
         $socket->on( 'server info'  => sub { $self->sys->server_info( @_ ) } );
         $socket->on( 'user message' => sub { $self->user_message( @_ ); } );
+        $socket->on( 'plusplus'     => sub { $self->plusplus( @_ ); } );
         $socket->on( 'token login'  => sub { $self->token_login( @_ ); } );
         $socket->on( 'join tag'     => sub { $self->join_tag( @_ ); } );
         $socket->on( 'disconnect'   => sub { $self->disconnect( @_ ); } );
@@ -141,6 +142,22 @@ sub user_message {
         $self->sys->send_post_to_tag_joined( $post => \@tags );
     });
 }
+
+sub plusplus {
+    my ( $self, $socket, $post_id ) = @_;
+
+    $self->sys->data_storage->plusplus($post_id);
+
+    my $post = $self->sys->data_storage->get_post_by_id( $post_id );
+
+    my (undef,@tags) = split / /, $post->{tags};
+
+    $post->{is_message_log} = JSON::true;
+
+    $self->sys->send_post_to_tag_joined( $post => \@tags );
+}
+
+
 
 sub disconnect {
     my ( $self, $socket ) = @_;

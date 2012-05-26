@@ -57,6 +57,7 @@ sub connect {
     $socket->on('announcement', sub {});
     $socket->on('token login', sub {});
     $socket->on('no session', sub {});
+    $socket->on('plusplus', sub {});
 
     $self->socket( $socket );
 
