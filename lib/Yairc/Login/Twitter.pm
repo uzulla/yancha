@@ -19,6 +19,7 @@ sub build_psgi_endpoint {
     my $nt = Net::Twitter::Lite->new(
         consumer_key    => $opt->{ consumer_key },
         consumer_secret => $opt->{ consumer_secret },
+        legacy_lists_api => 0,
     );
 
     # Carp::croak("Invalid login endpoint root.") unless $endpoint_root =~ m{^[-./\w]*$};
