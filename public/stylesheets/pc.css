@@ -39,6 +39,11 @@ margin:0px;
   background: #ff9999;
 }
 
+#messages div.selectedMessageCell{
+  background-color:red !important;
+}
+
+
 #lines {
   overflow: auto;
   overflow-x: auto;

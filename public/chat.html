@@ -18,7 +18,6 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
 <script src="/js/connection.js"></script>
 <script src="/js/moment.min.js"></script>
 <script src="/js/jquery.cookie.js"></script>
-<script src="/js/ios.min.js"></script>
 <script src="/js/jquery.jwNotify.js"></script>
 <script src="/js/jquery.timeago.js"></script>
 <script type="text/javascript" src="http://yairc.cfe.jp/shjs/sh_main.min.js"></script>
@@ -47,9 +46,10 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
   })();
 
 </script>
-</head>
 
+</head>
 <body>
+<form action="#" target="_blank" method="post" id="popuper"></form>
 
   <div id="nickname">
     <br />
@@ -91,6 +91,9 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
     </div>
     ACTIONS
     <div style="border-bottom:1px #999 solid;padding:3px;">
+      <button onclick="startSelectPost()">StartSelect</button>
+      <button onclick="endSelectPost()">endSelect</button>
+
       <button onclick="logout()">Logout</button>
       <button class="toggleNotify">Notify</button>
     </div>
