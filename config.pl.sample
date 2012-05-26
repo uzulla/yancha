@@ -18,6 +18,15 @@ use strict;
         name          => 'Hachoji.pm',
         default_tag   => 'PUBLIC',
         introduction  => 'テストサーバ',
+        auth_endpoint => {
+            '/login'         => [ 'Simple'  => { name_field => 'nick' } ],
+            '/login/twitter' => [
+                'Twitter' => {
+                    consumer_key    => 'xxxx',
+                    consumer_secret => 'yyyy',
+                }
+            ],
+        },
         api_endpoint => {
             '/api/search'  => [ 'Search' => {} => 'user message検索用api' ],
         },
