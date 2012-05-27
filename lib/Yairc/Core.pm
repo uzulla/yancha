@@ -52,6 +52,14 @@ sub token_login {
         return;
     }
 
+    my $socket_id = $socket->id();
+    my $users = $self->sys->users;
+
+    if($users->{ $socket_id }){
+        DEBUG && w sprintf('%s: already logined', $socket->id );
+        return;
+    }
+
     $self->sys->call_hook( 'token_logined', $socket, $user );
 
     my $nickname = $user->{nickname};
@@ -60,10 +68,7 @@ sub token_login {
     
     $socket->set(user_data => $user);
     
-    my $socket_id = $socket->id();
-    
     #nickname listを更新し、周知
-    my $users = $self->sys->users;
     $users->{ $socket_id } = $user;
     $socket->sockets->emit('nicknames', _get_uniq_and_anon_nicknames($users));
 
