@@ -57,6 +57,10 @@ sub token_login {
 
     if($users->{ $socket_id }){
         DEBUG && w sprintf('%s: already logined', $socket->id );
+        $socket->emit('token login', {
+          "status"    => "ok",
+          "user_data" => $user,
+        });
         return;
     }
 
