@@ -20,7 +20,7 @@ sub run {
     }
 
     my $text = '';
-    unless ( $text = encode('utf8', $req->param('text')) ) {
+    unless ( $text = decode_utf8 $req->param('text') ) {
         return $self->response({}, 400);
     }
 

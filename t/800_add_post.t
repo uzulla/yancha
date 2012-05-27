@@ -66,11 +66,7 @@ is scalar @$posts => 2;
 $posts = $storage->search_post({tag => ['public']});
 is scalar @$posts => 3;
 
-TODO: {
-    todo_skip "The original implementation is broken :(", 1;
-
-    $posts = $storage->search_post({text => [qw/あいう/], tag => ['test']});
-    is scalar @$posts => 1;
-};
+$posts = $storage->search_post({text => [qw/あいう/], tag => ['test']});
+is scalar @$posts => 1;
 
 done_testing;
