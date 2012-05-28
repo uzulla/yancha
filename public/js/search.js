@@ -21,16 +21,19 @@ function submitSearch(){
   }else{
     time = $('input[name=time]', f).val();
   }
-  
+ console.log('post'); 
   $.ajax({
     type: 'POST',
-    url: location.href.split('/')[0]+"/api/search", // todo
+    url: getHostRootURL()+"/api/search", // todo
     data: {
       keyword:keyword,
       tag:tag,
       id:id,
       limit:limit,
       time:time,
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown){
+console.log(textStatus);
     },
     success: function(data){
       $('#lines').empty();
