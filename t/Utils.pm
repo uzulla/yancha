@@ -17,8 +17,6 @@ sub server_with_dbi {
 
     require Yairc;
     require Yairc::DataStorage::DBI;
-    require Yairc::Login::Simple;
-    require Yairc::Login::Twitter;
 
     my ( $self, %opt ) = @_;
     my $config       = $opt{ config } || {};

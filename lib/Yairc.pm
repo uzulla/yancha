@@ -57,10 +57,11 @@ sub extract_tags_from_text {
 }
 
 sub login {
+    # TODO 廃止
     my ( $self, $name ) = @_;
     $_[0]->{ login }->{ $name } ||= do {
         my $module = substr( $name, 0, 1 ) eq '+'
-                        ? $name : ref( $self ) . '::Login::' . ucfirst( $name );
+                        ? $name : ref( $self ) . '::Auth::' . ucfirst( $name );
         eval qq{ require $module };
         Carp::croak( $@ ) if $@;
         $module->new( data_storage => $self->data_storage, sys => $self );
