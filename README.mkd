@@ -57,6 +57,8 @@ twiggy -l :3000 --access-log access_log chat.psgi >> yairc_log 2>&1
 
 
 ## ライセンスについて ##
-近日中に決定する予定です。
+MIT License です。
+http://www.opensource.org/licenses/mit-license.php
+
 
 
