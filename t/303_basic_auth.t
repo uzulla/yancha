@@ -19,6 +19,7 @@ BEGIN {
       };
 }
 
+my $file   = 't/.htpasswd';
 my $mysqld = t::Utils->setup_mysqld( schema => './db/init.sql' );
 my $config = {
     database => { connect_info => [ $mysqld->dsn ] },
@@ -30,7 +31,7 @@ my $config = {
         auth_endpoint => {
             '/login'   => [
                 'BasicAuth' => {
-                    passwd_file  => '.htpasswd',
+                    passwd_file  => $file,
                     check_hashes => ['plain'],
                     realm        => 'Hachioji.pm',
                 },
@@ -45,7 +46,7 @@ my $data_storage = Yairc::DataStorage::DBI->connect(
 my $sys = Yairc->new( config => $config, data_storage => $data_storage );
 
 # make password file
-open( my $fh, '>', '.htpasswd' ) or die $!;
+open( my $fh, '>', $file ) or die $!;
 print $fh "user:foobar\n";
 close($fh);
 
@@ -111,7 +112,7 @@ test_pocketio $server, $client;
 
 ok(1, 'test done');
 
-unlink('.htpasswd') or warn $!;
+unlink( $file ) or warn $!;
 
 done_testing;
 
