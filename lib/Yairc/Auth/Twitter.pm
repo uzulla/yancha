@@ -19,6 +19,7 @@ sub build_psgi_endpoint {
     my $nt = Net::Twitter::Lite->new(
         consumer_key    => $opt->{ consumer_key },
         consumer_secret => $opt->{ consumer_secret },
+        legacy_lists_api => 0,
     );
 
     # Carp::croak("Invalid login endpoint root.") unless $endpoint_root =~ m{^[-./\w]*$};
@@ -28,7 +29,7 @@ sub build_psgi_endpoint {
             sub {
                 my $env     = shift;
                 my $session = Plack::Session->new( $env );
-                my $url     = $nt->get_authorization_url(
+                my $url     = $nt->get_authorization_url( # TODO 'login' is hardcoding!
                                 callback => 'http://'.$env->{HTTP_HOST}.'/login/twitter/callback' );
                 $session->set( 'token', $nt->request_token );
                 $session->set( 'token_secret', $nt->request_token_secret );

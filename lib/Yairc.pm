@@ -52,7 +52,7 @@ sub extract_tags_from_text {
     my ( $self, $str ) = @_;
     # 将来的にはUnicode Propertyのword(\w)にしたいが、ui側の変更も必要
     # タグ前のスペース、全角にも対応
-    my @tags = map { uc($_) } $str =~ /(?:^| |　)#([a-zA-Z0-9]{1,32})(?= |$)/mg;
+    my @tags = map { uc($_) } $str =~ /(?:^|\s)#([a-zA-Z0-9]{1,32})(?=\s|$)/g;
     return @tags > 10 ? @tags[0..9] : @tags;
 }
 

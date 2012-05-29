@@ -44,6 +44,11 @@ is( join(',', sort { $a cmp $b }
                 Yairc->extract_tags_from_text( $lines ) ),
                 'TAG01,TAG02,TAG03,TAG04,TAG05,TAG06,TAG07,TAG08,TAG09,TAG10', 'mulit line' );
 
+my $text = "#adsf\r\nあいう\r\nえお\r\n#test";
+
+is( join(',', sort { $a cmp $b }
+                Yairc->extract_tags_from_text( $text ) ),
+                'ADSF,TEST', 'mulit line' );
 
 done_testing;
 
