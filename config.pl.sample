@@ -20,6 +20,13 @@ use strict;
         introduction  => 'テストサーバ',
         auth_endpoint => {
             '/login'         => [ 'Simple'  => { name_field => 'nick' } ],
+            '/login/basic'   => [
+                'BasicAuth' => {
+                    passwd_file  => '.htpasswd',
+                    encrypt_hash => 'plain',
+                    realm        => 'Hachioji.pm',
+                },
+            ],
             '/login/twitter' => [
                 'Twitter' => {
                     consumer_key    => 'xxxx',
