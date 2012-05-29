@@ -50,24 +50,6 @@ use strict;
             }
         ],
     },
-
-    'server_info' => {
-        version     => '1.00',
-        name        => 'Hachoji.pm',
-        default_tag => 'PUBLIC',
-        description => 'テストサーバ',
-        auth_endpoint => {
-            '/login'         => [ 'Simple'  => { name_field => 'nick' }, '押すだけ簡単' ],
-            '/login/twitter' => [
-                'Twitter' => {
-                    consumer_key    => 'xxxx',
-                    consumer_secret => 'yyyy',
-                },
-                'twitterアカウントでログイン',
-            ],
-        }
-    },
-
     'message_log_limit' => 100, # タグ毎のログ数
 
     'token_expiration_sec' => 10, # default 604800 sec = 7 days
