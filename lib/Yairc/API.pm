@@ -32,6 +32,13 @@ sub build_psgi_endpoint {
 
 }
 
+sub response {
+    my ($self, $data, $code) = @_;
+    my $res = Plack::Response->new($code || 200);
+
+    return $res;
+}
+
 sub response_as_json {
     my ($self, $data, $code) = @_;
     my $res = Plack::Response->new($code || 200);

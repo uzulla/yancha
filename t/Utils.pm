@@ -32,6 +32,9 @@ sub server_with_dbi {
                 instance => $sys,
         );
 
+        my $api_endpoint_conf = ($config->{server_info} || {})->{api_endpoint};
+        $sys->build_psgi_endpoint_from_server_info('api', $api_endpoint_conf)
+                                                          if $api_endpoint_conf;
 
         mount '/login/twitter' => $sys->login('Twitter')
                                       ->build_psgi_endpoint( $config->{ twitter_appli } );

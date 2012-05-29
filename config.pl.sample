@@ -28,6 +28,7 @@ use strict;
             ],
         },
         api_endpoint => {
+            '/api/post'    => [ 'Post'   => {} => 'user message投稿用api' ],
             '/api/search'  => [ 'Search' => {} => 'user message検索用api' ],
         },
     },
