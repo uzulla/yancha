@@ -23,7 +23,7 @@ use strict;
             '/login/basic'   => [
                 'BasicAuth' => {
                     passwd_file  => '.htpasswd',
-                    encrypt_hash => 'plain',
+                    check_hashes => ['plain','crypt','md5','sha1'],
                     realm        => 'Hachioji.pm',
                 },
             ],

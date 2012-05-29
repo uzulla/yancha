@@ -16,7 +16,7 @@ use Authen::Htpasswd;
 sub build_psgi_endpoint {
     my ( $self, $opt ) = @_;
     my $passwd_file  = $opt->{ 'passwd_file' }  || '';
-    my $encrypt_hash = $opt->{ 'encrypt_hash' } || 'crypt';
+    my $check_hashes = $opt->{ 'check_hashes' };
     my $realm        = $opt->{ 'realm' };
 
     # Carp::croak("Invalid login endpoint root.") unless $endpoint_root =~ m{^[-./\w]*$};
@@ -26,7 +26,7 @@ sub build_psgi_endpoint {
     $basic->realm( $realm );
     $basic->authenticator(sub {
         my ( $username, $password ) = @_;
-        my $pwfile = Authen::Htpasswd->new( $passwd_file, { encrypt_hash => $encrypt_hash } );
+        my $pwfile = Authen::Htpasswd->new( $passwd_file, { check_hashes => $check_hashes } );
         my $user   = $pwfile->lookup_user( $username );
         return unless $user;
         return $user->check_password( $password );

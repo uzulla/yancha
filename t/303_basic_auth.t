@@ -31,7 +31,7 @@ my $config = {
             '/login'   => [
                 'BasicAuth' => {
                     passwd_file  => '.htpasswd',
-                    encrypt_hash => 'plain',
+                    check_hashes => ['plain'],
                     realm        => 'Hachioji.pm',
                 },
             ],
