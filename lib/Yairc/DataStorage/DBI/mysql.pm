@@ -207,7 +207,10 @@ sub get_last_posts_by_tag {
 
 sub get_post_by_id {
     my ( $self, $id ) = @_;
-    return $self->dbh->selectrow_hashref( 'SELECT * FROM `post` WHERE `id` = ?', {}, $id );
+    my $post = $self->dbh->selectrow_hashref( 'SELECT * FROM `post` WHERE `id` = ?', {}, $id );
+    $post->{ tags } =~ s{^ | $}{}g;
+    $post->{ tags } = [ split / /, $post->{ tags } ];
+    return $post;
 }
 
 sub search_post {

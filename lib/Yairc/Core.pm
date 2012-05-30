@@ -160,11 +160,9 @@ sub plusplus {
 
     my $post = $self->sys->data_storage->get_post_by_id( $post_id );
 
-    my (undef,@tags) = split / /, $post->{tags};
-
     $post->{is_message_log} = JSON::true;
 
-    $self->sys->send_post_to_tag_joined( $post => \@tags );
+    $self->sys->send_post_to_tag_joined( $post => $post->{ tags } );
 }
 
 

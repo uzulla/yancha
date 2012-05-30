@@ -99,6 +99,7 @@ is( $post->{ text }, "Hello World. #PUBLIC" );
 is( $post->{ user_key }, '-:0001' );
 is( $post->{ nickname }, 'user1' );
 is( $post->{ plusplus }, 0 );
+is_deeply( $post->{ tags }, ['PUBLIC'] );
 
 $post->{ text } = 'HOGE #PUBLIC';
 ok( $storage->replace_post( $post ) );
@@ -162,6 +163,7 @@ is( scalar(@$posts), 10 );
 $post = $storage->get_post_by_id( 10 );
 
 is( $post->{ id }, 10 );
+is_deeply( $post->{ tags }, ['ABC'] );
 
 subtest 'plusplus' => sub {
     my $temp_id = 10;
@@ -169,6 +171,7 @@ subtest 'plusplus' => sub {
         ok( $storage->plusplus($temp_id) );
         my $temp = $storage->get_post_by_id($temp_id);
         is $temp->{plusplus}, 1;
+        is_deeply( $temp->{ tags }, ['ABC'] );
     }
 
     {
