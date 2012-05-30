@@ -18,7 +18,6 @@ my $config = {
         [
             'WelcomeMessage' => [
                 message => 'Welcome %s! This is test.', nickname => 'test',
-                tags => [ qw/public test/ ],
             ]
         ],
     ],
@@ -44,8 +43,7 @@ my $client = sub {
             is( $post->{ text }, 'Welcome user! This is test.' );
             is( $post->{ nickname }, 'test' );
             is( $post->{ id }, -1 );
-            is( $post->{ created_at_ms }, 0 );
-            is_deeply( $post->{tags}, [qw/PUBLIC TEST/] );
+            is_deeply( $post->{tags}, [qw/HOGE/] );
 
             $cv->send;
         });
@@ -54,7 +52,7 @@ my $client = sub {
 
     my ( $client ) = t::Utils->create_clients_and_set_tags(
         $port,
-        { nickname => 'user', on_connect => $on_connect },
+        { nickname => 'user', tags => ['hoge'] ,on_connect => $on_connect },
     );
 
     $cv->wait;
