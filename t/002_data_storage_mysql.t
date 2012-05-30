@@ -168,13 +168,13 @@ subtest 'plusplus' => sub {
     {
         ok( $storage->plusplus($temp_id) );
         my $temp = $storage->get_post_by_id($temp_id);
-        $temp->{plusplus}, 1;
+        is $temp->{plusplus}, 1;
     }
 
     {
         ok( $storage->plusplus($temp_id) );
         my $temp = $storage->get_post_by_id($temp_id);
-        $temp->{plusplus}, 2;
+        is $temp->{plusplus}, 2;
     }
 };
 
