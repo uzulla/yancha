@@ -85,7 +85,9 @@ socket.on('user message', function(hash){
   var message = user_message_filter(h(hash.text));
   $('.messagecell_text', cell).html(message);
 
-  $('.messagecell_plusplus', cell).html((parseInt(hash.plusplus)||0)+"<button onclick='addPlusPlus("+hash.id+");'>++</button>");
+  if (cell.attr('data-post-id') > 0) {
+    $('.messagecell_plusplus', cell).html((parseInt(hash.plusplus)||0)+"<button onclick='addPlusPlus("+hash.id+");'>++</button>");
+  }
   
   $('.messagecell_time', cell)
     .attr('title', moment(hash.created_at_ms/100).format("YYYY-MM-DDTHH:mm:ss")+"Z+09:00")
