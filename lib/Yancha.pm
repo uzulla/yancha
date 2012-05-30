@@ -1,4 +1,4 @@
-package Yairc;
+package Yancha;
 
 use strict;
 use warnings;
@@ -13,7 +13,7 @@ use constant DEBUG => $ENV{ YAIRC_DEBUG };
 
 our $SERVER_INFO =  {
     'version' => $VERSION,
-    'name'    => 'Yairc(kari)',
+    'name'    => 'Yancha(kari)',
     'introduction'   => 'Hello Hachioji.pm',
 };
 
@@ -31,8 +31,8 @@ sub new {
 
 sub app {
     $_[0]->{ app } ||= do {
-        require Yairc::Core;
-        Yairc::Core->new( sys => $_[0] );
+        require Yancha::Core;
+        Yancha::Core->new( sys => $_[0] );
     }
 }
 

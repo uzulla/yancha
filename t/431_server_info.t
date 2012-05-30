@@ -1,10 +1,10 @@
 use strict;
 use warnings;
 use PocketIO::Test;
-use Yairc;
+use Yancha;
 use t::Utils;
 use AnyEvent;
-use Yairc::Client;
+use Yancha::Client;
 
 BEGIN {
     use Test::More;
@@ -36,7 +36,7 @@ my $client = sub {
         $cv->send;
     } );
 
-    my $client = Yairc::Client->new();
+    my $client = Yancha::Client->new();
 
     $client->connect("http://localhost:$port/");
 

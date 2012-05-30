@@ -1,9 +1,9 @@
-package Yairc::Auth::Twitter;
+package Yancha::Auth::Twitter;
 
 use strict;
 use warnings;
 
-use base 'Yairc::Login';
+use base 'Yancha::Login';
 use Plack::Builder;
 use Plack::Request;
 use Plack::Response;

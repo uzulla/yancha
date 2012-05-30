@@ -1,4 +1,4 @@
-package Yairc::Core;
+package Yancha::Core;
 
 use strict;
 use warnings;

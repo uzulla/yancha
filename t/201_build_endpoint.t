@@ -1,11 +1,11 @@
 use strict;
 use warnings;
 use PocketIO::Test;
-use Yairc;
+use Yancha;
 use t::Utils;
 use AnyEvent;
-use Yairc::Client;
-use Yairc::DataStorage::DBI;
+use Yancha::Client;
+use Yancha::DataStorage::DBI;
 use Plack::Builder;
 use utf8;
 
@@ -29,10 +29,10 @@ my $config = {
     },
 };
 
-my $data_storage = Yairc::DataStorage::DBI->connect(
+my $data_storage = Yancha::DataStorage::DBI->connect(
                             connect_info => $config->{ database }->{ connect_info } );
 
-my $sys = Yairc->new( config => $config, data_storage => $data_storage );
+my $sys = Yancha->new( config => $config, data_storage => $data_storage );
 
 my $server = builder {
     enable 'Session';

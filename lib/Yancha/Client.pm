@@ -1,4 +1,4 @@
-package Yairc::Client;
+package Yancha::Client;
 
 use strict;
 use warnings;
@@ -107,14 +107,14 @@ __END__
 
 =head1 NAME
 
-Yairc::Client - Yairc用簡易クライアント
+Yancha::Client - Yancha用簡易クライアント
 
 =head1 SYNOPSIS
 
-    use Yairc::Client;
+    use Yancha::Client;
     use Data::Dumper;
 
-    my $client = Yairc::Client->new();
+    my $client = Yancha::Client->new();
 
     my $cv = AnyEvent->condvar;
     my $w; $w = AnyEvent->timer( after => 30, cb => sub {
@@ -147,7 +147,7 @@ Yairc::Client - Yairc用簡易クライアント
 
 =head2 new
 
-    $client = Yairc::Client->new( %opt );
+    $client = Yancha::Client->new( %opt );
 
 新しいオブジェクトの生成。
 オプション
@@ -200,7 +200,7 @@ $subrefにはクライアント自身と、PocketIO::Socketが渡される。
     $token = $client->token;
 
 トークンのgetter/setter。
-Yaircはログインの有無をこのトークンでチェックしている。
+Yanchaはログインの有無をこのトークンでチェックしている。
 
 =head1 TODO
 
@@ -214,7 +214,7 @@ Yaircはログインの有無をこのトークンでチェックしている。
 
 =head1 SEE ALSO
 
-L<Yairc>, L<PocketIO>, L<PocketIO::Cleint::IO>, L<AnyEvent>, L<LWP::UserAgent>
+L<Yancha>, L<PocketIO>, L<PocketIO::Cleint::IO>, L<AnyEvent>, L<LWP::UserAgent>
 
 =cut
 

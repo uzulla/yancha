@@ -10,13 +10,13 @@ BEGIN {
 }
 
 BEGIN {
-    use_ok('Yairc::DataStorage::DBI');
+    use_ok('Yancha::DataStorage::DBI');
 }
 
 my $mysqld  = t::Utils->setup_mysqld( schema => './db/init.sql' );
-my $storage = Yairc::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn() ] );
+my $storage = Yancha::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn() ] );
 
-isa_ok( $storage, 'Yairc::DataStorage::DBI::mysql' );
+isa_ok( $storage, 'Yancha::DataStorage::DBI::mysql' );
 
 ok( my $user = $storage->add_user({
     user_key => '-:0001',

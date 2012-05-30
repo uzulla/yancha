@@ -2,8 +2,8 @@ use strict;
 use warnings;
 use t::Utils;
 use Data::Dumper;
-use Yairc;
-use Yairc::DataStorage::DBI;
+use Yancha;
+use Yancha::DataStorage::DBI;
 
 
 BEGIN {
@@ -14,7 +14,7 @@ BEGIN {
 
 sub text2post {
     my ( $text ) = @_;
-    my @tags = Yairc->extract_tags_from_text( $text );
+    my @tags = Yancha->extract_tags_from_text( $text );
 
     if ( @tags == 0 ){
         $text = $text . " #PUBLIC";
@@ -26,7 +26,7 @@ sub text2post {
 
 
 my $mysqld  = t::Utils->setup_mysqld( schema => './db/init.sql' );
-my $storage = Yairc::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn() ] );
+my $storage = Yancha::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn() ] );
 
 my $user = {
     user_key => '-:0001',

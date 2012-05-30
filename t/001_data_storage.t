@@ -4,11 +4,11 @@ use warnings;
 use Test::More;
 
 BEGIN {
-    use_ok('Yairc::DataStorage::Mock');
+    use_ok('Yancha::DataStorage::Mock');
 }
 
 
-my $storage = Yairc::DataStorage::Mock->new();
+my $storage = Yancha::DataStorage::Mock->new();
 
 ok( my $user = $storage->add_user({
     user_key => '-:0001',

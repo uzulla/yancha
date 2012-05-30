@@ -3,7 +3,7 @@ use warnings;
 use PocketIO::Test;
 use t::Utils;
 use AnyEvent;
-use Yairc::Client;
+use Yancha::Client;
 use Data::Dumper;
 
 BEGIN {
@@ -19,11 +19,11 @@ my $config = {
 };
 my $server = t::Utils->server_with_dbi( config => $config );
 
-my $storage = Yairc::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn ] );
+my $storage = Yancha::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn ] );
 
 my $client = sub {
     my ( $port ) = shift;
-    my $client = Yairc::Client->new();
+    my $client = Yancha::Client->new();
 
     my $client_test = sub {
         my ( $nickname ) = @_;

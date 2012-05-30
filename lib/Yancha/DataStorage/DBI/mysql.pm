@@ -1,8 +1,8 @@
-package Yairc::DataStorage::DBI::mysql;
+package Yancha::DataStorage::DBI::mysql;
 
 use strict;
 use warnings;
-use base 'Yairc::DataStorage::DBI';
+use base 'Yancha::DataStorage::DBI';
 
 our $VERSION = '0.01';
 

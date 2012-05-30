@@ -5,13 +5,13 @@ use Encode;
 
 use Test::More;
 use t::Utils;
-use Yairc;
+use Yancha;
 
 use lib qw(./t/lib);
 
-my $app = Yairc->new();
+my $app = Yancha->new();
 
-is( $app->load_module( 'Plugin', 'Test' ), 'Yairc::Plugin::Test' );
+is( $app->load_module( 'Plugin', 'Test' ), 'Yancha::Plugin::Test' );
 is( $app->load_module( 'Plugin', '+Test::Plugin' ), 'Test::Plugin' );
 is( $app->load_module( '+Test::Plugin' ), 'Test::Plugin' );
 is( $app->load_module( 'Test::Plugin' ), 'Test::Plugin' );

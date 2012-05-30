@@ -3,7 +3,7 @@ use warnings;
 use PocketIO::Test;
 use t::Utils;
 use AnyEvent;
-use Yairc::Client;
+use Yancha::Client;
 
 BEGIN {
     use Test::More;

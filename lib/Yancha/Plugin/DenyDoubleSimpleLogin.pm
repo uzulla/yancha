@@ -1,4 +1,4 @@
-package Yairc::Plugin::DenyDoubleSimpleLogin;
+package Yancha::Plugin::DenyDoubleSimpleLogin;
 
 use strict;
 use warnings;

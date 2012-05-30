@@ -1,4 +1,4 @@
-package Yairc::API;
+package Yancha::API;
 
 use strict;
 use warnings;

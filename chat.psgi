@@ -22,13 +22,13 @@ use Plack::App::File;
 use Plack::Session;
 
 use PocketIO;
-use Yairc;
-use Yairc::DataStorage::DBI;
-use Yairc::Config::Simple;
+use Yancha;
+use Yancha::DataStorage::DBI;
+use Yancha::Config::Simple;
 
-my $config = Yairc::Config::Simple->load_file( $ENV{ YAIRC_CONFIG_FILE } || "$root/config.pl" );
-my $data_storage = Yairc::DataStorage::DBI->connect( connect_info => $config->{ database }->{ connect_info } );
-my $yairc  = Yairc->new( config => $config, data_storage => $data_storage );
+my $config = Yancha::Config::Simple->load_file( $ENV{ YAIRC_CONFIG_FILE } || "$root/config.pl" );
+my $data_storage = Yancha::DataStorage::DBI->connect( connect_info => $config->{ database }->{ connect_info } );
+my $yairc  = Yancha->new( config => $config, data_storage => $data_storage );
 
 builder {
     enable 'Session';

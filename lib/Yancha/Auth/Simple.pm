@@ -1,11 +1,11 @@
-package Yairc::Auth::Simple;
+package Yancha::Auth::Simple;
 
-# Simple and Yairc core login function
+# Simple and Yancha core login function
 
 use strict;
 use warnings;
 
-use base 'Yairc::Login';
+use base 'Yancha::Login';
 use Plack::Builder;
 use Plack::Request;
 use Plack::Response;

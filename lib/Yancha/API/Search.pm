@@ -1,10 +1,10 @@
-package Yairc::API::Search;
+package Yancha::API::Search;
 
 use strict;
 use warnings;
 use utf8;
-use Yairc::API;
-use parent qw(Yairc::API);
+use Yancha::API;
+use parent qw(Yancha::API);
 use Encode ();
 
 our $VERSION = '0.01';

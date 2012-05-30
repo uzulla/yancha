@@ -1,11 +1,11 @@
-package Yairc::Auth::BasicAuth;
+package Yancha::Auth::BasicAuth;
 
 # Basic Auth
 
 use strict;
 use warnings;
 
-use base 'Yairc::Login';
+use base 'Yancha::Login';
 use Plack::Builder;
 use Plack::Request;
 use Plack::Response;

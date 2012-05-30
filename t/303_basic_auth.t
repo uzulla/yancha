@@ -1,11 +1,11 @@
 use strict;
 use warnings;
 use PocketIO::Test;
-use Yairc;
+use Yancha;
 use t::Utils;
 use AnyEvent;
-use Yairc::Client;
-use Yairc::DataStorage::DBI;
+use Yancha::Client;
+use Yancha::DataStorage::DBI;
 use Plack::Builder;
 use utf8;
 
@@ -40,10 +40,10 @@ my $config = {
     },
 };
 
-my $data_storage = Yairc::DataStorage::DBI->connect(
+my $data_storage = Yancha::DataStorage::DBI->connect(
                             connect_info => $config->{ database }->{ connect_info } );
 
-my $sys = Yairc->new( config => $config, data_storage => $data_storage );
+my $sys = Yancha->new( config => $config, data_storage => $data_storage );
 
 # make password file
 open( my $fh, '>', $file ) or die $!;
@@ -72,7 +72,7 @@ my $client = sub {
         $cv->send;
     } );
 
-    my $client = Yairc::Client->new();
+    my $client = Yancha::Client->new();
 
     $client->{ua}->requests_redirectable([]);
     $client->{url} = "http://localhost:$port/";

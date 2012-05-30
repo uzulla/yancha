@@ -1,4 +1,4 @@
-package Yairc::DataStorage;
+package Yancha::DataStorage;
 
 use strict;
 use warnings;
@@ -26,7 +26,7 @@ __END__
 
 =head1 NAME
 
-Yairc::DataStorage - data storage role class
+Yancha::DataStorage - data storage role class
 
 =head1 USER DATA
 

@@ -1,11 +1,11 @@
-package Yairc::API::Post;
+package Yancha::API::Post;
 
 use strict;
 use warnings;
 use utf8;
 use Encode;
-use parent qw(Yairc::API);
-use Yairc::DataStorage;
+use parent qw(Yancha::API);
+use Yancha::DataStorage;
 
 sub run {
     my ( $self, $req ) = @_;

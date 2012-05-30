@@ -1,4 +1,4 @@
-package Yairc::Plugin::WelcomeMessage;
+package Yancha::Plugin::WelcomeMessage;
 
 use strict;
 use warnings;

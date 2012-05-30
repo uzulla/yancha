@@ -19,17 +19,17 @@ BEGIN {
 
 use Data::Dumper;
 
-use Yairc;
-use Yairc::DataStorage::DBI;
-use Yairc::Config::Simple;
+use Yancha;
+use Yancha::DataStorage::DBI;
+use Yancha::Config::Simple;
 
-my $config = Yairc::Config::Simple->load_file( $ENV{ YAIRC_CONFIG_FILE } || "$root/../config.pl" );
-my $data_storage = Yairc::DataStorage::DBI->connect( connect_info => $config->{ database }->{ connect_info } );
+my $config = Yancha::Config::Simple->load_file( $ENV{ YAIRC_CONFIG_FILE } || "$root/../config.pl" );
+my $data_storage = Yancha::DataStorage::DBI->connect( connect_info => $config->{ database }->{ connect_info } );
 
 my $posts = $data_storage->search_post( {}, { limit => 10000 } );
 
 for my $post ( @$posts ) {
-    my @tags = Yairc->extract_tags_from_text( $post->{ text } );
+    my @tags = Yancha->extract_tags_from_text( $post->{ text } );
     $post->{ tags } = [ @tags ];
     $data_storage->replace_post( $post );
 }

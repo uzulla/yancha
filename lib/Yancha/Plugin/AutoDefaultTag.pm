@@ -1,4 +1,4 @@
-package Yairc::Plugin::AutoDefaultTag;
+package Yancha::Plugin::AutoDefaultTag;
 
 use strict;
 use warnings;

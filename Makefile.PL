@@ -3,11 +3,11 @@ use warnings;
 use ExtUtils::MakeMaker;
 
 WriteMakefile(
-    NAME          => 'Yairc',
+    NAME          => 'Yancha',
     AUTHOR        => 'uzulla',
-    VERSION_FROM  => 'lib/Yairc.pm',
+    VERSION_FROM  => 'lib/Yancha.pm',
 ### XXX NOW FAILURE TO USING ABSTRACT_FROM
-#    ABSTRACT_FROM => 'lib/Yairc.pm',
+#    ABSTRACT_FROM => 'lib/Yancha.pm',
     PL_FILES      => {},
     PREREQ_PM     => {
         'Test::More'  => 0,
@@ -26,6 +26,6 @@ WriteMakefile(
         'Plack::Session' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES    => 'Yairc-*' },
+    clean => { FILES    => 'Yancha-*' },
 );
 

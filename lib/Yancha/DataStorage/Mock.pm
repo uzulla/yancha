@@ -1,8 +1,8 @@
-package Yairc::DataStorage::Mock;
+package Yancha::DataStorage::Mock;
 
 use strict;
 use warnings;
-use base 'Yairc::DataStorage';
+use base 'Yancha::DataStorage';
 
 our $VERSION = '0.01';
 

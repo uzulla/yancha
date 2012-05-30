@@ -15,14 +15,14 @@ BEGIN {
 
 sub server_with_dbi {
 
-    require Yairc;
-    require Yairc::DataStorage::DBI;
+    require Yancha;
+    require Yancha::DataStorage::DBI;
 
     my ( $self, %opt ) = @_;
     my $config       = $opt{ config } || {};
-    my $data_storage = Yairc::DataStorage::DBI->connect(
+    my $data_storage = Yancha::DataStorage::DBI->connect(
                             connect_info => $config->{ database }->{ connect_info } );
-    my $sys = Yairc->new( config => $config, data_storage => $data_storage );
+    my $sys = Yancha->new( config => $config, data_storage => $data_storage );
 
     builder {
         enable 'Session';
@@ -77,7 +77,7 @@ sub create_clients_and_set_tags {
     my @clients;
 
     for my $user ( @users ) {
-        my $client   = Yairc::Client->new();
+        my $client   = Yancha::Client->new();
         my $nickname = $user->{ nickname } || 'client';
         my $on_connect = $user->{ on_connect };
 

@@ -1,4 +1,4 @@
-package Yairc::Login;
+package Yancha::Login;
 
 use strict;
 use warnings;

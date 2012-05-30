@@ -1,8 +1,8 @@
-package Yairc::DataStorage::DBI;
+package Yancha::DataStorage::DBI;
 
 use strict;
 use warnings;
-use base 'Yairc::DataStorage';
+use base 'Yancha::DataStorage';
 use DBI;
 use SQL::Maker;
 use Carp ();

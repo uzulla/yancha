@@ -3,8 +3,8 @@ use warnings;
 use PocketIO::Test;
 use t::Utils;
 use AnyEvent;
-use Yairc::Client;
-use Yairc::DataStorage::DBI;
+use Yancha::Client;
+use Yancha::DataStorage::DBI;
 
 BEGIN {
     use Test::More;
@@ -13,7 +13,7 @@ BEGIN {
 }
 
 my $mysqld = t::Utils->setup_mysqld( schema => './db/init.sql' );
-my $data_storage = Yairc::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn ] );
+my $data_storage = Yancha::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn ] );
 
 my $user = {
     nickname => 'user', user_key => '-:0001', profile_image_url => '',

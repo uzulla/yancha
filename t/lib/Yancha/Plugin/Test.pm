@@ -1,4 +1,4 @@
-package Yairc::Plugin::Test;
+package Yancha::Plugin::Test;
 
 use strict;
 use warnings;

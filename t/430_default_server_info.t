@@ -1,10 +1,10 @@
 use strict;
 use warnings;
 use PocketIO::Test;
-use Yairc;
+use Yancha;
 use t::Utils;
 use AnyEvent;
-use Yairc::Client;
+use Yancha::Client;
 
 BEGIN {
     use Test::More;
@@ -25,13 +25,13 @@ my $client = sub {
         $cv->send;
     } );
 
-    my $client = Yairc::Client->new();
+    my $client = Yancha::Client->new();
 
     $client->connect("http://localhost:$port/");
 
     $client->run( sub {
         $client->socket->on('server info' => sub {
-            is_deeply( $_[1], $Yairc::SERVER_INFO, 'server info' );
+            is_deeply( $_[1], $Yancha::SERVER_INFO, 'server info' );
             $cv->send;
         });
         $client->socket->emit('server info');

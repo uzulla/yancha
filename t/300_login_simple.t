@@ -3,7 +3,7 @@ use warnings;
 use PocketIO::Test;
 use t::Utils;
 use AnyEvent;
-use Yairc::Client;
+use Yancha::Client;
 
 BEGIN {
     use Test::More;
@@ -17,7 +17,7 @@ my $server = t::Utils->server_with_dbi( config => $config );
 
 my $client = sub {
     my ( $port ) = shift;
-    my $client = Yairc::Client->new();
+    my $client = Yancha::Client->new();
 
     my $cv = AnyEvent->condvar;
     my $w; $w = AnyEvent->timer( after => 30, cb => sub {

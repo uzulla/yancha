@@ -1,5 +1,5 @@
-# Yairc(仮名) README
-Yairc (仮名) はログの保全、リアルタイム性、モバイル端末への対応を重視した、Perlで作成されたチャットシステムです。
+# Yancha(仮名) README
+Yancha (仮名) はログの保全、リアルタイム性、モバイル端末への対応を重視した、Perlで作成されたチャットシステムです。
 
 サンプル
 [http://yairc.cfe.jp:3000/](http://yairc.cfe.jp:3000/)

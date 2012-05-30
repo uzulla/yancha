@@ -6,7 +6,7 @@ use Encode;
 use Test::More;
 
 BEGIN {
-    use_ok('Yairc');
+    use_ok('Yancha');
 }
 
 for my $line (<DATA>) {
@@ -15,7 +15,7 @@ for my $line (<DATA>) {
     next if $line =~ /^\s*--/;
     my ( $text, @tags ) = split/\s*,\s*/, $line;
     is( join(',', sort { $a cmp $b }
-                Yairc->extract_tags_from_text( $text ) ), join(',', sort @tags), Encode::encode_utf8($text) );
+                Yancha->extract_tags_from_text( $text ) ), join(',', sort @tags), Encode::encode_utf8($text) );
 }
 
 my $lines =<<LINES;
@@ -24,7 +24,7 @@ ge は#hogeではなくて#hoとしてあつかわれたい
 LINES
 
 is( join(',', sort { $a cmp $b }
-                Yairc->extract_tags_from_text( $lines ) ), 'HO', 'mulit line' );
+                Yancha->extract_tags_from_text( $lines ) ), 'HO', 'mulit line' );
 
 $lines =<<LINES;
 これも複数行でして #foo #ho
@@ -32,7 +32,7 @@ $lines =<<LINES;
 LINES
 
 is( join(',', sort { $a cmp $b }
-                Yairc->extract_tags_from_text( $lines ) ), 'FOO,HO', 'mulit line' );
+                Yancha->extract_tags_from_text( $lines ) ), 'FOO,HO', 'mulit line' );
 
 $lines =<<LINES;
 タグの最大値は10 #tag01 #tag02 #tag03 #tag04 #tag05
@@ -41,13 +41,13 @@ taghoge #tag07 #tag08 #tag09 #tag10 #tag11
 LINES
 
 is( join(',', sort { $a cmp $b }
-                Yairc->extract_tags_from_text( $lines ) ),
+                Yancha->extract_tags_from_text( $lines ) ),
                 'TAG01,TAG02,TAG03,TAG04,TAG05,TAG06,TAG07,TAG08,TAG09,TAG10', 'mulit line' );
 
 my $text = "#adsf\r\nあいう\r\nえお\r\n#test";
 
 is( join(',', sort { $a cmp $b }
-                Yairc->extract_tags_from_text( $text ) ),
+                Yancha->extract_tags_from_text( $text ) ),
                 'ADSF,TEST', 'mulit line' );
 
 done_testing;

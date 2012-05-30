@@ -1,4 +1,4 @@
-package Yairc::Config::Simple;
+package Yancha::Config::Simple;
 
 # Naming comes from Amon2::Config::Simple 
 

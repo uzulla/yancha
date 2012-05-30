@@ -6,8 +6,8 @@ use PocketIO::Test;
 use LWP::UserAgent;
 use HTTP::Request::Common qw(POST);
 use Test::More;
-use Yairc::Client;
-use Yairc::DataStorage::DBI;
+use Yancha::Client;
+use Yancha::DataStorage::DBI;
 use t::Utils;
 
 BEGIN {
@@ -29,7 +29,7 @@ my $server = t::Utils->server_with_dbi(config => $config);
 
 test_pocketio $server => sub {
     my ($port) = @_;
-    my $client = Yairc::Client->new;
+    my $client = Yancha::Client->new;
 
     ok $client->login(
         "http://localhost:$port/" => 'login', {nick => 'test_client'}
@@ -54,7 +54,7 @@ test_pocketio $server => sub {
 TEXT
 };
 
-my $storage = Yairc::DataStorage::DBI->connect(
+my $storage = Yancha::DataStorage::DBI->connect(
     connect_info => [$mysqld->dsn]
 );
 

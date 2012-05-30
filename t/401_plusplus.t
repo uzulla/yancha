@@ -3,8 +3,8 @@ use warnings;
 use PocketIO::Test;
 use t::Utils;
 use AnyEvent;
-use Yairc::Client;
-use Yairc::DataStorage::DBI;
+use Yancha::Client;
+use Yancha::DataStorage::DBI;
 
 BEGIN {
     use Test::More;
@@ -17,7 +17,7 @@ my $config = {
     database => { connect_info => [ $mysqld->dsn ] },
 };
 
-my $data_storage = Yairc::DataStorage::DBI->connect( %{$config->{database}} );
+my $data_storage = Yancha::DataStorage::DBI->connect( %{$config->{database}} );
 $data_storage->add_post( { text => "makamaka #PUBLIC", tags => [ 'PUBLIC' ] }, {
     nickname => 'user', user_key => '-:0001', profile_image_url => '',
 } );

@@ -5,24 +5,24 @@ use Encode;
 
 use Test::More;
 use t::Utils;
-use Yairc;
+use Yancha;
 
 use lib qw(./t/lib);
 
 {
     no strict 'refs';
     no warnings;
-    *{'Yairc::Plugin::Test::setup'} = sub {
+    *{'Yancha::Plugin::Test::setup'} = sub {
         my ( $class, $sys, @args ) = @_;
-        is( $class, 'Yairc::Plugin::Test', 'first arg' );
-        isa_ok( $sys,   'Yairc', 'second arg' );
+        is( $class, 'Yancha::Plugin::Test', 'first arg' );
+        isa_ok( $sys,   'Yancha', 'second arg' );
         is( $args[0], 'foo' );
         is( $args[1], 'bar' );
     };
     *{'Test::Plugin::setup'} = sub {
         my ( $class, $sys, @args ) = @_;
         is( $class, 'Test::Plugin', 'first arg' );
-        isa_ok( $sys,   'Yairc', 'second arg' );
+        isa_ok( $sys,   'Yancha', 'second arg' );
         is( $args[0], 'fuga' );
     };
 }
@@ -32,7 +32,7 @@ use lib qw(./t/lib);
 my $config = {
     message_log_limit => 20,
 };
-my $app = Yairc->new( config => $config );
+my $app = Yancha->new( config => $config );
 
 ok( $app );
 

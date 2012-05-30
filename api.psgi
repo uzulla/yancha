@@ -17,14 +17,14 @@ use Plack::Request;
 
 use FindBin;
 use lib ("$FindBin::Bin/lib");
-use Yairc::API::Search;
-use Yairc::DataStorage::DBI;
-use Yairc::Config::Simple;
+use Yancha::API::Search;
+use Yancha::DataStorage::DBI;
+use Yancha::Config::Simple;
 
-my $config = Yairc::Config::Simple->load_file( $ENV{ YAIRC_CONFIG_FILE } || "$root/config.pl" );
-my $data_storage = Yairc::DataStorage::DBI->connect( connect_info => $config->{ database }->{ connect_info } );
+my $config = Yancha::Config::Simple->load_file( $ENV{ YAIRC_CONFIG_FILE } || "$root/config.pl" );
+my $data_storage = Yancha::DataStorage::DBI->connect( connect_info => $config->{ database }->{ connect_info } );
 
-my $api = Yairc::API::Search->new( data_storage => $data_storage );
+my $api = Yancha::API::Search->new( data_storage => $data_storage );
 
 sub {
     my $env = shift;
