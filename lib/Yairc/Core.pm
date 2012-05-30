@@ -112,7 +112,9 @@ sub join_tag { #参加タグの登録（タグ毎のコネクションプール�
 
     my @new_joined_tags = keys %{ $tag_and_time };
 
+    $self->sys->call_hook( 'join_tag', $socket, \@new_joined_tags );
     $self->sys->add_tag_socket( $socket, \@new_joined_tags, { on_added => $on_added } );
+    $self->sys->call_hook( 'after_sent_log', $socket );
 
     #更新した参加タグをレスポンス
     $socket->emit('join tag', $tag_and_time);
