@@ -28,7 +28,7 @@ use Yancha::Config::Simple;
 
 my $config = Yancha::Config::Simple->load_file( $ENV{ YAIRC_CONFIG_FILE } || "$root/config.pl" );
 my $data_storage = Yancha::DataStorage::DBI->connect( connect_info => $config->{ database }->{ connect_info } );
-my $yairc  = Yancha->new( config => $config, data_storage => $data_storage );
+my $yancha = Yancha->new( config => $config, data_storage => $data_storage );
 
 builder {
     enable 'Session';
@@ -43,11 +43,11 @@ builder {
     mount '/socket.io/static/flashsocket/WebSocketMainInsecure.swf' =>
       Plack::App::File->new(file => "$root/public/WebSocketMainInsecure.swf");
 
-    mount '/socket.io' => PocketIO->new( socketio => $config->{ socketio }, instance => $yairc );
+    mount '/socket.io' => PocketIO->new( socketio => $config->{ socketio }, instance => $yancha );
 
-    $yairc->build_psgi_endpoint_from_server_info('api');
+    $yancha->build_psgi_endpoint_from_server_info('api');
 
-    $yairc->build_psgi_endpoint_from_server_info('auth');
+    $yancha->build_psgi_endpoint_from_server_info('auth');
 
     mount '/' => builder {
         enable "Static",

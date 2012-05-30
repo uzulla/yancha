@@ -154,7 +154,7 @@ function updateTitle(){
   if(unreadnum>0){
     prefix = "("+unreadnum+")";
   }
-  document.title = prefix+"yairc";
+  document.title = prefix+"yancha";
 }
 
 //トークンを使ってログインした後、レスポンスされる自分情報を保存
@@ -281,7 +281,7 @@ function addPlusPlus(post_id) {
 
 //オートログインクッキーを消して、接続を切って、リロード
 function logout(){
-  $.cookie('yairc_auto_login_token', null);
+  $.cookie('yancha_auto_login_token', null);
   $.cookie('chat_tag_list', null);
   data.nick = '';
   data.tags = {'PUBLIC':0};
@@ -291,8 +291,8 @@ function logout(){
 
 //クッキーがあれば、オートログインさせる
 function autologin(){
-  if($.cookie('yairc_auto_login_token')){
-    data.token = $.cookie('yairc_auto_login_token');
+  if($.cookie('yancha_auto_login_token')){
+    data.token = $.cookie('yancha_auto_login_token');
     if(data.token){
       $('#nickname').hide();
       if(debug){console.log('try autologin');}

@@ -42,7 +42,7 @@ sub build_psgi_endpoint {
 
             $session->set( 'token', $user->{ token } );
 
-            $res->cookies->{yairc_auto_login_token} = {
+            $res->cookies->{yancha_auto_login_token} = {
                 value => $user->{ token },
                 path  => "/",
                 expires => time + 24 * 60 * 60,

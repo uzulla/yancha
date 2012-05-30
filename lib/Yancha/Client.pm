@@ -34,7 +34,7 @@ sub login {
     #my $cookie = HTTP::Cookies->new->extract_cookies($res); # use?
     #$self->{ cookie } = $cookie;
 
-    my ( $token ) = $res->header('set-cookie') =~ /yairc_auto_login_token=([-\w]+);/;
+    my ( $token ) = $res->header('set-cookie') =~ /yancha_auto_login_token=([-\w]+);/;
 
     $self->token( $token );
 

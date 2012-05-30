@@ -89,7 +89,7 @@ my $client = sub {
     $res = $client->{ua}->get( $url );
     is( $res->code, 302, 'authorized' );
 
-    my ( $token ) = $res->header('set-cookie') =~ /yairc_auto_login_token=([-\w]+);/;
+    my ( $token ) = $res->header('set-cookie') =~ /yancha_auto_login_token=([-\w]+);/;
     ok( $client->token( $token ), 'token' );
 
     $client->connect;
