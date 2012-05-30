@@ -84,6 +84,8 @@ socket.on('user message', function(hash){
 
   var message = user_message_filter(h(hash.text));
   $('.messagecell_text', cell).html(message);
+
+  $('.messagecell_plusplus', cell).html((parseInt(hash.plusplus)||0)+"<button onclick='addPlusPlus("+hash.id+");'>++</button>");
   
   $('.messagecell_time', cell)
     .attr('title', moment(hash.created_at_ms/100).format("YYYY-MM-DDTHH:mm:ss")+"Z+09:00")
@@ -100,11 +102,18 @@ socket.on('user message', function(hash){
       $(this).addClass('unread');
     });
   
+  $('.messagecell_plusplus', cell)
+    .on('mouseover', function(){
+      $(this).removeClass('uncheck');
+    });
+
   if(hash.is_message_log){ //ログなので、差し込む場所を調整する  
     var added_flg=false;
     $('#lines div.messagecell').each(function(){
       var _pid = parseInt($(this).attr('data-post-id'));
       if(_pid==hash.id){ // 自分と同じPostIDがある(出力済み)なので終了
+        $('.messagecell_plusplus', cell).addClass('uncheck');
+        $('.messagecell_plusplus', this).replaceWith($('.messagecell_plusplus', cell));
         added_flg=true;
         return false; //break
       }else if(_pid<hash.id){ // 自分より古いので、一つ進める
@@ -263,6 +272,10 @@ function sendMessage(){
   return false;
 }
 
+//PlusPlusをつける
+function addPlusPlus(post_id) {
+  socket.emit('plusplus', post_id);
+}
 
 //オートログインクッキーを消して、接続を切って、リロード
 function logout(){

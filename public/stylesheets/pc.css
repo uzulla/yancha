@@ -38,6 +38,9 @@ margin:0px;
 #messages div.unread:nth-child(even) {
   background: #ff9999;
 }
+#messages div.uncheck {
+  color: red;
+}
 
 #messages div.selectedMessageCell{
   background-color:red !important;
