@@ -159,6 +159,7 @@ sub add_post {
         user_key => $user->{ user_key },
         profile_image_url => $user->{ profile_image_url },
         created_at_ms     => $self->_get_now_micro_sec(),
+        plusplus          => 0,
         tags              => $tags,
     } : { %$post, created_at_ms => $self->_get_now_micro_sec() };
 
@@ -300,6 +301,13 @@ sub count_post {
     return $_[0]->dbh->selectrow_array('SELECT count(*) FROM `post`');
 }
 
+sub plusplus {
+    my ($self,$id) = @_;
+
+    $self->dbh->do(q{
+        UPDATE post SET plusplus = plusplus + 1 WHERE id = ?
+    }, {}, $id);
+}
 
 sub _sql_maker_cond {
     SQL::Maker::Condition->new( name_sep => '.', quote_char => '`' );

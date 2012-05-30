@@ -98,6 +98,7 @@ is( $post->{ id }, 1 );
 is( $post->{ text }, "Hello World. #PUBLIC" );
 is( $post->{ user_key }, '-:0001' );
 is( $post->{ nickname }, 'user1' );
+is( $post->{ plusplus }, 0 );
 
 $post->{ text } = 'HOGE #PUBLIC';
 ok( $storage->replace_post( $post ) );
@@ -106,6 +107,7 @@ is( $post->{ id }, 1 );
 is( $post->{ text }, "HOGE #PUBLIC" );
 is( $post->{ user_key }, '-:0001' );
 is( $post->{ nickname }, 'user1' );
+is( $post->{ plusplus }, 0 );
 
 ok( $storage->remove_post( $post ) );
 is( $storage->count_post, 0 );
@@ -160,6 +162,21 @@ is( scalar(@$posts), 10 );
 $post = $storage->get_post_by_id( 10 );
 
 is( $post->{ id }, 10 );
+
+subtest 'plusplus' => sub {
+    my $temp_id = 10;
+    {
+        ok( $storage->plusplus($temp_id) );
+        my $temp = $storage->get_post_by_id($temp_id);
+        $temp->{plusplus}, 1;
+    }
+
+    {
+        ok( $storage->plusplus($temp_id) );
+        my $temp = $storage->get_post_by_id($temp_id);
+        $temp->{plusplus}, 2;
+    }
+};
 
 done_testing;
 

@@ -38,6 +38,10 @@ margin:0px;
   background: #ff9999;
 }
 
+#messages div.uncheck {
+  color: red;
+}
+
 #lines {
   overflow: auto;
   overflow-x: auto;
