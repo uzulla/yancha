@@ -113,7 +113,7 @@ margin:0px;
 }
 
 .messagecell_plusplus button {
-  padding: 0px;
+  padding: 10px;
   background: orange;
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0, orange), color-stop(1, #be9200));
   background: -webkit-linear-gradient(top, orange 0%, #be9200 100%);
@@ -123,7 +123,7 @@ margin:0px;
   text-shadow: 0 -1px 1px #FFFFFF;
 }
 .messagecell_plusplus button:hover {
-  padding: 0px;
+  padding: 10px;
   background: orange;
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0, orange), color-stop(1, #be9200));
   background: -webkit-linear-gradient(top, orange 0%, #be9200 100%);
