@@ -45,8 +45,12 @@ sub build_psgi_endpoint {
                 sns_data_cache    => '',
             } );
 
+            # TODO: ここから下まとめる
+            return $self->response_token_only($user)->finalize
+                                    if $req->parameters->{ token_only };
+
             $session->set( 'token', $user->{ token } );
-            # TODO: ここをどうにかしないと
+
             $res->cookies->{yancha_auto_login_token} = {
                 value => $user->{ token },
                 path  => "/",

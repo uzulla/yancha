@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use Digest::SHA ();
 use Time::HiRes  ();
+use Plack::Response;
 
 sub new {
     my ( $class, @args ) = @_;
@@ -22,6 +23,14 @@ sub redirect_url {
     }
     $root ||= '';
     return $url . $root;
+}
+
+sub response_token_only {
+    my ( $self, $token ) = @_;
+    my $res = Plack::Response->new(200);
+    $token = $token->{ token } if ref $token;
+    $res->body( $token );
+    return $res;
 }
 
 sub set_user_into_storage {
