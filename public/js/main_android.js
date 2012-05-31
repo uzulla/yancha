@@ -6,8 +6,12 @@ var infomationScroll = null;
 
 //user message受信時に呼ばれる
 hook.addHook('onUserMessage', function(hash){
+});
+
+hook.addHook('doScrollBottom', function(hash){
   $(window).scrollTop(10000000); //TODO 
 });
+
 
 hook.addHook('onConnect', function(hash){
   //Cookieがあれば、オートログインさせる

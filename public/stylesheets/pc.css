@@ -113,6 +113,33 @@ margin:0px;
   margin-right: 5px;
 }
 
+.messagecell_plusplus button {
+  padding: 0px;
+  background: orange;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, orange), color-stop(1, #be9200));
+  background: -webkit-linear-gradient(top, orange 0%, #be9200 100%);
+  background: -moz-linear-gradient(top, orange 0%, #be9200 100%);
+  background: linear-gradient(top, orange 0%, #be9200 100%);
+  border: 0px solid #2e70c4;
+  text-shadow: 0 -1px 1px #FFFFFF;
+}
+.messagecell_plusplus button:hover {
+  padding: 0px;
+  background: orange;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, orange), color-stop(1, #be9200));
+  background: -webkit-linear-gradient(top, orange 0%, #be9200 100%);
+  background: -moz-linear-gradient(top, orange 0%, #be9200 100%);
+  background: linear-gradient(top, orange 0%, #be9200 100%);
+  border: 0px solid #2e70c4;
+  text-shadow: 0 -1px 1px #FFFFFF;
+}
+
+.messagecell_plusplus_stars{
+  color:orange;
+  font-weight:bold;
+}
+
+
 /* generic button css */
 button {
   margin: 0;

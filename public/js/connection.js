@@ -85,8 +85,23 @@ socket.on('user message', function(hash){
   var message = user_message_filter(h(hash.text));
   $('.messagecell_text', cell).html(message);
 
+  //plusplus
   if (cell.attr('data-post-id') > 0) {
-    $('.messagecell_plusplus', cell).html((parseInt(hash.plusplus)||0)+"<button onclick='addPlusPlus("+hash.id+");'>++</button>");
+    var ppnum = (parseInt(hash.plusplus)||0);
+    var ppstar_elm = $("<span class='messagecell_plusplus_stars'>");
+    if(ppnum<100){
+      for(var i=0; ppnum>i; i++){
+        ppstar_elm.append('★<span style="font-size:0.01em"> </span>');
+      }
+    }else{
+      ppstar_elm.append('★x'+ppnum);
+    }
+    
+    $('.messagecell_plusplus', cell).append(
+      $("<button onclick='addPlusPlus("+hash.id+");'>++</button>"),
+      ' ',
+      ppstar_elm
+    );
   }
   
   $('.messagecell_time', cell)
@@ -113,9 +128,8 @@ socket.on('user message', function(hash){
     var added_flg=false;
     $('#lines div.messagecell').each(function(){
       var _pid = parseInt($(this).attr('data-post-id'));
-      if(_pid==hash.id){ // 自分と同じPostIDがある(出力済み)なので終了
-        $('.messagecell_plusplus', cell).addClass('uncheck');
-        $('.messagecell_plusplus', this).replaceWith($('.messagecell_plusplus', cell));
+      if(_pid==hash.id){ // 自分と同じPostIDがある、上書きする。（現状plusplusのみ）
+        $('.messagecell_plusplus', this).replaceWith($('.messagecell_plusplus', cell).addClass('uncheck'));
         added_flg=true;
         return false; //break
       }else if(_pid<hash.id){ // 自分より古いので、一つ進める
@@ -128,9 +142,11 @@ socket.on('user message', function(hash){
     });
     if(added_flg==false){ //自分より新しい物がなかったので、最後に挿入する
       $('#lines').append(cell);
+      hook.doHook('doScrollBottom', hash);
     }
   }else{
     $('#lines').append( cell );
+    hook.doHook('doScrollBottom', hash);
   }
   
   if($('#lines p').length>100){ // 沢山表示すると重くなるので、古い物を消していく
