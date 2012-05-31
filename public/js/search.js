@@ -108,6 +108,19 @@ function buildMessageCell(hash){
     .attr('title', moment(hash.created_at_ms/100).format("YYYY-MM-DDTHH:mm:ss")+"Z+09:00") // TODO国際化対応
     .text("("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")")
     .timeago();
+    
+  //plusplus
+  var ppnum = (parseInt(hash.plusplus)||0);
+  var ppstar_elm = $("<span class='messagecell_plusplus_stars'>");
+  if(ppnum<100){
+    for(var i=0; ppnum>i; i++){
+      ppstar_elm.append('★<span style="font-size:0.01em"> </span>');
+    }
+  }else{
+    ppstar_elm.append('★x'+ppnum);
+  }
+  $('.messagecell_plusplus', cell).append( ppstar_elm );
+    
   return cell;
 }
 
