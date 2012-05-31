@@ -18,20 +18,24 @@ use strict;
         name          => 'Hachoji.pm',
         default_tag   => 'PUBLIC',
         introduction  => 'テストサーバ',
-        auth_endpoint => {
-            '/login'         => [ 'Simple'  => { name_field => 'nick' } ],
+        auth_endpoint => { # endpoint => [ $module_name, $args, $description_for_client ]
+            '/login'         => [
+                'Simple'  => {
+                    name_field => 'nick'
+                } => { description => 'Test!' },
+            ],
             '/login/basic'   => [
                 'BasicAuth' => {
                     passwd_file  => '.htpasswd',
                     check_hashes => ['plain','crypt','md5','sha1'],
                     realm        => 'Hachioji.pm',
-                },
+                } => { description => 'Basic認証' },
             ],
             '/login/twitter' => [
                 'Twitter' => {
                     consumer_key    => 'xxxx',
                     consumer_secret => 'yyyy',
-                }
+                }, => { description => 'Twitter!' },
             ],
         },
         api_endpoint => {

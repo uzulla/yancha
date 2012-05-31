@@ -5,6 +5,8 @@ use Yancha;
 use t::Utils;
 use AnyEvent;
 use Yancha::Client;
+use Yancha::DataStorage::DBI;
+use Plack::Builder;
 
 BEGIN {
     use Test::More;
@@ -14,7 +16,17 @@ BEGIN {
 
 my $mysqld = t::Utils->setup_mysqld( schema => './db/init.sql' );
 my $config = { database => { connect_info => [ $mysqld->dsn ] } };
-my $server = t::Utils->server_with_dbi( config => $config );
+my $data_storage = Yancha::DataStorage::DBI->connect(
+                            connect_info => $config->{ database }->{ connect_info } );
+
+my $sys = Yancha->new( config => $config, data_storage => $data_storage );
+
+my $server = builder {
+    mount '/socket.io' => PocketIO->new(
+            socketio => $config->{ socketio },
+            instance => $sys,
+    );
+};
 
 my $client = sub {
     my ( $port ) = shift;

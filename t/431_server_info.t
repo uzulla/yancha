@@ -21,7 +21,7 @@ my $config = {
         default_tag   => 'PUBLIC',
         introduction  => 'テストサーバ',
         auth_endpoint => {
-            '/login' => [ 'Simple'  => { name_field => 'nick' } => "simpleなログインです" ],
+            '/login' => [ 'Simple'  => { name_field => 'nick' } => { description => "simpleなログインです" } ],
         }
     },
 };
@@ -48,7 +48,7 @@ my $client = sub {
                 default_tag   => 'PUBLIC',
                 introduction  => 'テストサーバ',
                 auth_endpoint => {
-                    '/login' => 'simpleなログインです',
+                    '/login' => { name_field => 'nick', description => 'simpleなログインです' },
                 }
             }, 'server info' );
             $cv->send;

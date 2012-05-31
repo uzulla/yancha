@@ -5,7 +5,7 @@ package Yancha::Auth::Simple;
 use strict;
 use warnings;
 
-use base 'Yancha::Login';
+use base 'Yancha::Auth';
 use Plack::Builder;
 use Plack::Request;
 use Plack::Response;
@@ -15,6 +15,11 @@ use Plack::Session;
 sub build_psgi_endpoint {
     my ( $self, $opt ) = @_;
     my $name_field = $opt->{ 'name_field' } || 'nick';
+    my $endpoint = $opt->{ endpoint };
+
+    # クライアント向け情報に入力欄名を設定する
+    $self->sys->config->{ server_info }->{ auth_endpoint }
+                        ->{ $endpoint }->[2]->{ name_field } = $name_field;
 
     # Carp::croak("Invalid login endpoint root.") unless $endpoint_root =~ m{^[-./\w]*$};
 
@@ -25,7 +30,7 @@ sub build_psgi_endpoint {
             my $session = Plack::Session->new( $env );
             my $nick    = $req->parameters->{ $name_field };
 
-            my $url = 'http://'.$env->{HTTP_HOST}; # ok?
+            my $url = $self->redirect_url( $env );
             my $res = Plack::Response->new;
             $res->redirect($url);
 
@@ -41,7 +46,7 @@ sub build_psgi_endpoint {
             } );
 
             $session->set( 'token', $user->{ token } );
-
+            # TODO: ここをどうにかしないと
             $res->cookies->{yancha_auto_login_token} = {
                 value => $user->{ token },
                 path  => "/",

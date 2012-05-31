@@ -91,6 +91,8 @@ sub build_psgi_endpoint_from_server_info {
             Carp::croak( "$module must have build_psgi_endpoint." );
         }
         my $builder = $module->new( sys => $self );
+        $arg ||= {};
+        $arg->{ endpoint } = $endpoint;
         mount( $endpoint => $builder->build_psgi_endpoint( $arg ) );
     }
 }
@@ -193,8 +195,8 @@ sub server_info {
     my ( $self, $socket ) = @_;
     my $config = $self->config;
     my $server_info = $self->{server_info} ||= do {
-        if ( my $info = $config->{ server_info } ) {
-            $self->_server_info( $info );
+        if ( exists $config->{ server_info } ) {
+            $self->_server_info( $config->{ server_info } );
         }
         else {
             $SERVER_INFO;

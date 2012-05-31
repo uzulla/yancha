@@ -3,7 +3,7 @@ package Yancha::Auth::Twitter;
 use strict;
 use warnings;
 
-use base 'Yancha::Login';
+use base 'Yancha::Auth';
 use Plack::Builder;
 use Plack::Request;
 use Plack::Response;
@@ -16,11 +16,16 @@ use Net::Twitter::Lite;
 
 sub build_psgi_endpoint {
     my ( $self, $opt ) = @_;
+    my $endpoint = $opt->{ endpoint };
     my $nt = Net::Twitter::Lite->new(
         consumer_key    => $opt->{ consumer_key },
         consumer_secret => $opt->{ consumer_secret },
         legacy_lists_api => 0,
     );
+
+    # クライアント向け情報にアクセスポイントを設定する
+    $self->sys->config->{ server_info }->{ auth_endpoint }
+                        ->{ $endpoint }->[2]->{ start_point } = $endpoint . '/start';
 
     # Carp::croak("Invalid login endpoint root.") unless $endpoint_root =~ m{^[-./\w]*$};
     return builder {
@@ -29,8 +34,9 @@ sub build_psgi_endpoint {
             sub {
                 my $env     = shift;
                 my $session = Plack::Session->new( $env );
-                my $url     = $nt->get_authorization_url( # TODO 'login' is hardcoding!
-                                callback => 'http://'.$env->{HTTP_HOST}.'/login/twitter/callback' );
+                my $ret_url = $self->redirect_url( $env, "$endpoint/callback" );
+                my $url     = $nt->get_authorization_url( callback => $ret_url );
+
                 $session->set( 'token', $nt->request_token );
                 $session->set( 'token_secret', $nt->request_token_secret );
 
@@ -72,7 +78,8 @@ sub build_psgi_endpoint {
                 }
 
                 my $res = Plack::Response->new();
-                $res->redirect('http://'.$env->{HTTP_HOST}.'/');
+                my $ret_url = $self->redirect_url( $env );
+                $res->redirect( $ret_url );
                 $res->cookies->{yancha_auto_login_token} = {
                     value => $token,
                     path  => "/",

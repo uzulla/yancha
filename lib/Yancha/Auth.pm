@@ -1,4 +1,4 @@
-package Yancha::Login;
+package Yancha::Auth;
 
 use strict;
 use warnings;
@@ -13,6 +13,16 @@ sub new {
 }
 
 sub sys { $_[0]->{ sys } }
+
+sub redirect_url {
+    my ( $self, $env, $root ) = @_;
+    my $url = $env->{'psgi.url_scheme'} . '://' . $env->{'HTTP_HOST'};
+    if ( !defined $root and exists $self->sys->{ server_info } ) {
+        $root = $self->sys->{ server_info }->{ root };
+    }
+    $root ||= '';
+    return $url . $root;
+}
 
 sub set_user_into_storage {
     my ( $self, $user ) = @_;

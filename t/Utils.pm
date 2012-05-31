@@ -27,20 +27,20 @@ sub server_with_dbi {
     builder {
         enable 'Session';
 
+        my $api_endpoint_conf  = ($config->{server_info} || {})->{api_endpoint};
+        my $auth_endpoint_conf = ($config->{server_info}->{ auth_endpoint } || {
+            auth_endpoint => { '/login' => [ 'Simple', { name_field => 'nick' } ] },
+        })->{auth_endpoint};
+
+        $sys->build_psgi_endpoint_from_server_info('api', $api_endpoint_conf)
+                                                          if $api_endpoint_conf;
+
+        $sys->build_psgi_endpoint_from_server_info('auth', $auth_endpoint_conf);
+
         mount '/socket.io' => PocketIO->new(
                 socketio => $config->{ socketio },
                 instance => $sys,
         );
-
-        my $api_endpoint_conf = ($config->{server_info} || {})->{api_endpoint};
-        $sys->build_psgi_endpoint_from_server_info('api', $api_endpoint_conf)
-                                                          if $api_endpoint_conf;
-
-        mount '/login/twitter' => $sys->login('Twitter')
-                                      ->build_psgi_endpoint( $config->{ twitter_appli } );
-
-        mount '/login' => $sys->login('Simple')
-                              ->build_psgi_endpoint( { name_field => 'nick' } );
     };
 }
 

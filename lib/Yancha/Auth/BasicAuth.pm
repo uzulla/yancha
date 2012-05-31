@@ -5,7 +5,7 @@ package Yancha::Auth::BasicAuth;
 use strict;
 use warnings;
 
-use base 'Yancha::Login';
+use base 'Yancha::Auth';
 use Plack::Builder;
 use Plack::Request;
 use Plack::Response;
@@ -55,9 +55,8 @@ sub build_psgi_endpoint {
 
             $session->set( 'token', $user->{ token } );
 
-            my $url = 'http://'.$env->{HTTP_HOST}; # ok?
             my $res = Plack::Response->new;
-            $res->redirect($url);
+            $res->redirect( $self->redirect_url( $env ) );
             $res->cookies->{yancha_auto_login_token} = {
                 value => $user->{ token },
                 path  => "/",
