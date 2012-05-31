@@ -53,6 +53,9 @@ sub build_psgi_endpoint {
                 sns_data_cache    => '',
             } );
 
+            return $self->response_token_only($user)->finalize
+                                    if $req->parameters->{ token_only };
+
             $session->set( 'token', $user->{ token } );
 
             my $res = Plack::Response->new;

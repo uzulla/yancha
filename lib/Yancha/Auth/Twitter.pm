@@ -33,12 +33,14 @@ sub build_psgi_endpoint {
         mount '/start' => builder {
             sub {
                 my $env     = shift;
+                my $req     = Plack::Request->new($env);
                 my $session = Plack::Session->new( $env );
                 my $ret_url = $self->redirect_url( $env, "$endpoint/callback" );
                 my $url     = $nt->get_authorization_url( callback => $ret_url );
 
                 $session->set( 'token', $nt->request_token );
                 $session->set( 'token_secret', $nt->request_token_secret );
+                $session->set( 'token_only', 1 ) if $req->parameters->{ token_only };
 
                 my $res = Plack::Response->new;
                 $res->redirect($url);
@@ -75,6 +77,9 @@ sub build_psgi_endpoint {
                         sns_data_cache    => encode_json($profile),
                     } );
                     $token = $user->{ token };
+
+                    return $self->response_token_only($token)->finalize
+                                            if $session->remove( 'token_only' );
                 }
 
                 my $res = Plack::Response->new();
