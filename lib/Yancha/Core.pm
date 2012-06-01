@@ -122,12 +122,13 @@ sub join_tag { #参加タグの登録（タグ毎のコネクションプール�
 
 sub user_message {
     my ( $self, $socket, $message ) = @_;
+    my $ctx = { record_post => 1 }; # このメッセージに対する各プラグイン間でのやりとり用
 
-    $self->sys->call_hook( 'user_message', $socket, \$message );
+    $self->sys->call_hook( 'user_message', $socket, \$message, $ctx );
 
     my @tags = $self->sys->extract_tags_from_text( $message );
 
-    $self->sys->tag_trigger( $socket, \@tags, \$message );
+    $self->sys->tag_trigger( $socket, \@tags, \$message, $ctx );
 
     $self->sys->add_default_tag( \@tags, \$message ) unless @tags;
 
@@ -144,7 +145,9 @@ sub user_message {
         my $post = $self->sys->data_storage
                         ->make_post({ text => $message, tags => [ @tags ], user =>  $user });
 
-        $post = $self->sys->data_storage->add_post( $post );
+        $self->sys->call_hook( 'before_send_post', $socket, $post, $ctx );
+
+        $post = $self->sys->data_storage->add_post( $post ) if $ctx->{ record_post };
 
         $post->{is_message_log} = JSON::false;
 

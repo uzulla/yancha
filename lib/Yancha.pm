@@ -163,7 +163,7 @@ sub register_calling_tag {
 }
 
 sub tag_trigger {
-    my ( $self, $socket, $tags, $message_ref ) = @_;
+    my ( $self, $socket, $tags, $message_ref, $ctx ) = @_;
 
     unless ( scalar( @$tags ) ) {
         for ( @{ $self->{ tag_trigger_no_tag } || [] } ) {
@@ -176,7 +176,7 @@ sub tag_trigger {
         next unless exists $self->{ tag_trigger }->{ $_ };
         for ( @{ $self->{ tag_trigger }->{ $_ } } ) {
             my ($subref, $args) = @{ $_ };
-            $subref->( $self, $socket, $_, $message_ref, $tags, @$args );
+            $subref->( $self, $socket, $_, $tags, $message_ref, $ctx, @$args );
         }
     }
 }
