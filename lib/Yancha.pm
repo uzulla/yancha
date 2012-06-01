@@ -9,7 +9,7 @@ use Data::Dumper ();
 
 our $VERSION = '0.01';
 
-use constant DEBUG => $ENV{ YAIRC_DEBUG };
+use constant DEBUG => $ENV{ YANCHA_DEBUG };
 
 our $SERVER_INFO =  {
     'version' => $VERSION,
