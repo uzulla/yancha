@@ -3,7 +3,8 @@ var data = {
   token:false,
   nick:false,
   profile_image_url:false,
-  tags:{PUBLIC:0}
+  tags:{PUBLIC:0},
+  announcement:true
 };
 
 //各種接続、切断、エラーイベント
@@ -12,29 +13,39 @@ socket.on('connect', function () {
   hook.doHook('onConnect', undefined);
 });
 socket.on('reconnect', function () {
-  if(debug){message('System', 'Reconnected to the server');}
+  if(debug){console.log('Reconnected to the server');}
   if(data.token){
     if(debug){console.log('try create session');}
     socket.emit('token login', data.token);
   }
 });
 socket.on('reconnecting', function () {
-  if(debug){message('System', 'Attempting to re-connect to the server');}
+  if(debug){console.log('Attempting to re-connect to the server');}
 });
 socket.on('error', function (e) {
   if(debug){
     console.log("disconnected");
-    message('System', e ? e : 'A unknown error occurred');
   }
 });
 
 //サーバからのアナウンス
 socket.on('announcement', function (msg) {
-  if(debug){
-    $('#lines').append($('<p>').append($('<em>').text(msg)));
-    $('#lines').get(0).scrollTop = 10000000;  
-  }
+  announcement(msg)
 });
+
+function announcement(msg){
+  if(data.announcement){
+    var cell = $('#template_announcementcell').clone().removeAttr('id');
+    $('.announcementcell_text', cell).text(msg);
+    $('.announcementcell_time', cell)
+      .attr('title', moment().format("YYYY-MM-DDTHH:mm:ss")+"Z+09:00")
+      .text("("+moment().format('YYYY-MM-DD HH:mm')+")")
+      .timeago();    
+    $('#lines').append(cell);
+    hook.doHook('doScrollBottom', undefined);
+  }
+}
+
 
 //サーバから、参加ニックネームリストの更新
 socket.on('nicknames', function (nicknames) {
@@ -149,8 +160,8 @@ socket.on('user message', function(hash){
     hook.doHook('doScrollBottom', hash);
   }
   
-  if($('#lines p').length>100){ // 沢山表示すると重くなるので、古い物を消していく
-    $('#lines p:first').remove();
+  if($('#lines .messagecell').length>100){ // 沢山表示すると重くなるので、古い物を消していく
+    $('#lines .messagecell:first').remove();
   }
 
   if( message.match(/sh_/) ){ //sh_highlightDocument() がかなり重いので、呼び出し回数を減らす為

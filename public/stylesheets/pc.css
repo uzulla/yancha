@@ -138,7 +138,15 @@ margin:0px;
   color:orange;
   font-weight:bold;
 }
-
+.announcementcell{
+  background-color: #e6f5c3;
+  font-size: 12px;
+}
+.announcementcell_text {
+  padding-left: 10px;
+  color:#7c7c7c ;
+  font-style: italic;
+}
 
 /* generic button css */
 button {
