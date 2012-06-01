@@ -148,26 +148,32 @@ sub revoke_user_tokens {
 # post
 
 sub add_post {
-    my ( $self, $post, $user ) = @_;
-    # | TAG1 TAG2 TAG3 |
-    my @tags = @{ $post->{ tags } };
-    my $tags = $post->{ tags } ? ' '. join( ' ', @tags ) . ' ' : '';
-    $post->{ tags } = $tags unless $user; # TODO: $userを引数としてとらないようにする
-    $post = $user ? {
-        text => $post->{ text },
-        nickname => $user->{ nickname },
-        user_key => $user->{ user_key },
-        profile_image_url => $user->{ profile_image_url },
-        created_at_ms     => $self->_get_now_micro_sec(),
-        plusplus          => 0,
-        tags              => $tags,
-    } : { %$post, created_at_ms => $self->_get_now_micro_sec() };
+    my ( $self, $post ) = @_;
+
+    if ( $_[2] ) { # back compat
+        $post = $self->make_post( { %$post, user => $_[2] } );
+    }
+
+    my $tags = $post->{ tags }; # for restoring
+    my $tags_string = $self->_tags_to_string( $tags );
+
+    $post->{ tags } = $tags_string;
 
     $self->{ insert_post }->execute(
-                    @{$post}{ qw/user_key nickname profile_image_url text tags created_at_ms/ } );
+        @{$post}{ qw/user_key nickname profile_image_url text tags created_at_ms/ }
+    );
+
     $post->{ id } = $self->dbh->last_insert_id(undef, undef, 'post', 'id');
-    $post->{ tags } = [ @tags ]; # restore
+    $post->{ tags } = $tags; # restore
+
     return $post;
+}
+
+sub _tags_to_string {
+    my ( $self, $tags ) = @_;
+    return '' unless $tags;
+    # | TAG1 TAG2 TAG3 |
+    return @$tags ? ' '. join( ' ', @$tags ) . ' ' : '';
 }
 
 sub remove_post {
@@ -179,7 +185,7 @@ sub remove_post {
 sub replace_post {
     my ( $self, $post ) = @_;
     my $id   = $post->{ id };
-    my $tags = $post->{ tags } ? ' '. join( ' ', @{ $post->{ tags } } ) . ' ' : '';
+    my $tags = $self->_tags_to_string( $post->{ tags } );
     my $ret  = $self->dbh->do(qq{
         UPDATE `post` SET `user_key` = ?, `nickname` = ?, `profile_image_url` = ?,
                           `text` = ?, `created_at_ms` = ?, `tags` = ? WHERE `id` = ?

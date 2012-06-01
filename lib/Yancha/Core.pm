@@ -141,9 +141,10 @@ sub user_message {
             return;
         }
 
-        #DBに保存
         my $post = $self->sys->data_storage
-                        ->add_post( { text => $message, tags => [ @tags ] }, $user );
+                        ->make_post({ text => $message, tags => [ @tags ], user =>  $user });
+
+        $post = $self->sys->data_storage->add_post( $post );
 
         $post->{is_message_log} = JSON::false;
 

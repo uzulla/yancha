@@ -13,9 +13,24 @@ sub new {
     return $self;
 }
 
-
 sub _get_now_micro_sec {
     return Time::HiRes::time() * 100_000;
+}
+
+sub make_post {
+    my ( $self, $data ) = @_;
+    my $user = $data->{ user };
+
+    return {
+        text              => $data->{ text },
+        nickname          => $user ? $user->{ nickname } : $data->{ nickname },
+        user_key          => $user ? $user->{ user_key } : $data->{ user_key },
+        profile_image_url => $user ? $user->{ profile_image_url } : $data->{ profile_image_url },
+        tags              => exists $data->{ tags} ? $data->{ tags } : [],
+        plusplus          => exists $data->{ plusplus } ? $data->{ plusplus } : 0,
+        created_at_ms     => exists $data->{ created_at_ms }
+                                      ? $data->{ created_at_ms } : $self->_get_now_micro_sec(),
+    };
 }
 
 
