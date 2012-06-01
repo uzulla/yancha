@@ -127,7 +127,7 @@ sub user_message {
 
     my @tags = $self->sys->extract_tags_from_text( $message );
 
-    $self->sys->tag_trigger( \@tags, $socket, \$message );
+    $self->sys->tag_trigger( $socket, \@tags, \$message );
 
     $self->sys->add_default_tag( \@tags, \$message ) unless @tags;
 
