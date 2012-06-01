@@ -59,7 +59,6 @@ use strict;
     'token_expiration_sec' => 10, # default 604800 sec = 7 days
 
     'plugins' => [
-        [ 'AutoDefaultTag' => [ 'public' ], ],
         [ 'WelcomeMessage', [ message => 'Hi, %s. This is Hachioji.pm!' ] ],
     ],
 

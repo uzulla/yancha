@@ -307,6 +307,14 @@ sub send_event_to_tag_joined {
     }
 }
 
+sub add_default_tag {
+    my ( $self, $tags, $message_ref ) = @_;
+    my $tag = $self->{ default_tag }
+                ||= uc( $self->config->{ server_info }->{ default_tag } || 'PUBLIC' );
+    $$message_ref = $$message_ref . ' #' . $tag;
+    push @$tags, $tag;
+}
+
 1;
 __END__
 

@@ -129,6 +129,8 @@ sub user_message {
 
     $self->sys->tag_trigger( \@tags, $socket, \$message );
 
+    $self->sys->add_default_tag( \@tags, \$message ) unless @tags;
+
     #pocketio のソケット毎ストレージから自分のニックネームを取り出す
     $socket->get('user_data' => sub {
         my ($socket, $err, $user) = @_;
