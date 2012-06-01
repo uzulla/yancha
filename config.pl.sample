@@ -60,6 +60,7 @@ use strict;
 
     'plugins' => [
         [ 'WelcomeMessage', [ message => 'Hi, %s. This is Hachioji.pm!' ] ],
+        [ 'NoRec' ],
     ],
 
 };
