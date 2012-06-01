@@ -155,7 +155,7 @@ sub call_hook {
 sub register_calling_tag {
     my ( $self, $tag, $subref, $args ) = @_;
     if ( defined $tag ) {
-        push @{ $self->{ tag_trigger }->{ $tag } }, [$subref, $args];
+        push @{ $self->{ tag_trigger }->{ uc $tag } }, [$subref, $args];
     }
     else {
         push @{ $self->{ tag_trigger_no_tag } }, [$subref, $args];
