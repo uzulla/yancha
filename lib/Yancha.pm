@@ -154,11 +154,14 @@ sub call_hook {
 
 sub register_calling_tag {
     my ( $self, $tag, $subref, $args ) = @_;
-    if ( defined $tag ) {
-        push @{ $self->{ tag_trigger }->{ uc $tag } }, [$subref, $args];
+    if ( !defined $tag ) {
+        push @{ $self->{ tag_trigger_no_tag } }, [$subref, $args];
+    }
+    elsif ( ref $tag eq 'Regexp' ) {
+        push @{ $self->{ tag_trigger_regexp } }, [$tag, $subref, $args];
     }
     else {
-        push @{ $self->{ tag_trigger_no_tag } }, [$subref, $args];
+        push @{ $self->{ tag_trigger }->{ uc $tag } }, [$subref, $args];
     }
 }
 
@@ -168,15 +171,24 @@ sub tag_trigger {
     unless ( scalar( @$tags ) ) {
         for ( @{ $self->{ tag_trigger_no_tag } || [] } ) {
             my ($subref, $args) = @$_;
-            $subref->( $self, $socket, undef, $message_ref, $tags, @$args );
+            $subref->( $self, $socket, undef, $tags, $message_ref, $ctx, @$args );
         }
     }
 
-    for ( @$tags ) {
-        next unless exists $self->{ tag_trigger }->{ $_ };
-        for ( @{ $self->{ tag_trigger }->{ $_ } } ) {
-            my ($subref, $args) = @{ $_ };
-            $subref->( $self, $socket, $_, $tags, $message_ref, $ctx, @$args );
+    for my $tag ( @$tags ) {
+        for my $regexp_trigger ( @{ $self->{ tag_trigger_regexp } || [] } ) {
+            my ( $regexp, $subref, $args ) = @{ $regexp_trigger };
+            if ( my @matched = $tag =~ $regexp ) {
+                $ctx->{ splat } = \@matched;
+                $subref->( $self, $socket, $tag, $tags, $message_ref, $ctx, @$args );
+            }
+        }
+
+        next unless exists $self->{ tag_trigger }->{ $tag };
+
+        for my $trigger ( @{ $self->{ tag_trigger }->{ $tag } } ) {
+            my ($subref, $args) = @{ $trigger };
+            $subref->( $self, $socket, $tag, $tags, $message_ref, $ctx, @$args );
         }
     }
 }
