@@ -17,7 +17,10 @@ my $config = {
     'plugins' => [
         [
             'WelcomeMessage' => [
-                message => 'Welcome %s! This is test.',
+                message => sub {
+                    my ( $socket, $user ) = @_;
+                    return sprintf( 'Hi, %s! This is test.', $user->{ nickname } );
+                }
             ]
         ],
     ],
@@ -38,7 +41,7 @@ my $client = sub {
         my $count = 0;
 
         $client->socket->on('announcement' => sub {
-            is( $_[1], 'Welcome user! This is test.' );
+            is( $_[1], 'Hi, user! This is test.' );
             $cv->send;
         });
 

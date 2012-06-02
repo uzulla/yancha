@@ -9,10 +9,15 @@ my $USER = {};
 
 sub setup {
     my ( $class, $sys, %opt ) = @_;
-    my $nickname          = $opt{ nickname } || 'system';
-    my $user_key          = $opt{ user_key } || '*:system';
-    my $profile_image_url = $opt{ profile_image_url } || '';
-    my $message           = $opt{ message } || 'Welcom, %s!!';
+    my $message      = $opt{ message } || 'Welcome, %s!!';
+    my $welcome_code = $message;
+
+    unless ( ref $welcome_code eq 'CODE' ) {
+        $welcome_code = sub {
+            my ( $socket, $user ) = @_;
+            sprintf( $message, $user->{ nickname } );
+        };
+    }
 
     $sys->register_hook( 'after_sent_log', sub {
         my ( $sys, $socket ) = @_;
@@ -26,18 +31,9 @@ sub setup {
 
         $USER->{ $user->{ token } } = time;
 
-        my $tags = $sys->tags_reverse->{ $socket->id } || ['PUBLIC'];# TODO: default tag使う
-        my $welcome = {
-            id       => '-1',
-            text     => sprintf( $message, $user->{ nickname } ),
-            nickname => $nickname,
-            user_key => $user_key,
-            tags     => $tags,
-            created_at_ms     => $sys->data_storage->_get_now_micro_sec,
-            is_message_log    => JSON::false,
-            profile_image_url => $profile_image_url,
-        };
-        $socket->emit( 'user message', $welcome );
+        my $message = $welcome_code->( $socket, $user );
+
+        $socket->emit( 'announcement', $message );
     } );
 
     $sys->register_hook( 'disconnected', sub {
