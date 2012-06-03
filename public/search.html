@@ -37,6 +37,8 @@
   </script>
 </head>
 <body>
+<form action="#" target="_blank" method="post" id="popuper"></form>
+
 
 <div id="searchform" style="background-color:#CCCCCC;">
   <form onsubmit="return false">
@@ -61,8 +63,10 @@
   
 </div>
 <div id="controls">
-  <input type="button" onclick="$('#searchform').toggle('slow', function(){$(window).resize()})" value="検索フォームを開閉">
+  <input type="button" onclick="$('#searchform').toggle('slow', function(){$(window).resize()})" value="フォーム開閉">
   <input type="button" value="表示/更新" onclick="submitSearch(event);" >
+  <input type="button" value="引用選択開始" onclick="startSelectPost();" >
+  <input type="button" value="引用選択終了" onclick="endSelectPost();" >
 </div>
 
 <div style="text-align:center;display:none" id="loading_top">

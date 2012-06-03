@@ -141,4 +141,32 @@ function extendSearchOnScroll(e){ //Auto pagerize
   }
 }
 
+//引用選択機能
+function startSelectPost(){
+  $('.messagecell').on('click', function(){
+    if($(this).hasClass('selectedMessageCell')){
+      $(this).removeClass('selectedMessageCell')
+    }else{
+      $(this).addClass('selectedMessageCell')
+    }
+    
+  });
+}
+
+function endSelectPost(){
+  $('.messagecell').off('click');
+  var post_id_list = [];
+  $('.selectedMessageCell').each(function(){
+    post_id_list.push($(this).attr('data-post-id'));
+  });
+  console.log (post_id_list);
+  if(post_id_list.length < 1){
+    alert('一つも選択されていません');
+    return;
+  }
+  var url = '/quotation.html?id='+post_id_list.join(',');
+  $('#popuper').attr('action', url).submit();
+  $('.messagecell').removeClass('selectedMessageCell') 
+}
+
 
