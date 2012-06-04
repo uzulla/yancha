@@ -37,6 +37,7 @@ function announcement(msg){
   if(data.announcement){
     var cell = $('#template_announcementcell').clone().removeAttr('id');
     $('.announcementcell_text', cell).text(msg);
+    $('.announcementcell_text', cell).html( $('.announcementcell_text', cell).html().replace(/(\r|\n)/g, '<br />') );
     $('.announcementcell_time', cell)
       .attr('title', moment().format("YYYY-MM-DDTHH:mm:ss")+"Z+09:00")
       .text("("+moment().format('YYYY-MM-DD HH:mm')+")")
