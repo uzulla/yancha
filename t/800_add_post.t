@@ -21,7 +21,7 @@ my $config = {
     database => {connect_info => [$mysqld->dsn]},
     server_info => {
         api_endpoint => {
-            '/api/post' => ['Post', {}, 'For testing'],
+            '/api/post' => ['Yancha::API::Post', {}, 'For testing'],
         }
     },
 };

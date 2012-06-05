@@ -24,7 +24,7 @@ my $config = {
         default_tag   => 'PUBLIC',
         introduction  => 'テストサーバ',
         auth_endpoint => {
-            '/login' => [ 'Simple'  => { name_field => 'nick' } => {} ],
+            '/login' => [ 'Yancha::Auth::Simple'  => { name_field => 'nick' } => {} ],
         }
     },
 };

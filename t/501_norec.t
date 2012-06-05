@@ -20,7 +20,7 @@ my $config = {
     'server_info' => {
         default_tag   => 'PUBLIC',
         auth_endpoint => {
-            '/login' => [ 'Simple'  => { name_field => 'nick' } => {} ],
+            '/login' => [ 'Yancha::Auth::Simple'  => { name_field => 'nick' } => {} ],
         }
     },
 
