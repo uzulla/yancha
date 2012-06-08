@@ -3,6 +3,7 @@ var data = {
   token:false,
   nick:false,
   profile_image_url:false,
+  profile_url:false,
   tags:{PUBLIC:0}
 };
 
@@ -88,7 +89,7 @@ socket.on('user message', function(hash){
   
   
   if(hash.profile_image_url.length>0){
-    $('.messagecell_img', cell).attr('src', hash.profile_image_url);
+    $('.messagecell_img', cell).attr('src', hash.profile_image_url).wrap("<a href='"+hash.profile_url+"'></a>");
   }
 
   $('.messagecell_nickname', cell).text(hash.nickname);
@@ -196,6 +197,7 @@ socket.on('token login', function(res){
   
     data.nick = ud.nickname;
     data.profile_image_url = ud.profile_image_url;
+    data.profile_image_url = ud.profile_url;
   
     if( $.cookie('chat_tag_list')){
       var str = $.cookie('chat_tag_list');

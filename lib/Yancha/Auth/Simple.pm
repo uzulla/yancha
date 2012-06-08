@@ -43,6 +43,7 @@ sub build_psgi_endpoint {
                 nickname          => $nick,
                 profile_image_url => '',
                 sns_data_cache    => '',
+                profile_url       => '',
             } );
 
             # TODO: ここから下まとめる
