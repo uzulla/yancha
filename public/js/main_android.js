@@ -9,7 +9,13 @@ hook.addHook('onUserMessage', function(hash){
 });
 
 hook.addHook('doScrollBottom', function(hash){
-  $(window).scrollTop(10000000); //TODO 
+  var nowBottom = $(window).height() + $(window).scrollTop();
+  var domHeight = $('html')[0].scrollHeight;
+  var lastElmHeight = $('#lines *.messagecell:last').height();
+
+  if( domHeight - lastElmHeight <= nowBottom + 10 ){ // 10は遊び
+    $(window).scrollTop(10000000);
+  }  
 });
 
 
