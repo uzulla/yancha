@@ -3,8 +3,7 @@ var data = {
   token:false,
   nick:false,
   profile_image_url:false,
-  tags:{PUBLIC:0},
-  announcement:true
+  tags:{PUBLIC:0}
 };
 
 //各種接続、切断、エラーイベント
@@ -34,7 +33,7 @@ socket.on('announcement', function (msg) {
 });
 
 function announcement(msg){
-  if(data.announcement){
+  if($('#disp_announcement').prop('checked')){
     var cell = $('#template_announcementcell').clone().removeAttr('id');
     $('.announcementcell_text', cell).text(msg);
     $('.announcementcell_text', cell).html( $('.announcementcell_text', cell).html().replace(/(\r|\n)/g, '<br />') );

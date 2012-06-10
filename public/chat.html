@@ -53,12 +53,11 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
 
   <div id="nickname">
     <br />
-    <form id="set-nickname" class="wrap">
-      <p>Please login by ...</p>
-      <p><a href="/login/twitter/start">Twitter</a></p>
-    </form>
+    <p>yancha chatに参加するには、ログインして下さい。</p>
+    <p><a href="/login/twitter/start">Twitterでログイン</a></p>
     <form action="./login" method="post">
-      <p>or simple login</p><input type="text" name="nick"><input type="submit" name="login" value="login">
+      <p>または…シンプルログイン</p>
+      ニックネーム<input type="text" name="nick"><input type="submit" name="login" value="login">
     </form>
   </div>
 
@@ -87,7 +86,8 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
     </div>
     SETTINGS
     <div style="border-bottom:1px #999 solid;padding:3px;">
-      <label><input type="checkbox" id="sound" checked=checked>音をならす</label>
+      <label><input type="checkbox" id="sound" checked=checked>音をならす</label><br>
+      <label><input type="checkbox" id="disp_announcement">サーバーメッセージを表示</label>
     </div>
     ACTIONS
     <div style="border-bottom:1px #999 solid;padding:3px;">
