@@ -20,27 +20,27 @@ use strict;
         introduction  => 'テストサーバ',
         auth_endpoint => { # endpoint => [ $module_name, $args, $description_for_client ]
             '/login'         => [
-                'Simple'  => {
+                'Yancha::Auth::Simple'  => {
                     name_field => 'nick'
                 } => { description => 'Test!' },
             ],
             '/login/basic'   => [
-                'BasicAuth' => {
+                'Yancha::Auth::BasicAuth' => {
                     passwd_file  => '.htpasswd',
                     check_hashes => ['plain','crypt','md5','sha1'],
                     realm        => 'Hachioji.pm',
                 } => { description => 'Basic認証' },
             ],
             '/login/twitter' => [
-                'Twitter' => {
+                'Yancha::Auth::Twitter' => {
                     consumer_key    => 'xxxx',
                     consumer_secret => 'yyyy',
                 }, => { description => 'Twitter!' },
             ],
         },
         api_endpoint => {
-            '/api/post'    => [ 'Post'   => {} => 'user message投稿用api' ],
-            '/api/search'  => [ 'Search' => {} => 'user message検索用api' ],
+            '/api/post'    => [ 'Yancha::API::Post'   => {} => 'user message投稿用api' ],
+            '/api/search'  => [ 'Yancha::API::Search' => {} => 'user message検索用api' ],
         },
     },
 
