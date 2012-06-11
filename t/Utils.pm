@@ -29,7 +29,7 @@ sub server_with_dbi {
 
         my $api_endpoint_conf  = ($config->{server_info} || {})->{api_endpoint};
         my $auth_endpoint_conf = ($config->{server_info}->{ auth_endpoint } || {
-            auth_endpoint => { '/login' => [ 'Simple', { name_field => 'nick' } ] },
+            auth_endpoint => { '/login' => [ 'Yancha::Auth::Simple', { name_field => 'nick' } ] },
         })->{auth_endpoint};
 
         $sys->build_psgi_endpoint_from_server_info('api', $api_endpoint_conf)

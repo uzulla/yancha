@@ -85,8 +85,7 @@ sub build_psgi_endpoint_from_server_info {
     Plack::Builder->import;
     for my $endpoint ( keys %{ $conf } ) {
         my ( $module_name, $arg, undef ) = @{ $conf->{ $endpoint } };
-        my $type   = length $name <= 3 ? uc( $name ) : ucfirst( $name ); # API対策…いけてない
-        my $module = $self->load_module( $type => $module_name );
+        my $module = $self->load_module( $module_name );
         unless ( $module->can('build_psgi_endpoint') ) {
             Carp::croak( "$module must have build_psgi_endpoint." );
         }
