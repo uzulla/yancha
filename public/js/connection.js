@@ -276,8 +276,13 @@ function addTag(newtag){
   //console.log(newtag);
   if(!data.tags[newtag]){
     data.tags[newtag] = 0;
-  }  
+  }
   sendTags();
+  
+  var re = new RegExp('#'+newtag+'( |$)', "i");
+  if(!$('#message').val().match(re)){
+    $('#message').val($('#message').val()+' #'+newtag);
+  }
 }
 
 //send tag
