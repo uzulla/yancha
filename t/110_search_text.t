@@ -2,15 +2,10 @@ use strict;
 use warnings;
 use t::Utils;
 use Data::Dumper;
+use Test::More;
 use Yancha;
 use Yancha::DataStorage::DBI;
 use utf8;
-
-BEGIN {
-    use Test::More;
-    plan skip_all => 'Test::mysqld is required to run this test'
-      unless eval { require Test::mysqld; 1 };
-}
 
 sub text2post {
     my ( $text ) = @_;
@@ -25,8 +20,8 @@ sub text2post {
 }
 
 
-my $mysqld  = t::Utils->setup_mysqld( schema => './db/init.sql' );
-my $storage = Yancha::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn() ] );
+my $testdb  = t::Utils->setup_testdb( schema => './db/init.sql' );
+my $storage = Yancha::DataStorage::DBI->connect( connect_info => [ $testdb->dsn() ] );
 
 my $user = {
     user_key => '-:0001',
