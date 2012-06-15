@@ -38,13 +38,16 @@ function resizeMessageTextarea(linenum){
     if($("#message").val().match(/\n/)){
       linenum = $("#message").val().match(/\n/g).length + 1;
     }else{
-      linenum = 1;
+      linenum = 2;
     }
+  }
+  if(linenum == 1){
+    linenum=2;
   }
   if(linenum>10){
     linenum=10; // hard limit
   }
-
+  
   var em = (linenum * 1.2) + 'em';
   $("#message").css('height', em);
   $(window).resize();
@@ -77,7 +80,6 @@ $(function () {
 
   //各エレメントのサイズ計算
   $(window).resize(function(){
-  
     var height = $(window).height() - $('#send-message').height();
     $("#messages").css('height', height+'px');
     $("#lines").css('height', height+'px');
@@ -85,6 +87,7 @@ $(function () {
 
   });
   $(window).resize();
+  resizeMessageTextarea();  
 
   var loader = new PreloadJS(false);
   loader.installPlugin(SoundJS);
@@ -96,6 +99,8 @@ $(function () {
   var timeagoTimer = setInterval(function(){
     $('abbr.timeago').timeago();
   },60000);
+
+  initVirtualCheckbox('.virtualcheckbox');
 
   //デスクトップ通知許可
   if (jwNotify.status) {
@@ -146,13 +151,26 @@ $(function () {
 var soundMessage = function(){};//ロード前にエラーにならないように
 function onSoundLoadComplete(){
   soundMessage = function(){
-    if($('#sound').prop("checked")){
+    if($('#sound').attr("checked")){
       SoundJS.play('message', SoundJS.INTERRUPT_EARLY, 0, 0, false);
     }
   }
 }
 
 //引用選択機能
+function startOrEndSelectPost(e){
+  var elm = $(e.target);
+  
+  if(elm.attr('checked')){
+    endSelectPost();
+    toggleVirtualCheckbox(e);
+  }else{
+    startSelectPost();
+    toggleVirtualCheckbox(e);
+  }
+}
+
+
 function startSelectPost(){
   $('.messagecell').on('click', function(){
     if($(this).hasClass('selectedMessageCell')){
@@ -179,3 +197,43 @@ function endSelectPost(){
   $('#popuper').attr('action', url).submit();
   $('.messagecell').removeClass('selectedMessageCell') 
 }
+
+
+function initVirtualCheckbox(query){
+  $(query).each(function(){
+    var elm = $(this);
+    if(!elm.attr('data-onsrc') || !elm.attr('data-offsrc')){
+      var src = elm.attr('src');
+      elm.attr('data-offsrc', src);
+      elm.attr('data-onsrc', src.replace(/.(gif|jpeg|jpg|png)$/i, "_on.$1") );
+    }
+    if( $(elm).attr('checked') ){
+      $(elm).attr('src', $(elm).attr('data-onsrc'));
+    }else{
+      $(elm).attr('src', $(elm).attr('data-offsrc'));
+    }    
+  });
+}
+
+function toggleVirtualCheckbox(e){
+  var elm = $(e.target);
+  if( elm.attr('checked') ){
+    elm.removeAttr('checked') 
+    elm.attr('src', elm.attr('data-offsrc'));
+  }else{
+    elm.attr('checked', 'checked') 
+    elm.attr('src', elm.attr('data-onsrc'));
+  }
+}
+
+function setVirtualCheckbox(elm, state){
+  var elm = $(elm);
+  if( state ){
+    elm.removeAttr('checked') 
+    elm.attr('src', elm.attr('data-offsrc'));
+  }else{
+    elm.attr('checked', 'checked') 
+    elm.attr('src', elm.attr('data-onsrc'));
+  }
+}
+

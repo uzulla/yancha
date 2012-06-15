@@ -3,6 +3,9 @@ padding:0px;
 margin:0px;
 }
 
+a{
+  color:#f25d06;
+}
 
 #nickname, #connecting, #loading {
   position: absolute;
@@ -47,6 +50,10 @@ margin:0px;
 }
 
 
+.onclk{
+  cursor:pointer;
+}
+
 #lines {
   overflow: auto;
   overflow-x: auto;
@@ -56,40 +63,38 @@ margin:0px;
 }
 
 #infomation{
-  width:190px;
+  background-color: #bfd8e7;
+  width:295px;
   float:right;
   overflow-y:scroll;
 }
 
 #infomation #nicknames ,#infomation #tags {
-  border-bottom:1px #999 solid;padding:3px;
   font: 11px Helvetica;
 }
 
 #infomation #nicknames b{ 
   display: inline-block;
-  color: #fff;
-  background: gray;
+  color: #000017;
   padding: 3px 6px;
   margin-right: 5px;
   margin-bottom: 5px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  text-shadow: 0 1px 0 #666;
 }
 
+#infomation #tags{
+  padding:3px;
+  
+}
 #infomation #tags b.tagcell {
   display: inline-block;
   color: #fff;
-  background: red;
+  background: #f25d07;
   padding: 3px 6px;
   margin-right: 5px;
   margin-bottom: 5px;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  text-shadow: 0 1px 0 #666;
+}
+#infomation #tags b.tagcell a {
+  color: #CCC;
 }
 
 #infomation #tags b.disable_tag {
@@ -97,20 +102,12 @@ margin:0px;
 }
 
 #send-message textarea {
-  border: 1px solid gray;
-  height: 1.2em;
-  padding: 5 5px;
-  line-height: 1.2em;
-  vertical-align: middle;
-  width: 100%;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-  
-}
-#send-message button {
-  margin-top: 5px;
-  margin-right: 5px;
+  border: none;
+  font-size:12px;
+  margin-top:2px;
+  margin-bottom:-2px;
+  padding:0px;
+  width:100%;
 }
 
 .messagecell_plusplus button {

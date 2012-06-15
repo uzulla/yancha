@@ -33,7 +33,7 @@ socket.on('announcement', function (msg) {
 });
 
 function announcement(msg){
-  if($('#disp_announcement').prop('checked')){
+  if($('#disp_announcement').attr('checked')){
     var cell = $('#template_announcementcell').clone().removeAttr('id');
     $('.announcementcell_text', cell).text(msg);
     $('.announcementcell_text', cell).html( $('.announcementcell_text', cell).html().replace(/(\r|\n)/g, '<br />') );
@@ -231,8 +231,7 @@ socket.on('join tag', function(tags){
           elm.addClass('disable_tag');
         }
         tagRefresh();
-      }),
-      $("<br />")
+      })
     );
   }
   $(window).resize();

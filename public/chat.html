@@ -51,75 +51,84 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
 <body>
 <form action="#" target="_blank" method="post" id="popuper"></form>
 
-  <div id="nickname">
-    <br />
-    <p>yanchaに参加するには、ログインして下さい。</p>
-    <p><a href="/login/twitter/start">Twitterでログイン</a></p>
-    <form action="./login" method="post">
-      <p>または…シンプルログイン</p>
-      ニックネーム<input type="text" name="nick"><input type="submit" name="login" value="login">
-    </form>
-    <br>
-    <br>
-    <a href="https://github.com/uzulla/yancha" target="_blank">yanchaについて</a>
+  <div id="nickname" style="background-color:#bfd8e7;">
+    <div class="header" style="text-align:right; background-color:#004065">
+      <img src="img/header_logo.png">
+    </div>
+    
+    <div class="content" style="width:600px;margin-left:auto;margin-right:auto;margin-top:50px;">
+      <div style="float:left;text-align:left">
+        <img src="img/login_text_snsaccountlogin.gif" alt="SNSアカウントでログイン" width="" height="" style="margin-bottom:10px;" /><br>
+        <a href="/login/twitter/start"><img src="img/login_btn_twitterlogin.gif" alt="login_btn_twitterlogin" width="" height="" /></a><br>
+        
+        
+        <img src="img/login_text_simplelogin.gif" alt="ニックネームでログイン" width="" height="" style="margin-top:30px;margin-bottom:10px;" />
+        <form action="./login" method="post"  style="padding:0px;margin:0px;font-size:0.01em;">
+          <input type="text" name="nick" style="padding:0px;margin:0px;height:35px;border:0px;font-size:14px;">
+          <input type="image" src="img/login_btn_simplelogin.gif" alt="ログイン" style="height:35px;padding:0px;margin:0px;vertical-align: top;border:0px;"/>
+        </form>
+      </div> 
+      <div style="float:right" >
+        <img src="img/login_text_info.gif" alt="info" width="" height="" /><br>
+        <ul style="text-align:left;padding-left:20px;">
+        <li>本サイトはyanchaのサンプルです</li>
+        <li><a href="https://github.com/uzulla/yancha" target="_blank">yanchaについて</a></li>
+        <li><a href="http://hachiojipm.org/" target="_blank">開発 hachioji.pm</a></li>
+        <li><a href="http://twitter.com/uzulla/" target="_blank">テストサイト管理者@uzulla</a></li>
+        </ul>
+
+      </div> 
+    
+    </div>
+    <br style="clear:both">
   </div>
 
-  <div id="loading">
+  <div id="loading" style="background-color:#bfd8e7;">
     <div class="wrap">please wait...</div>
   </div>
   
-  <div id="connecting">
+  <div id="connecting" style="background-color:#bfd8e7;">
     <div class="wrap">Connecting to server...</div>
   </div>
   
   <div id="infomation">
-    ONLINE
+    <div class="header" style="text-align:right; background-color:#004065">
+      <img src="img/header_logo.png">
+    </div>
+
+    <img src="img/chat_h_online.gif" alt="online" width="" height="" />
     <div id="nicknames">
     </div>
-    TAGS
+    <img src="img/chat_h_tags.gif" alt="tags" width="" height="" />
+    <div id="tags">
+    </div>
     <table>
       <tr>
         <td>
-          <input id="tagname" type="text" style="width:100px">
+          <input id="tagname" type="text" style="width:100px;height:25px;margin:0px;padding:0px;border:0px;">
         <td style="width:50px">
-          <button onclick="addTag($('#tagname').val());$('#tagname').val('');return false;">追加</button>
+          <input type=image src="img/chat_btn_tagadd.gif" onclick="addTag($('#tagname').val());$('#tagname').val('');return false;" style="vertical-align:top;height:25px;margin:0px;padding:0px;border:0px;">
     </table>
-    <span style="font-size:60%;">※クリックでOn/Off</span>
-    <div id="tags">
+    <img src="img/chat_h_settings.gif" alt="settings" width="" height="" />
+    <div style="3px;padding-left:5px;">
+      <ul style="list-style-type:none;padding:0px;margin:0px;">
+        <li style="float:left"><img src="img/chat_sw_notice.gif" alt="notice" width="" height="" class="virtualcheckbox" id="disp_announcement" onclick="toggleVirtualCheckbox(event)" /><li>
+        <li style="margin-left:5px;float:left"><img src="img/chat_sw_sound.gif" alt="sound" width="" height="" class="virtualcheckbox" id="sound" checked=checked onclick="toggleVirtualCheckbox(event)" checked="checked" /><li>
+      </ul><br style="clear:both">
     </div>
-    SETTINGS
-    <div style="border-bottom:1px #999 solid;padding:3px;">
-      <label><input type="checkbox" id="sound" checked=checked>音をならす</label><br>
-      <label><input type="checkbox" id="disp_announcement">サーバーメッセージを表示</label>
-    </div>
-    ACTIONS
-    <div style="border-bottom:1px #999 solid;padding:3px;">
-      <button onclick="startSelectPost()">引用選択開始</button>
-      <button onclick="endSelectPost()">引用選択完了</button>
-      <button onclick="logout()">ログアウト</button>
+    <img src="img/chat_h_action.gif" alt="action" width="" height="" />
+    <div style="3px; padding-left:5px;">
+      <a href="pc_hints.html"><img src="img/chat_btn_hints.gif" alt="chat_btn_hints" width="" height="" class="onclk"/></a>
+      <img src="img/chat_btn_logout.gif" alt="chat_btn_logout" width="" height="" class="onclk" onclick="logout()"/>
+      <a href="search.html"><img src="img/chat_btn_logsearch.gif" alt="chat_btn_logsearch" width="" height=""/></a>
+      <img src="img/chat_sw_select.gif" alt="chat_sw_select" width="" class="virtualcheckbox" height="" class="onclk virtualcheckbox" onclick="startOrEndSelectPost(event);"/>
       <button class="toggleNotify">デスクトップ通知切換</button>
     </div>
-    HINTS<br>
-    <a href="/search.html" target="_blank" style="font-size:80%;">過去ログ</a><br>
-    <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
-      Shift+Enterで改行<br>
-      ・コードハイライト<br>
-      &gt;|javascript|<br>
-      CODE<br>
-      ||&lt;<br>
-      &gt;|perl|<br>
-      CODE<br>
-      ||&lt;<br>
-      ・PRE<br>
-      &gt;&gt;<br>
-      テキスト<br>
-      &lt;&lt;<br>
-      ・画像ポスト<br>
-      <a href="http://yairc.cfe.jp:5000/" target="_blank">http://yairc.cfe.jp:5000/</a>
-    </div>
-    ABOUT<br>
-    <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
-    <a href="https://github.com/uzulla/yancha" target="_blank">yanchaについて</a>    
+    <img src="img/chat_h_info.gif" alt="action" width="" height="" />
+    <div style="font-size:80%; 3px;font-size:80%">
+    <ul style="padding-left:20px">
+    <li><a href="https://github.com/uzulla/yancha" target="_blank">yanchaについて</a></li>
+    </ul>
     </div>
   </div>
   
@@ -133,11 +142,11 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
   </div>
   
   <form id="send-message">
-  <table style="width:100%">
-  <tr>
-    <td style="width:100%"><textarea  id="message"></textarea>
-    <td ><button style="margin:2px 0px 2px 2px;">Send</button>
-    <td ><button type="button" style="margin:2px 0px 2px 2px;" onclick='$("#infomation").toggle("slow");'>MENU</button>
+  <table style="width:100%;padding:0px;border:0px;margin:0px;background-color:#004065;border-collapse:collapse">
+    <tr style="padding:0px;border:0px;margin:0px;">
+      <td style="width:100%;padding:0px;padding:0px;border:0px;margin:0px;"><textarea id="message"></textarea>
+      <td style="width:100%;padding:0px;padding:0px;border:0px;margin:0px;border-left:1px solid white;"><input type="image" src="img/chat_btn_send.gif" style="margin:0px;padding:0px;border:0px;vertical-align:top;">
+      <td style="width:100%;padding:0px;padding:0px;border:0px;margin:0px;border-left:1px solid white;"><img src="img/chat_btn_menu.gif" onclick='$("#infomation").toggle("slow");' class="onclk" style="vertical-align:top;">
   </table>
   </form>
 
