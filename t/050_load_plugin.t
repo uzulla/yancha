@@ -37,8 +37,8 @@ my $app = Yancha->new( config => $config );
 ok( $app );
 
 $app->load_plugins( [
-    [ 'Test'           => ['foo','bar'] ],
-    [ '+Test::Plugin', => ['fuga'] ],
+    [ 'Yancha::Plugin::Test' => ['foo','bar'] ],
+    [ 'Test::Plugin', => ['fuga'] ],
 ] );
 
 done_testing;

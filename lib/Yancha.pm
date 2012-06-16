@@ -126,9 +126,6 @@ sub load_plugins {
 
     for my $plugin_and_args ( @{ $plugins } ) {
         my ( $plugin, $args ) = @{ $plugin_and_args };
-        if ( $plugin !~ s/^\+// ) {
-            $plugin = __PACKAGE__ . '::Plugin::' . $plugin;
-        }
         eval { ( my $path = $plugin . '.pm' ) =~ s{::}{/}g; require $path };
         if ( $@ ) {
             Carp::carp $@;
