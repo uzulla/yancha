@@ -49,8 +49,9 @@ function announcement(msg){
 
 //サーバから、参加ニックネームリストの更新
 socket.on('nicknames', function (nicknames) {
+  var i;
   $('#nicknames').empty();
-  for (var i in nicknames) {
+  for (i in nicknames) {
     $('#nicknames').append($('<b>').text(nicknames[i]));
   }
   $(window).resize();
@@ -74,9 +75,9 @@ socket.on('no session', function (message) {
 
 //メッセージイベント
 socket.on('user message', function(hash){
-
+  var i;
   //タグ毎新着時刻保存
-  for(var i=0; hash.tags.length > i; i++){
+  for(i=0; hash.tags.length > i; i++){
     if(typeof(data.tags[hash.tags[i]]) != 'undefined' ){
       data.tags[hash.tags[i]] = hash.created_at_ms ;
     }
@@ -101,7 +102,7 @@ socket.on('user message', function(hash){
     var ppnum = (parseInt(hash.plusplus)||0);
     var ppstar_elm = $("<span class='messagecell_plusplus_stars'>");
     if(ppnum<100){
-      for(var i=0; ppnum>i; i++){
+      for(i=0; ppnum>i; i++){
         ppstar_elm.append('★<span style="font-size:0.01em"> </span>');
       }
     }else{
@@ -186,6 +187,7 @@ function updateTitle(){
 
 //トークンを使ってログインした後、レスポンスされる自分情報を保存
 socket.on('token login', function(res){
+  var i;
   if(res.status == 'ok'){
     var ud = res.user_data;
   
@@ -209,8 +211,9 @@ socket.on('token login', function(res){
 
 //タグ登録処理完了イベント
 socket.on('join tag', function(tags){
+  var i;
   $('#tags').empty();
-  for (var i in tags) {
+  for ( i in tags) {
     $('#tags').append(
       $('<b class="tagcell">')
         .attr('data-tag-name', i)
@@ -239,7 +242,10 @@ socket.on('join tag', function(tags){
 });
 
 function tagRefresh(){
-  var enable_tag_list = [];
+  var
+    enable_tag_list = [],
+    i;
+
   $('b.tagcell').each(function(){
     var t = $(this).attr('data-tag-name');
     ($(this).hasClass('disable_tag')) ? 0 : enable_tag_list.push(t) ;
@@ -247,7 +253,7 @@ function tagRefresh(){
 
   //まずすべてPostを隠して、その後で必要なものだけ復活させる。
   $('#lines div.messagecell').hide();
-  for(var i=0; enable_tag_list.length>i;i++){
+  for( i=0; enable_tag_list.length>i;i++){
     var re = new RegExp(enable_tag_list[i], "i");
     $('#lines div.messagecell').each(function(){
       var elm = $(this);
