@@ -49,6 +49,7 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
 
 </head>
 <body>
+<div id="canvas_view"></div>
 <form action="#" target="_blank" method="post" id="popuper"></form>
 
   <div id="nickname" style="background-color:#bfd8e7;">
@@ -118,7 +119,7 @@ if(navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
     </div>
     <img src="img/chat_h_action.gif" alt="action" width="" height="" />
     <div style="3px; padding-left:5px;">
-      <a href="pc_hints.html"><img src="img/chat_btn_hints.gif" alt="chat_btn_hints" width="" height="" class="onclk"/></a>
+      <a href="javascript:void(0);" onclick="openPopup('pc_hints.html', { width: 400 });"><img src="img/chat_btn_hints.gif" alt="chat_btn_hints" width="" height="" class="onclk"/></a>
       <img src="img/chat_btn_logout.gif" alt="chat_btn_logout" width="" height="" class="onclk" onclick="logout()"/>
       <a href="search.html"><img src="img/chat_btn_logsearch.gif" alt="chat_btn_logsearch" width="" height=""/></a>
       <img src="img/chat_sw_select.gif" alt="chat_sw_select" width="" class="virtualcheckbox" height="" class="onclk virtualcheckbox" onclick="startOrEndSelectPost(event);"/>
