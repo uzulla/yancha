@@ -24,6 +24,7 @@ WriteMakefile(
         'Net::Twitter::Lite'   => 0,
         'LWP::Protocol::https' => 0,
         'Plack::Session' => 0,
+        'Authen::Htpasswd' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES    => 'Yancha-*' },
