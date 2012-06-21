@@ -4,13 +4,7 @@ use t::Utils;
 use Data::Dumper;
 use Yancha;
 use Yancha::DataStorage::DBI;
-
-
-BEGIN {
-    use Test::More;
-    plan skip_all => 'Test::mysqld is required to run this test'
-      unless eval { require Test::mysqld; 1 };
-}
+use Test::More;
 
 sub text2post {
     my ( $text ) = @_;
@@ -25,8 +19,8 @@ sub text2post {
 }
 
 
-my $mysqld  = t::Utils->setup_mysqld( schema => './db/init.sql' );
-my $storage = Yancha::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn() ] );
+my $testdb  = t::Utils->setup_testdb( schema => './db/init.sql' );
+my $storage = Yancha::DataStorage::DBI->connect( connect_info => [ $testdb->dsn() ] );
 
 my $user = {
     user_key => '-:0001',

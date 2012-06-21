@@ -8,18 +8,18 @@ use Data::Dumper;
 
 BEGIN {
     use Test::More;
-    plan skip_all => 'Test::mysqld and PocketIO::Client::IO are required to run this test'
-      unless eval { require Test::mysqld; require PocketIO::Client::IO; 1 };
+    plan skip_all => 'PocketIO::Client::IO are required to run this test'
+      unless eval { require PocketIO::Client::IO; 1 };
 }
 
-my $mysqld = t::Utils->setup_mysqld( schema => './db/init.sql' );
+my $testdb = t::Utils->setup_testdb( schema => './db/init.sql' );
 my $config = {
-    database => { connect_info => [ $mysqld->dsn ] },
+    database => { connect_info => [ $testdb->dsn ] },
     token_expiration_sec => 10,
 };
 my $server = t::Utils->server_with_dbi( config => $config );
 
-my $storage = Yancha::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn ] );
+my $storage = Yancha::DataStorage::DBI->connect( connect_info => [ $testdb->dsn ] );
 
 my $client = sub {
     my ( $port ) = shift;
