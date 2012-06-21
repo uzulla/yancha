@@ -2,21 +2,16 @@ use strict;
 use warnings;
 use t::Utils;
 use Data::Dumper;
-
-BEGIN {
-    use Test::More;
-    plan skip_all => 'Test::mysqld is required to run this test'
-      unless eval { require Test::mysqld; 1 };
-}
+use Test::More;
 
 BEGIN {
     use_ok('Yancha::DataStorage::DBI');
 }
 
-my $mysqld  = t::Utils->setup_mysqld( schema => './db/init.sql' );
-my $storage = Yancha::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn() ] );
+my $testdb  = t::Utils->setup_testdb( schema => './db/init.sql' );
+my $storage = Yancha::DataStorage::DBI->connect( connect_info => [ $testdb->dsn() ] );
 
-isa_ok( $storage, 'Yancha::DataStorage::DBI::mysql' );
+isa_ok( $storage, 'Yancha::DataStorage::DBI' );
 
 ok( my $user = $storage->add_user({
     user_key => '-:0001',
@@ -71,9 +66,8 @@ ok( $storage->add_or_replace_user( $user ), 'add_or_replace_user' );
 
 my $token2 = 'ABC123';
 ok($storage->add_session($user, $token2), 'add_session');
-my $sth = $storage->dbh->prepare('SELECT * FROM `session` WHERE `token` = ? ');
-$sth->execute( $token2 );
-is($sth->rows(), 1, 'add_session success');
+my ($rows) = $storage->dbh->selectrow_array('SELECT count(*) FROM `session` WHERE `token` = ? ', {}, $token2);
+is($rows, 1, 'add_session success');
 
 my $session = $storage->get_session_by_token($token2);
 #print Dumper($session);
@@ -81,12 +75,13 @@ is($session->{user_key}, $user->{user_key}, 'compare session' );
 
 is($storage->get_user_by_token('EVER_NOT_MATCH_TOKEN'), undef, 'fake token session check');
 
-$storage->dbh->do(q{INSERT INTO `session` (`user_key`, `token`, `expire_at`) VALUES ('session_expire_user_key', 'session_expire_token', now()-10) }, {});
+my $ten_sec_before = (ref($testdb) =~ /\bSQLite$/) ?
+                            "strftime('%s', 'now', '-10 seconds')" : 'now()-10';
+$storage->dbh->do(qq{INSERT INTO `session` (`user_key`, `token`, `expire_at`) VALUES ('session_expire_user_key', 'session_expire_token', $ten_sec_before) }, {}) or die $storage->dbh->errstr;
 ok($storage->clear_expired_session(), 'clear_expired_session');
 
-$sth = $storage->dbh->prepare('SELECT * FROM `session` WHERE `token` = ? ');
-$sth->execute( 'session_expire_token' );
-is($sth->rows, 0, 'clean_expire_session');
+($rows) = $storage->dbh->selectrow_array('SELECT count(*) FROM `session` WHERE `token` = ? ', {}, 'session_expire_token');
+is($rows, 0, 'clean_expire_session');
 
 
 is( $storage->count_user, 2 );
