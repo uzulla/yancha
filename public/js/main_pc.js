@@ -144,6 +144,16 @@ $(function () {
     $('button.toggleNotify').remove();
   }
   
+  if(Tinycon){
+    Tinycon.setOptions({ //オプション
+      width: 7, //幅
+      height: 9, //高さ
+      font: '10px arial', //フォント
+      colour: '#ffffff', //フォント色
+      background: '#e7a411' //背景色
+    });
+  }
+  
 });
 
 
