@@ -8,11 +8,12 @@ use Plack::Builder;
 use Plack::Request;
 use Plack::Response;
 use JSON;
+use Try::Tiny;
+use Carp;
 
 use FindBin;
 use lib ("$FindBin::Bin/lib");
 use Net::Twitter::Lite;
-
 
 sub build_psgi_endpoint {
     my ( $self, $opt ) = @_;
@@ -36,7 +37,13 @@ sub build_psgi_endpoint {
                 my $req     = Plack::Request->new($env);
                 my $session = Plack::Session->new( $env );
                 my $ret_url = $self->redirect_url( $env, "$endpoint/callback" );
-                my $url     = $nt->get_authorization_url( callback => $ret_url );
+                my $url     = try { 
+                    $nt->get_authorization_url( callback => $ret_url );
+                } catch {
+                    Carp::croak( 
+                        sprintf("Authorization Error:\n\t%s\tCheck your consumer-key and consumer-secret in config.pl\n ", $_) 
+                    );
+                };
 
                 $session->set( 'token', $nt->request_token );
                 $session->set( 'token_secret', $nt->request_token_secret );
