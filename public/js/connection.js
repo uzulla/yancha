@@ -78,6 +78,7 @@ socket.on('delete user message', function(hash){
   if(debug){console.log('delete message'.post_id)};
   $('div[data-post-id='+post_id+']').hide('slow',function(){
     $('div[data-post-id='+post_id+']').remove();
+    updateTitle();
   });
   
 });
