@@ -12,13 +12,13 @@ use t::Utils;
 
 BEGIN {
     use Test::More;
-    plan skip_all => 'Test::mysqld and PocketIO::Client::IO are required to run this test'
-      unless eval { require Test::mysqld; require PocketIO::Client::IO; 1 };
+    plan skip_all => 'PocketIO::Client::IO are required to run this test'
+      unless eval { require PocketIO::Client::IO; 1 };
 }
 
-my $mysqld  = t::Utils->setup_mysqld(schema => './db/init.sql');
+my $testdb  = t::Utils->setup_testdb(schema => './db/init.sql');
 my $config = {
-    database => {connect_info => [$mysqld->dsn]},
+    database => {connect_info => [$testdb->dsn]},
     server_info => {
         api_endpoint => {
             '/api/post' => ['Yancha::API::Post', {}, 'For testing'],
@@ -55,7 +55,7 @@ TEXT
 };
 
 my $storage = Yancha::DataStorage::DBI->connect(
-    connect_info => [$mysqld->dsn]
+    connect_info => [$testdb->dsn]
 );
 
 is $storage->count_post => 4;

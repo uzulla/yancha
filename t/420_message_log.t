@@ -8,12 +8,12 @@ use Yancha::DataStorage::DBI;
 
 BEGIN {
     use Test::More;
-    plan skip_all => 'Test::mysqld and PocketIO::Client::IO are required to run this test'
-      unless eval { require Test::mysqld; require PocketIO::Client::IO; 1 };
+    plan skip_all => 'PocketIO::Client::IO are required to run this test'
+      unless eval { require PocketIO::Client::IO; 1 };
 }
 
-my $mysqld = t::Utils->setup_mysqld( schema => './db/init.sql' );
-my $data_storage = Yancha::DataStorage::DBI->connect( connect_info => [ $mysqld->dsn ] );
+my $testdb = t::Utils->setup_testdb( schema => './db/init.sql' );
+my $data_storage = Yancha::DataStorage::DBI->connect( connect_info => [ $testdb->dsn ] );
 
 my $user = {
     nickname => 'user', user_key => '-:0001', profile_image_url => '',
@@ -26,7 +26,7 @@ for my $i ( 1 .. 100 ) {
 
 
 my $config = {
-    database => { connect_info => [ $mysqld->dsn ] },
+    database => { connect_info => [ $testdb->dsn ] },
     message_log_limit => 20,
 };
 my $server = t::Utils->server_with_dbi( config => $config );

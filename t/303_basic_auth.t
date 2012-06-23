@@ -11,18 +11,18 @@ use utf8;
 
 BEGIN {
     use Test::More;
-    plan skip_all => 'Test::mysqld and PocketIO::Client::IO and Authen::Htpasswd are required to run this test'
+    plan skip_all => 'PocketIO::Client::IO and Authen::Htpasswd are required to run this test'
       unless eval {
-        require Test::mysqld; require PocketIO::Client::IO;
+        require PocketIO::Client::IO;
         require Authen::Htpasswd;
         1;
       };
 }
 
 my $file   = 't/.htpasswd';
-my $mysqld = t::Utils->setup_mysqld( schema => './db/init.sql' );
+my $testdb = t::Utils->setup_testdb( schema => './db/init.sql' );
 my $config = {
-    database => { connect_info => [ $mysqld->dsn ] },
+    database => { connect_info => [ $testdb->dsn ] },
     'server_info' => {
         version       => '1.00',
         name          => 'Hachoji.pm',
