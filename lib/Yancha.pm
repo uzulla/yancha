@@ -298,6 +298,21 @@ sub post_to_event {
     );
 }
 
+sub send_delete_post_to_tag_joined {
+    my ( $self, $post_id, $tags ) = @_;
+    my $event = $self->delete_post_to_event( $post_id );
+    $self->send_event_to_tag_joined( $event, $tags, 'no_dup' );
+}
+
+sub delete_post_to_event {
+    my ( $self, $post_id ) = @_;
+    return PocketIO::Message->new(
+        type => 'event',
+        data => { name => 'delete user message', args => [ $post_id ] }
+    );
+}
+
+
 sub send_event_to_tag_joined {
     my ( $self, $event, $target_tags, $no_dup ) = @_;
     my $tags = $self->tags;

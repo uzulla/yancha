@@ -39,6 +39,7 @@ sub dispatch {
         $socket->on( 'token login'  => sub { $self->token_login( @_ ); } );
         $socket->on( 'join tag'     => sub { $self->join_tag( @_ ); } );
         $socket->on( 'disconnect'   => sub { $self->disconnect( @_ ); } );
+        $socket->on( 'delete user message'   => sub { $self->delete_user_message( @_ ); } );
         $self->sys->call_hook( 'connected', $socket, $env );
     };
 }
@@ -171,6 +172,44 @@ sub plusplus {
     $self->sys->send_post_to_tag_joined( $post => $post->{ tags } );
 }
 
+
+sub delete_user_message {
+    my ( $self, $socket, $post_id ) = @_;
+
+    #pocketio のソケット毎ストレージから自分のニックネームを取り出す
+    $socket->get('user_data' => sub {
+        my ($socket, $err, $user) = @_;
+
+        #userがない(セッションが無い)場合、再ログインを依頼して終わる。
+        if(!defined($user)){
+            return;
+        }
+
+        my $post = $self->sys->data_storage->get_post_by_id( $post_id );
+
+        if($post->{user_key} ne $user->{user_key}){
+          DEBUG && w sprintf('delete message but mismatch user_key %s / %s',
+                                     $post->{user_key}, $user->{user_key});
+          return;
+          
+        }
+
+        DEBUG && w sprintf('delete message from %s (%s) => "%s"',
+                                    _nickname_and_token( $user, 8 ), $post_id);
+
+        my $result = $self->sys->data_storage->remove_post($post);
+
+        if($result){          
+          $post->{is_message_log} = JSON::true;
+      
+          $self->sys->send_delete_post_to_tag_joined( $post => $post->{ tags } );
+        }
+
+    });
+
+
+
+}
 
 
 sub disconnect {

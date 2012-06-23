@@ -2,6 +2,7 @@ var socket = io.connect();
 var data = {
   token:false,
   nick:false,
+  user_key:false,
   profile_image_url:false,
   tags:{PUBLIC:0}
 };
@@ -71,6 +72,15 @@ socket.on('no session', function (message) {
   }
 });
 
+//delete 
+socket.on('delete user message', function(hash){
+  var post_id = hash.id;
+  if(debug){console.log('delete message'.post_id)};
+  $('div[data-post-id='+post_id+']').hide('slow',function(){
+    $('div[data-post-id='+post_id+']').remove();
+  });
+  
+});
 
 //メッセージイベント
 socket.on('user message', function(hash){
@@ -119,6 +129,12 @@ socket.on('user message', function(hash){
     .attr('title', moment(hash.created_at_ms/100).format("YYYY-MM-DDTHH:mm:ss")+"Z+09:00")
     .text("("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")")
     .timeago();
+
+  if(hash.user_key == data.user_key){
+    $('.messagecell_delete', cell).append(
+      $("<button onclick='deleteMessage("+hash.id+");'>delete</button>")
+    );
+  }
   
   cell
     .on('mouseover', function(){
@@ -195,6 +211,7 @@ socket.on('token login', function(res){
     var ud = res.user_data;
   
     data.nick = ud.nickname;
+    data.user_key = ud.user_key;
     data.profile_image_url = ud.profile_image_url;
   
     if( $.cookie('chat_tag_list')){
@@ -313,6 +330,13 @@ function sendMessage(){
 //PlusPlusをつける
 function addPlusPlus(post_id) {
   socket.emit('plusplus', post_id);
+}
+
+//Deleteする
+function deleteMessage(post_id) {
+  if(confirm('本当に削除しますか？')){
+    socket.emit('delete user message', post_id);
+  }
 }
 
 //オートログインクッキーを消して、接続を切って、リロード

@@ -147,7 +147,7 @@ sub remove_user {
 sub count_user {
     my $self = shift;
 
-    my ($sql, @binds) = $self->{sql_maker}->select('user', [\'count(*)']);
+    my ($sql, @binds) = $self->{sql_maker}->select('user', ['count(*)']); 
     return $self->dbh->selectrow_array($sql, {}, @binds);
 }
 

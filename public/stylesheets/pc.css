@@ -120,6 +120,12 @@ a{
   border: 0px solid #2e70c4;
   text-shadow: 0 -1px 1px #FFFFFF;
 }
+.messagecell_delete button {
+  padding: 0px;
+  background: gray;
+  border: 0px solid gray;
+  text-shadow: 0 -1px 1px #FFFFFF;
+}
 .messagecell_plusplus button:hover {
   padding: 0px;
   background: orange;
