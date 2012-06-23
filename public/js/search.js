@@ -100,7 +100,7 @@ function buildMessageCell(hash){
   cell.attr('data-tags', hash.tags);  
 
   if(hash.profile_image_url.length>0){
-    $('.messagecell_img', cell).attr('src', hash.profile_image_url);
+    $('.messagecell_img', cell).attr('src', hash.profile_image_url).wrap("<a href='"+hash.profile_url+"'></a>");
   }
   $('.messagecell_nickname', cell).text(hash.nickname);
   $('.messagecell_text', cell).html(message);

@@ -51,6 +51,7 @@ sub build_psgi_endpoint {
                 nickname          => $nickname,
                 profile_image_url => '',
                 sns_data_cache    => '',
+                profile_url       => '',
             } );
 
             return $self->response_token_only($user)->finalize

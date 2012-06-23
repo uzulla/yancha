@@ -1,7 +1,6 @@
 use strict;
 use warnings;
 use utf8;
-use Encode qw/encode_utf8/;
 use PocketIO::Test;
 use LWP::UserAgent;
 use HTTP::Request::Common qw(POST);
@@ -39,7 +38,7 @@ test_pocketio $server => sub {
     my $post_by_api = sub {
         my ($text) = @_;
         my $req = POST "http://localhost:$port/api/post" => {
-            token => $client->token, text => encode_utf8 $text
+            token => $client->token, text => $text
         };
         $ua->request($req)->code;
     };

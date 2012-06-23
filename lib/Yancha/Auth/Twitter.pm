@@ -82,6 +82,7 @@ sub build_psgi_endpoint {
                         nickname          => $screen_name,
                         profile_image_url => $profile->{profile_image_url},
                         sns_data_cache    => encode_json($profile),
+                        profile_url       => 'https://twitter.com/#!/'.$screen_name,
                     } );
                     $token = $user->{ token };
 
