@@ -56,7 +56,7 @@ sub _add_user {
     my $now = time;
     my ($sql, @binds) = $self->{sql_maker}->insert('user', [
         (map { $_ => $user->{$_} }
-             qw/user_key nickname profile_image_url sns_data_cache/),
+             qw/user_key nickname profile_image_url sns_data_cache profile_url/),
         created_at => $self->time_literal($now),
         updated_at => $self->time_literal($now),
     ]);
@@ -104,7 +104,7 @@ sub replace_user {
     my $now = time;
     my ($sql, @binds) = $self->{sql_maker}->update('user', [
         (map { $_ => $user->{$_} }
-             qw/nickname profile_image_url sns_data_cache/),
+             qw/nickname profile_image_url sns_data_cache profile_url/),
         updated_at => $self->time_literal($now),
     ], {
         user_key => $user->{user_key},

@@ -19,6 +19,7 @@ ok( my $user = $storage->add_user({
     token    => '123456',
     profile_image_url => '',
     sns_data_cache    => '',
+    profile_url       => 'https://twitter.com/#!/user1',
 }) );
 
 is( $storage->get_user_by_userkey( $user->{ user_key } )->{ user_key }, $user->{ user_key } );
@@ -30,6 +31,7 @@ ok( my $user2 = $storage->add_user({
     token    => '10101010',
     profile_image_url => '',
     sns_data_cache    => '',
+    profile_url       => 'https://twitter.com/#!/user2',
 }) );
 
 is( $storage->count_user, 2 );

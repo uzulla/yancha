@@ -27,6 +27,7 @@ CREATE TABLE user (
   user_key varchar(64) NOT NULL,
   nickname varchar(32) NOT NULL,
   profile_image_url varchar(128) NOT NULL,
+  profile_url varchar(128) NOT NULL,
   sns_data_cache blob NOT NULL,
   created_at datetime NOT NULL,
   updated_at datetime NOT NULL,
