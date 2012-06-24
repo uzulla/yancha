@@ -52,6 +52,7 @@ function extendSearch(){
   (!$('#check_new_is_first').prop('checked')) ? $('#loading_top').show() : $('#loading_bottom').show(); // loading indicator
 
   var f = $("#searchform");
+  var keyword = $('input[name=keyword]', f).val();
   var tag = $('input[name=tag]', f).val();
   var limit = 50;
   var last_post_cell = $('#lines .messagecell:last-child').get(0);
@@ -60,6 +61,7 @@ function extendSearch(){
     type: 'POST',
     url: location.href.split('/search')[0]+"/api/search", // todo
     data: {
+      keyword:keyword,
       tag:tag,
       id:$(last_post_cell).attr('data-post-id'),
       older:limit,
