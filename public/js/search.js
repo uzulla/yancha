@@ -35,13 +35,19 @@ function submitSearch(){
     error: function(XMLHttpRequest, textStatus, errorThrown){
 console.log(textStatus);
     },
-    success: function(data){
+    success: (function(){return function(data){
       $('#lines').empty();
       drawItemByHashList(data);
       $(window).on('scroll', extendSearchOnScroll);
       $('#loading_top , #loading_bottom').hide();
       $('#loading_text_bottom').show();
-    },
+      if(data.length == limit){ // これより前がみつからないので。
+        if($(document).height() > $('body').height()){
+          pagerize = true;
+          extendSearch();
+        }
+      }
+    }})(limit),
     dataType: 'json'
   });
 }
@@ -76,6 +82,11 @@ function extendSearch(){
         drawItemByHashList(data);
         $('#loading_top , #loading_bottom').hide();
         $(window).on('scroll', extendSearchOnScroll);
+        if($(document).height() > $('body').height()){
+          pagerize = true;
+          extendSearch();
+        }
+        
       }
       pagerize = false;
     },
