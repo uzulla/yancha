@@ -201,7 +201,7 @@ function updateTitle(){
   }
   document.title = prefix+"yancha";
   
-  if(Tinycon){
+  if(typeof(Tinycon) !== 'undefined'){
     Tinycon.setBubble(unreadnum);
   }
   
