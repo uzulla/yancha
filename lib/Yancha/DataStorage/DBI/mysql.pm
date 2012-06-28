@@ -10,16 +10,24 @@ sub add_or_replace_user {
     my ( $self, $user, $extra ) = @_;
     my $sth = $self->dbh->prepare(q/
         INSERT INTO `user` (
-            `user_key`,`nickname`,`profile_image_url`,
-            `sns_data_cache`,`created_at`,`updated_at`
-        ) VALUES ( ?, ?, ?, ?, now(), now() )
-        ON DUPLICATE KEY UPDATE `sns_data_cache`=values(`sns_data_cache`),
+            `user_key`,
+            `nickname`,
+            `profile_image_url`,
+            `profile_url`,
+            `sns_data_cache`,
+            `created_at`,
+            `updated_at`
+        ) VALUES ( ?, ?, ?, ?, ?, now(), now() )
+        ON DUPLICATE KEY UPDATE 
+        `sns_data_cache`=values(`sns_data_cache`),
         `nickname`=values(`nickname`),
         `profile_image_url`=values(`profile_image_url`),
+        `profile_url`=values(`profile_url`),
         `updated_at`=now();
     /); # / .. for poor editor syntax hilight
 
-    $sth->execute( @{$user}{qw/user_key nickname profile_image_url sns_data_cache/} );
+    $sth->execute( @{$user}{qw/user_key nickname profile_image_url profile_url sns_data_cache/} );
+
     my $_user = $self->get_user_by_userkey( $user->{ user_key } );
     $self->add_session( $user->{user_key}, $user->{token}, $extra );
     $_user->{token} = $user->{token};

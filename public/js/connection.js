@@ -197,7 +197,7 @@ socket.on('token login', function(res){
   
     data.nick = ud.nickname;
     data.profile_image_url = ud.profile_image_url;
-    data.profile_image_url = ud.profile_url;
+    data.profile_url = ud.profile_url;
   
     if( $.cookie('chat_tag_list')){
       var str = $.cookie('chat_tag_list');

@@ -19,7 +19,7 @@ my $config = {
 
 my $data_storage = Yancha::DataStorage::DBI->connect( %{$config->{database}} );
 $data_storage->add_post( { text => "makamaka #PUBLIC", tags => [ 'PUBLIC' ] }, {
-    nickname => 'user', user_key => '-:0001', profile_image_url => '',
+    nickname => 'user', user_key => '-:0001', profile_image_url => '',  profile_url => '',
 } );
 
 my $server = t::Utils->server_with_dbi( config => $config );

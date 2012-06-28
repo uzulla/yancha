@@ -1,6 +1,6 @@
 -- 
 -- Created by SQL::Translator::Producer::SQLite
--- Created on Wed Jun 13 22:58:42 2012
+-- Created on Thu Jun 28 19:10:41 2012
 -- 
 
 BEGIN TRANSACTION;
@@ -16,6 +16,7 @@ CREATE TABLE post (
   nickname varchar(32) NOT NULL,
   user_key varchar(64) NOT NULL,
   profile_image_url varchar(128) NOT NULL,
+  profile_url varchar(128) NOT NULL,
   plusplus int(10) NOT NULL DEFAULT 0,
   created_at_ms bigint(20) NOT NULL
 );

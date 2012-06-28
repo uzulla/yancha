@@ -42,8 +42,8 @@ sub build_psgi_endpoint {
                 user_key          => '-:' . $nick,
                 nickname          => $nick,
                 profile_image_url => '',
-                sns_data_cache    => '',
                 profile_url       => '',
+                sns_data_cache    => '',
             } );
 
             # TODO: ここから下まとめる
