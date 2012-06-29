@@ -26,6 +26,7 @@ sub make_post {
         nickname          => $user ? $user->{ nickname } : $data->{ nickname },
         user_key          => $user ? $user->{ user_key } : $data->{ user_key },
         profile_image_url => $user ? $user->{ profile_image_url } : $data->{ profile_image_url },
+        profile_url       => $user ? $user->{ profile_url } : $data->{ profile_url },
         tags              => exists $data->{ tags} ? $data->{ tags } : [],
         plusplus          => exists $data->{ plusplus } ? $data->{ plusplus } : 0,
         created_at_ms     => exists $data->{ created_at_ms }

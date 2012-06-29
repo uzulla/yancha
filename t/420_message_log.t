@@ -16,7 +16,7 @@ my $testdb = t::Utils->setup_testdb( schema => './db/init.sql' );
 my $data_storage = Yancha::DataStorage::DBI->connect( connect_info => [ $testdb->dsn ] );
 
 my $user = {
-    nickname => 'user', user_key => '-:0001', profile_image_url => '',
+    nickname => 'user', user_key => '-:0001', profile_image_url => '', profile_url => ''
 };
 
 for my $i ( 1 .. 100 ) {
