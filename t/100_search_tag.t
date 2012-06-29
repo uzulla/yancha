@@ -27,6 +27,7 @@ my $user = {
     nickname => 'user',
     token    => '10101010',
     profile_image_url => '',
+    profile_url       => '',
     sns_data_cache    => '',
 };
 

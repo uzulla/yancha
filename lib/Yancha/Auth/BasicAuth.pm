@@ -50,8 +50,8 @@ sub build_psgi_endpoint {
                 user_key          => 'basic_auth:' . $nickname,
                 nickname          => $nickname,
                 profile_image_url => '',
-                sns_data_cache    => '',
                 profile_url       => '',
+                sns_data_cache    => '',
             } );
 
             return $self->response_token_only($user)->finalize

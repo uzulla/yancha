@@ -81,8 +81,8 @@ sub build_psgi_endpoint {
                         user_key          => 'twitter:' . $profile->{id},
                         nickname          => $screen_name,
                         profile_image_url => $profile->{profile_image_url},
-                        sns_data_cache    => encode_json($profile),
                         profile_url       => 'https://twitter.com/#!/'.$screen_name,
+                        sns_data_cache    => encode_json($profile),
                     } );
                     $token = $user->{ token };
 
