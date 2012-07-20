@@ -9,7 +9,7 @@ BEGIN TRANSACTION;
 -- Table: post
 --
 CREATE TABLE post (
-  id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+  id INTEGER PRIMARY KEY NOT NULL,
   text text NOT NULL,
   tags varchar(331) NOT NULL DEFAULT '',
   -- ex. | AA BB CC |

@@ -40,7 +40,7 @@ Perl 5.12以降（サンプルサイトは5.14で運用しています）
 
 
 ## インストール方法 ##
-1. データベースを用意し（現在はMysqlのみ）、db/init.sqlにて初期化を行って下さい。
+1. データベースを用意し（現在はMySQL、SQLiteに対応）、db/init.sql（init_sqlite.sql）にて初期化を行って下さい。
 2. config.pl.sampleをconfig.plにコピーし必要な情報を設定下さい。最低限DB接続情報の設定が必要です。
 3. start.shを実行することで起動ができます。
 
