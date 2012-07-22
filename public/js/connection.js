@@ -322,30 +322,28 @@ function sendTags(){
 function sendMessage(){
   var message = $('#message').val();
   var unfamiliar_tags = getUnfamiliarTagsInMessage(message);
-  var proceed = true;
   if ( unfamiliar_tags ) {
     var taglist = unfamiliar_tags.join(', ');
-    proceed = false;
-    if(confirm("タグ「"+ taglist +"」は購読されていません。\n本当にメッセージを送信しますか？\n\n発言をすると発言タグは購読タグに自動追加されます。")){
-      proceed = true;
-      for (var i=0; i<=unfamiliar_tags.length; i++) {
-        var tag = unfamiliar_tags[i];
-        if (tag === undefined) {
-          continue;
-        }
-        addTag(tag.replace(/^#/, ''));
+    if(!confirm("タグ「"+ taglist +"」は購読されていません。\n本当にメッセージを送信しますか？\n\n発言をすると発言タグは購読タグに自動追加されます。")){
+      return false;
+    }
+
+    for (var i=0; i<=unfamiliar_tags.length; i++) {
+      var tag = unfamiliar_tags[i];
+      if (tag === undefined) {
+        continue;
       }
-      socket.emit('join tag', unfamiliar_tags);
-      sendTags();
+      addTag(tag.replace(/^#/, ''));
     }
+    socket.emit('join tag', unfamiliar_tags);
+    sendTags();
   }
-  if ( proceed ) {
-    message = message.replace(/(?:^| |　)#[a-zA-Z0-9]+/mg, '');
-    message = message.replace(/\s/g, '');
-    if(message.length>0){
-      socket.emit('user message', $('#message').val());
-      clear();
-    }
+
+  message = message.replace(/(?:^| |　)#[a-zA-Z0-9]+/mg, '');
+  message = message.replace(/\s/g, '');
+  if(message.length>0){
+    socket.emit('user message', $('#message').val());
+    clear();
   }
   return false;
 }
