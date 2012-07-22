@@ -370,7 +370,7 @@ function autologin(){
 
 //テキスト入力欄をクリア、ただし、タグは残しておく
 function clear () {
-  var tag_list = ($('#message').val().match(/#[a-zA-Z0-9]+/g, '#')!=null)? $('#message').val().match(/#[a-zA-Z0-9]+/g, '#'): [];
+  var tag_list = getTagsInMessage($('#message').val());
   var str  = tag_list.join(' ');
   $('#message').val(' '+str).focus();
   $('#message')[0].selectionStart = 0;
@@ -378,3 +378,7 @@ function clear () {
   resizeMessageTextarea(1);
 };
 
+//メッセージのタグを取得
+function getTagsInMessage (message) {
+  return (message.match(/#[a-zA-Z0-9]+/g, '#')!=null) ? message.match(/#[a-zA-Z0-9]+/g, '#') : [];
+}
