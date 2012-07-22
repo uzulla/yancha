@@ -326,20 +326,17 @@ function sendMessage(){
   if ( unfamiliar_tags ) {
     var taglist = unfamiliar_tags.join(', ');
     proceed = false;
-    if(confirm("タグ「"+ taglist +"」は購読されていません。\n本当にメッセージを送信しますか？")){
+    if(confirm("タグ「"+ taglist +"」は購読されていません。\n本当にメッセージを送信しますか？\n\n発言をすると発言タグは購読タグに自動追加されます。")){
       proceed = true;
-      if(confirm("タグ「"+ taglist +"」を購読タグに追加しますか？")){
-        for (var i=0; i<=unfamiliar_tags.length; i++) {
-          var tag = unfamiliar_tags[i];
-          if (tag === undefined) {
-            continue;
-          }
-          addTag(tag.replace(/^#/, ''));
+      for (var i=0; i<=unfamiliar_tags.length; i++) {
+        var tag = unfamiliar_tags[i];
+        if (tag === undefined) {
+          continue;
         }
-        socket.emit('join tag', unfamiliar_tags);
-        sendTags();
-        alert("「"+ taglist +"」を購読タグに追加しました");
+        addTag(tag.replace(/^#/, ''));
       }
+      socket.emit('join tag', unfamiliar_tags);
+      sendTags();
     }
   }
   if ( proceed ) {
