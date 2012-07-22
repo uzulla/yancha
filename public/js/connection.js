@@ -324,7 +324,7 @@ function sendMessage(){
   var unfamiliar_tags = getUnfamiliarTagsInMessage(message);
   var proceed = true;
   if ( unfamiliar_tags ) {
-    var taglist = unfamiliar_tags.join(', ')
+    var taglist = unfamiliar_tags.join(', ');
     proceed = false;
     if(confirm("タグ「"+ taglist +"」は購読されていません。\n本当にメッセージを送信しますか？")){
       proceed = true;
