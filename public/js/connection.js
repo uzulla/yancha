@@ -321,11 +321,22 @@ function sendTags(){
 //メッセージ送信
 function sendMessage(){
   var message = $('#message').val();
-  message = message.replace(/(?:^| |　)#[a-zA-Z0-9]+/mg, '');
-  message = message.replace(/\s/g, '');
-  if(message.length>0){
-    socket.emit('user message', $('#message').val());
-    clear();
+  var unfamiliar_tags = getUnfamiliarTagsInMessage(message);
+  var proceed = true;
+  if ( unfamiliar_tags ) {
+    var taglist = unfamiliar_tags.join(', ')
+    proceed = false;
+    if(confirm("タグ「"+ taglist +"」は購読されていません。\n本当にメッセージを送信しますか？")){
+      proceed = true;
+    }
+  }
+  if ( proceed ) {
+    message = message.replace(/(?:^| |　)#[a-zA-Z0-9]+/mg, '');
+    message = message.replace(/\s/g, '');
+    if(message.length>0){
+      socket.emit('user message', $('#message').val());
+      clear();
+    }
   }
   return false;
 }
@@ -381,4 +392,27 @@ function clear () {
 //メッセージのタグを取得
 function getTagsInMessage (message) {
   return (message.match(/#[a-zA-Z0-9]+/g, '#')!=null) ? message.match(/#[a-zA-Z0-9]+/g, '#') : [];
+}
+
+//現在購読しているタグの一覧
+function getTags () {
+  var tags = [];
+  $('#tags > b.tagcell').each(function(){
+    tags.push( '#' + $(this).attr('data-tag-name').toUpperCase() );
+  });
+  return tags;
+}
+
+//メッセージ中に購読されていないタグがある場合、該当タグを返す
+function getUnfamiliarTagsInMessage (message) {
+  var subscribed = getTags();
+  var tags = getTagsInMessage(message);
+  var unfamiliar = [];
+  $.each(tags,function(){
+    var tag = this.toUpperCase();
+    if( $.inArray(tag, subscribed) == -1 ) {
+      unfamiliar.push(tag);
+    }
+  });
+  return unfamiliar.length>0 ? unfamiliar : null;
 }
