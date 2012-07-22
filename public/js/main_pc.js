@@ -61,16 +61,16 @@ $(function () {
   
   //インプット欄の改行制御
   $("#send-message").keypress(function(ev) {
-  	if ((ev.which && ev.which === 13) || (ev.keyCode && ev.keyCode === 13)) { // 13 is Enter
-  	  if(ev.shiftKey){
-  	    return true;//改行を通す
-  	  }else{
-  	    $('#send-message').submit();
-  	    return false;//改行を通さない
-  	  }
-  	} else {
-  		return true;
-  	}
+    if ((ev.which && ev.which === 13) || (ev.keyCode && ev.keyCode === 13)) { // 13 is Enter
+      if(ev.shiftKey){
+        return true;//改行を通す
+      }else{
+        $('#send-message').submit();
+        return false;//改行を通さない
+      }
+    } else {
+      return true;
+    }
   }); 
   
   //入力欄の高さ調整
