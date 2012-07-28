@@ -1,0 +1,11 @@
+
+.join_member {
+    float: left;
+    margin: 5px 12px;
+    text-align: center;
+    width: 64px;
+}
+img.profile_url {
+    width: 48px;
+    height: 48px;
+}
