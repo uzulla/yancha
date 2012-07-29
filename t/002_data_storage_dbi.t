@@ -156,11 +156,13 @@ $posts = $storage->search_post(
 );
 is( scalar(@$posts), 10 );
 
+{
+    my $add_post = $storage->add_post( { text => "aa \#ABC", tags => ['ABC'] }, $user2 );
+    my $post_by_id = $storage->get_post_by_id( $add_post->{id} );
 
-$post = $storage->get_post_by_id( 10 );
-
-is( $post->{ id }, 10 );
-is_deeply( $post->{ tags }, ['ABC'] );
+    is( $add_post->{ id }, $post_by_id->{id} );
+    is_deeply( $add_post->{ tags }, ['ABC'] );
+}
 
 subtest 'plusplus' => sub {
     my $temp_id = 10;
@@ -168,7 +170,6 @@ subtest 'plusplus' => sub {
         ok( $storage->plusplus($temp_id) );
         my $temp = $storage->get_post_by_id($temp_id);
         is $temp->{plusplus}, 1;
-        is_deeply( $temp->{ tags }, ['ABC'] );
     }
 
     {
