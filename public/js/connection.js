@@ -136,17 +136,18 @@ socket.on('user message', function(hash){
     $('.messagecell_delete', cell).append(
       $("<button onclick='deleteMessage("+hash.id+");'>delete</button>")
     );
+  }else{
+    //自分の発言以外に未読フラグをつける
+    cell
+      .on('mouseover', function(){
+        $(this).removeClass('unread');
+        $(this).off('mouseover');
+        updateTitle();
+      })
+      .ift(!hash.is_message_log, function(){ //ログか、現在の投稿か//もういらない
+        $(this).addClass('unread');
+      });
   }
-  
-  cell
-    .on('mouseover', function(){
-      $(this).removeClass('unread');
-      $(this).off('mouseover');
-      updateTitle();
-    })
-    .ift(!hash.is_message_log, function(){ //ログか、現在の投稿か//もういらない
-      $(this).addClass('unread');
-    });
   
   $('.messagecell_plusplus', cell)
     .on('mouseover', function(){
