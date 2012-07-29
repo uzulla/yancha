@@ -10,7 +10,7 @@ function joinMembers () {
     success: (function(data){
       var joinUsers = $('#join-users');
       for (var i in data) {
-        var profile_url = (data[i].profile_url !== '') ? data[i].profile_url : 'nobody.png';
+        var profile_image_url = (data[i].profile_image_url !== '') ? data[i].profile_image_url : 'nobody.png';
         var snsUrl = getSnsProfileUrlByUserkey(data[i]);
 
         //要素の横幅調整。画像の横幅より名前の横幅の方が長ければ名前の文字分の横幅にする
@@ -21,10 +21,10 @@ function joinMembers () {
         }
 
         if (snsUrl !== '') {
-            joinUsers.append('<div class="join_member" style="width:' + block_width + 'px;"><a href="' + snsUrl + '"><img class="profile_url" src="/img/' + profile_image_url + '"><br>' + data[i].nickname + '</a></div>');
+            joinUsers.append('<div class="join_member" style="width:' + block_width + 'px;"><a href="' + snsUrl + '"><img class="profile_url" src="' + profile_image_url + '"><br>' + data[i].nickname + '</a></div>');
         }
         else {
-            joinUsers.append('<div class="join_member" style="width:' + block_width + 'px;"><img class="profile_url" src="/img/' + profile_url + '"><br>' + data[i].nickname + '</div>');
+            joinUsers.append('<div class="join_member" style="width:' + block_width + 'px;"><img class="profile_url" src="/img/' + profile_image_url + '"><br>' + data[i].nickname + '</div>');
         }
       }
     }),
