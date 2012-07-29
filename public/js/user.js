@@ -11,7 +11,7 @@ function joinMembers () {
       var joinUsers = $('#join-users');
       for (var i in data) {
         var profile_url = (data[i].profile_url !== '') ? data[i].profile_url : 'nobody.png';
-        var snsUrl = getSnsProfileUrlByUserkey(data[i].user_key);
+        var snsUrl = getSnsProfileUrlByUserkey(data[i]);
 
         //要素の横幅調整。画像の横幅より名前の横幅の方が長ければ名前の文字分の横幅にする
         //todo: マルチバイト文字列の場合の文字数計算
@@ -21,7 +21,7 @@ function joinMembers () {
         }
 
         if (snsUrl !== '') {
-            joinUsers.append('<div class="join_member" style="width:' + block_width + 'px;"><a href="' + snsUrl + '"><img class="profile_url" src="/img/' + profile_url + '"><br>' + data[i].nickname + '</a></div>');
+            joinUsers.append('<div class="join_member" style="width:' + block_width + 'px;"><a href="' + snsUrl + '"><img class="profile_url" src="/img/' + profile_image_url + '"><br>' + data[i].nickname + '</a></div>');
         }
         else {
             joinUsers.append('<div class="join_member" style="width:' + block_width + 'px;"><img class="profile_url" src="/img/' + profile_url + '"><br>' + data[i].nickname + '</div>');
@@ -32,13 +32,11 @@ function joinMembers () {
   });
 }
 
-function getSnsProfileUrlByUserkey(user_key) {
-    var tmp = user_key.split(':');
-    var snsType  = tmp[0];
-    var userName = tmp[1];
+function getSnsProfileUrlByUserkey(userData) {
+    var snsType = userData.user_key.split(':')[0];
     switch (snsType) {
         case 'twitter':
-            return 'http://twitter.com/' + userName;
+            return 'http://twitter.com/' + userData.nickname;
 
         default:
             return '';
