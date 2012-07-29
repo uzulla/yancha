@@ -8,10 +8,10 @@ function joinMembers () {
       console.log(textStatus);
     },
     success: (function(data){
-      var joinUsers = $('#join-users');
+      var join_users = $('#join-users');
       for (var i in data) {
         var profile_image_url = (data[i].profile_image_url !== '') ? data[i].profile_image_url : 'nobody.png';
-        var snsUrl = getSnsProfileUrlByUserkey(data[i]);
+        var profile_url = getSnsProfileUrl(data[i]);
 
         //todo: マルチバイト文字列の場合の文字数計算
         var block_width = (data[i].nickname.length/2) * 16;
@@ -22,18 +22,24 @@ function joinMembers () {
             block_width += 16;
         }
 
-        if (snsUrl !== '') {
-            joinUsers.append(
-                '<div class="join_member" style="width:' + block_width + 'px;">' +
-                '<a href="' + snsUrl + '"><img class="profile_url" src="' + profile_image_url + '">' +
-                '<br style="clear:both;">' + 
-                '<img src="' + getSnsIconPath(data[i].user_key.split(':')[0]) + '">' + 
-                data[i].nickname + 
-                '</a></div>'
-            );
+        if (profile_url !== '') {
+          join_users.append(
+            '<div class="join_member" style="width:' + block_width + 'px;">' +
+            '<a href="' + profile_url + '"><img class="profile_url" src="' + profile_image_url + '">' +
+            '<br style="clear:both;">' + 
+            '<img src="' + getSnsIconPath(data[i].user_key.split(':')[0]) + '">' + 
+            data[i].nickname + 
+            '</a></div>'
+          );
         }
         else {
-            joinUsers.append('<div class="join_member" style="width:' + block_width + 'px;"><img class="profile_url" src="/img/' + profile_image_url + '"><br>' + data[i].nickname + '</div>');
+          join_users.append(
+            '<div class="join_member" style="width:' + block_width + 'px;">' +
+            '<img class="profile_url" src="/img/' + profile_image_url + '">' +
+            '<br>' +
+            data[i].nickname +
+            '</div>'
+          );
         }
       }
     }),
@@ -41,26 +47,25 @@ function joinMembers () {
   });
 }
 
-function getSnsProfileUrlByUserkey(userData) {
-    var snsType = userData.user_key.split(':')[0];
-    switch (snsType) {
-        case 'twitter':
-            return 'http://twitter.com/' + userData.nickname;
+function getSnsProfileUrl(user_data) {
+  var sns = user_data.user_key.split(':')[0];
+  switch (sns) {
+    case 'twitter':
+      return 'http://twitter.com/' + user_data.nickname;
 
-        default:
-            return '';
-    }
+    default:
+      return '';
+  }
 }
 
 function getSnsIconPath(sns) {
-    var path = '/img/sns/';
-    var image_name = '';
-    var extension  = '';
+  var path = '/img/sns/';
+  var image_name = '';
 
-    switch (sns) {
-        case 'twitter':
-            image_name = 'twitter.png';
-    }
+  switch (sns) {
+    case 'twitter':
+      image_name = 'twitter.png';
+  }
 
-    return path + image_name;
+  return path + image_name;
 }
