@@ -15,7 +15,7 @@ my $testdb = t::Utils->setup_testdb( schema => './db/init.sql' );
 my $config = {
     'database' => { connect_info => [ $testdb->dsn ] },
     'plugins' => [
-        [ 'DenyDoubleSimpleLogin' => [ mark => '_', sns_key => ['-'] ] ],
+        [ 'Yancha::Plugin::DenyDoubleSimpleLogin' => [ mark => '_', sns_key => ['-'] ] ],
     ],
 };
 my $server = t::Utils->server_with_dbi( config => $config );

@@ -16,7 +16,7 @@ my $config = {
     'database' => { connect_info => [ $testdb->dsn ] },
     'plugins' => [
         [
-            'WelcomeMessage' => [
+            'Yancha::Plugin::WelcomeMessage' => [
                 message => sub {
                     my ( $socket, $user ) = @_;
                     return sprintf( 'Hi, %s! This is test.', $user->{ nickname } );

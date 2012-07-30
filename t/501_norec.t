@@ -25,7 +25,7 @@ my $config = {
     },
 
     'plugins' => [
-        [ 'NoRec' ],
+        [ 'Yancha::Plugin::NoRec' ],
     ],
 };
 my $data_storage = Yancha::DataStorage::DBI->connect(

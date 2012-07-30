@@ -16,7 +16,7 @@ my $config = {
     'database' => { connect_info => [ $testdb->dsn ] },
     'plugins' => [
         [
-            'WelcomeMessage' => [
+            'Yancha::Plugin::WelcomeMessage' => [
                 message => 'Welcome %s! This is test.',
             ]
         ],
