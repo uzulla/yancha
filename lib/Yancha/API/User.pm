@@ -10,7 +10,14 @@ our $VERSION = '0.01';
 
 sub run {
     my ( $self, $req ) = @_;
-    my $users = $self->sys->users;
+    
+    my $users = [];
+    my %tmp_users;
+    for my$user( values %{ $self->sys->users } ) {
+        next if (exists($tmp_users{ $user->{ user_key } }));
+        $tmp_users{ $user->{ user_key } } = 1;
+        push(@$users, $user);
+    }
 
     return $self->response_as_json( $users );
 }
