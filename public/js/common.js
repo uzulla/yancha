@@ -27,7 +27,7 @@ $.extend({
   }
 });
 
-// get 'http://yairc.cfe.jp:3000/' 
+// get 'http://yancha-server.example:3000/' 
 function getHostRootURL(){
   return location.href.match(/http(s)?:\/\/[a-zA-Z0-9\-\.]*(:[0-9]{1,5})?/)[0];
 }
