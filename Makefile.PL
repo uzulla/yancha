@@ -25,6 +25,7 @@ WriteMakefile(
         'LWP::Protocol::https' => 0,
         'Plack::Session' => 0,
         'Authen::Htpasswd' => 0,
+        'AnyEvent::PocketIO::Client' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES    => 'Yancha-*' },
