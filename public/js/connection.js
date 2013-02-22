@@ -235,10 +235,23 @@ socket.on('token login', function(res){
 
 //タグ登録処理完了イベント
 socket.on('join tag', function(tags){
+  //
+  var disabledTags = new Array();
+  $('.tagcell').each(function(i){
+    if (!$(this).hasClass('disable_tag')) {
+        return true;
+    }
+
+    var tag = $(this).attr('data-tag-name');
+    console.log(tag);
+    disabledTags[tag] = 1;
+  });
+
   $('#tags').empty();
   for (var i in tags) {
+    var tagDisabled = disabledTags[i] ? ' disable_tag' : '' ;
     $('#tags').append(
-      $('<b class="tagcell">')
+      $('<b class="tagcell'+tagDisabled+'">')
         .attr('data-tag-name', i)
         .append( 
           i, 
