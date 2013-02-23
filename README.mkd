@@ -2,8 +2,7 @@
 yancha (旧名yairc) はログの保全、リアルタイム性、モバイル端末への対応を重視した、Perlで作成されたチャットシステムです。
 
 サンプル
-[http://yancha.hachiojipm.org/](http://yancha.hachiojipm.org/)
-(サンプルサイトは移設の為にしばらく停止します）
+[http://yancha.hachiojipm.org:3000/](http://yancha.hachiojipm.org:3000/)
 
 サーバサイドはPerl、クライアントサイトはHTML＋JSで作成され、PocketIOによりWebsocketで通信しています。
 
