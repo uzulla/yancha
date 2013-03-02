@@ -13,18 +13,11 @@ use Carp;
 
 use FindBin;
 use lib ("$FindBin::Bin/lib");
-use Net::Twitter::Lite;
 use AnyEvent::Twitter;
-use Data::Dumper;
 
 sub build_psgi_endpoint {
     my ( $self, $opt ) = @_;
     my $endpoint = $opt->{ endpoint };
-    my $nt = Net::Twitter::Lite->new(
-        consumer_key    => $opt->{ consumer_key },
-        consumer_secret => $opt->{ consumer_secret },
-        legacy_lists_api => 0,
-    );
 
     # クライアント向け情報にアクセスポイントを設定する
     $self->sys->config->{ server_info }->{ auth_endpoint }
