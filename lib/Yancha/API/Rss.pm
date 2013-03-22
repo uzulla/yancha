@@ -17,21 +17,16 @@ sub run {
     my ( $self, $req ) = @_;
     
     my $posts = _get_recent_posts($self, $req);
-    #Carp::croak(Dumper($posts));
-    #Carp::croak( $posts->[0]->{created_at_ms} );
 
     my $last_update_dt = _get_datetime_from_ms($posts->[0]->{created_at_ms});
-    #Carp::croak($last_update_dt->iso8601());
 
     my $feed = XML::Feed->new('RSS', version=>'1.0', encode_output => 0);
-	#$feed->id("http://".time.rand()."/");
 	$feed->title("yancha::".$self->sys->config->{server_info}->{name});
 	$feed->link("http://yancha.hachiojipm.org:3000/");
 	$feed->modified($last_update_dt);
 	
 	foreach my $post ( @$posts ){
 		my $entry = XML::Feed::Entry->new();
-		#$entry->id("http://".time.rand()."/");
 		$entry->link("http://yancha.hachiojipm.org:3000/");
 		$entry->title($post->{nickname}." : ".$post->{text});
 		$entry->content($post->{nickname}." : ".$post->{text});
