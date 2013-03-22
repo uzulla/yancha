@@ -23,7 +23,7 @@ sub run {
     my $last_update_dt = _get_datetime_from_ms($posts->[0]->{created_at_ms});
     #Carp::croak($last_update_dt->iso8601());
 
-    my $feed = XML::Feed->new('RSS');
+    my $feed = XML::Feed->new('RSS', version=>'1.0', encode_output => 0);
 	#$feed->id("http://".time.rand()."/");
 	$feed->title("yancha::".$self->sys->config->{server_info}->{name});
 	$feed->link("http://yancha.hachiojipm.org:3000/");
@@ -41,7 +41,7 @@ sub run {
 
     my $res = Plack::Response->new(200);
 
-    $res->content_type( "application/rss+xml" );
+    $res->content_type( "application/rss+xml; charset=utf-8" );
     $res->body( $feed->as_xml );
 
     return $res;
