@@ -1,0 +1,24 @@
+#!/bin/sh
+
+###
+### このスクリプトを流しこめば、ある程度インストール作業を肩代わりしてくれます.
+###
+
+echo '依存モジュールをインストールします.'
+cpanm --installdeps -n $(cd $(dirname $0);pwd)
+$(cd $(dirname $0);pwd)/script/install_DBD.sh
+
+echo "\nconfig.pl を作成します..."
+cp $(cd $(dirname $0);pwd)/config.pl.sample $(cd $(dirname $0);pwd)/config.pl
+echo 'config.pl を作成しました.'
+
+cat << MSG
+
+!!! 以下は手動で行う必要があります !!!
+
+次にDB のセットアップを行ってください.
+データベースを用意し（現在はMySQL、SQLiteに対応）、db/init.sql（init_sqlite.sql）を用いて初期化を行って下さい.
+
+DB の設定が完了したら、コピーしたconfig.pl に設定を記述してください.
+('database' の設定は最低限行わないと動きません)
+MSG
