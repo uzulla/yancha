@@ -47,12 +47,14 @@ use strict;
 
     'database' => {
         'connect_info' => [
-            'dbi:mysql:database=name', 'user', 'password', 
+            'dbi:mysql:database=name', 'user', 'password',
             {
                 mysql_enable_utf8 => 1 ,
                 mysql_auto_reconnect => 1,
                 RaiseError => 1,
             }
+            # SQLite を使用したい場合は、上のMySQL 関連の設定を削除してから以下のコメントを解除して使用して下さい
+            # 'dbi:SQLite:database=name'
         ],
     },
     'message_log_limit' => 100, # タグ毎のログ数
