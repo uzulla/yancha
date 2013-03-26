@@ -5,7 +5,7 @@ var data = {
   user_key:false,
   profile_image_url:false,
   profile_url:false,
-  tags:{PUBLIC:0}
+  tags:{PUBLIC:0,FROMLINGR:0}
 };
 
 //各種接続、切断、エラーイベント
@@ -97,7 +97,26 @@ socket.on('user message', function(hash){
   var cell = $('#template_messagecell').clone().removeAttr('id');
   cell.attr('data-post-id', hash.id);
   cell.attr('data-tags', hash.tags);  
-  
+
+  //表示させるべきかフラグを持つ（タグをMuteしていないか）
+  var enable_tag_list = [];
+  $('b.tagcell').each(function(){
+    var t = $(this).attr('data-tag-name');
+    ($(this).hasClass('disable_tag')) ? 0 : enable_tag_list.push(t) ;
+  });
+
+  var is_active = false;
+  for(var i=0; enable_tag_list.length>i;i++){
+    var re = new RegExp(enable_tag_list[i], "i");
+    if(hash.tags.join(',').match(re)){ //tagを含んでいるので、表示させる
+      is_active = true;
+    }
+  }
+  if(!is_active){
+    hash.is_mute = true;
+  }else{
+    hash.is_mute = false;
+  }
   
   if(hash.profile_image_url.length>0){
     $('.messagecell_img', cell).attr('src', hash.profile_image_url).wrap("<a href='"+hash.profile_url+"'></a>");
@@ -188,7 +207,7 @@ socket.on('user message', function(hash){
   }
 
   updateTitle();
-
+  tagRefresh();
   hook.doHook('onUserMessage', hash);
 
 });
@@ -261,7 +280,7 @@ socket.on('join tag', function(tags){
     );
   }
   $(window).resize();
-
+  tagRefresh();
 });
 
 function tagRefresh(){
@@ -366,7 +385,7 @@ function logout(){
   $.cookie('yancha_auto_login_token', null);
   $.cookie('chat_tag_list', null);
   data.nick = '';
-  data.tags = {'PUBLIC':0};
+  data.tags = {'PUBLIC':0,'FROMLINGR':0};
   socket.emit('disconnect');
   location.reload();
 }

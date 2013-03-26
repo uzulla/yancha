@@ -3,7 +3,7 @@ var notify = false;
 
 //user message受信時に呼ばれる
 hook.addHook('onUserMessage', function(hash){
-  if ( notify && hash.nickname != data.nick && !hash.is_message_log ) {
+  if ( notify && hash.nickname != data.nick && !hash.is_message_log && !hash.is_mute ) {
     $.jwNotify({
       image : hash.profile_image_url,
       title: hash.nickname,
@@ -12,7 +12,7 @@ hook.addHook('onUserMessage', function(hash){
     });
   }
   
-  if(!hash.is_message_log){ //ログか、現在の投稿か
+  if(!hash.is_message_log && !hash.is_mute){ //ログか、現在の投稿か
     soundMessage();
   }
   
