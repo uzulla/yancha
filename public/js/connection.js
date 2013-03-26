@@ -99,23 +99,13 @@ socket.on('user message', function(hash){
   cell.attr('data-tags', hash.tags);  
 
   //表示させるべきかフラグを持つ（タグをMuteしていないか）
-  var enable_tag_list = [];
-  $('b.tagcell').each(function(){
-    var t = $(this).attr('data-tag-name');
-    ($(this).hasClass('disable_tag')) ? 0 : enable_tag_list.push(t) ;
-  });
-
-  var is_active = false;
+  var enable_tag_list = getEnableTagList();
+  hash.is_mute = true;
   for(var i=0; enable_tag_list.length>i;i++){
     var re = new RegExp(enable_tag_list[i], "i");
     if(hash.tags.join(',').match(re)){ //tagを含んでいるので、表示させる
-      is_active = true;
+      hash.is_mute = false;
     }
-  }
-  if(!is_active){
-    hash.is_mute = true;
-  }else{
-    hash.is_mute = false;
   }
   
   if(hash.profile_image_url.length>0){
@@ -284,12 +274,8 @@ socket.on('join tag', function(tags){
 });
 
 function tagRefresh(){
-  var enable_tag_list = [];
-  $('b.tagcell').each(function(){
-    var t = $(this).attr('data-tag-name');
-    ($(this).hasClass('disable_tag')) ? 0 : enable_tag_list.push(t) ;
-  });
-
+  var enable_tag_list = getEnableTagList();
+  
   //まずすべてPostを隠して、その後で必要なものだけ復活させる。
   $('#lines div.messagecell').hide();
   for(var i=0; enable_tag_list.length>i;i++){
@@ -301,6 +287,15 @@ function tagRefresh(){
       }
     });  
   }
+}
+
+function getEnableTagList(){
+  var enable_tag_list = [];
+  $('b.tagcell').each(function(){
+    var t = $(this).attr('data-tag-name');
+    ($(this).hasClass('disable_tag')) ? 0 : enable_tag_list.push(t) ;
+  });
+  return enable_tag_list;
 }
 
 //tag削除
