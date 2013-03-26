@@ -20,16 +20,22 @@ sub run {
 
     my $last_update_dt = _get_datetime_from_ms($posts->[0]->{created_at_ms});
 
-    my $feed = XML::Feed->new('RSS', version=>'1.0', encode_output => 0);
-	$feed->title("yancha::".$self->sys->config->{server_info}->{name});
-	$feed->link("http://yancha.hachiojipm.org:3000/");
-	$feed->modified($last_update_dt);
+    my $feed = XML::Feed->new('Atom', encode_output => 0);
+    $feed->id($self->sys->config->{server_info}->{url});
+    $feed->title("yancha::".$self->sys->config->{server_info}->{name});
+    $feed->link($self->sys->config->{server_info}->{url});
+    $feed->modified($last_update_dt);
 	
 	foreach my $post ( @$posts ){
 		my $entry = XML::Feed::Entry->new();
-		$entry->link("http://yancha.hachiojipm.org:3000/");
-		$entry->title($post->{nickname}." : ".$post->{text});
-		$entry->content($post->{nickname}." : ".$post->{text});
+		my $url = $self->sys->config->{server_info}->{url}."quotation.html?id=".$post->{id};
+		$entry->id($url);
+		my $title = my $content = $post->{nickname}." : ".$post->{text};
+		$title =~ s/(\n|\r)//g;
+		$title = substr ($title, 0, 64);
+		$entry->link($url);
+		$entry->title($title);
+		$entry->content($content);
 		$entry->modified(_get_datetime_from_ms($post->{created_at_ms}));
 		$feed->add_entry($entry);
 	}

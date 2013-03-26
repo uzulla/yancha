@@ -18,6 +18,7 @@ use strict;
         name          => 'Hachoji.pm',
         default_tag   => 'PUBLIC',
         introduction  => 'テストサーバ',
+        url           => 'http://yancha.hachiojipm.org:3000/',
         auth_endpoint => { # endpoint => [ $module_name, $args, $description_for_client ]
             '/login'         => [
                 'Yancha::Auth::Simple'  => {
