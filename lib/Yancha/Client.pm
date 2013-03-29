@@ -3,15 +3,16 @@ package Yancha::Client;
 use strict;
 use warnings;
 use PocketIO::Client::IO;
-use LWP::UserAgent;
-#use HTTP::Cookies;
 use Carp ();
 
 sub new {
     my $class = shift;
     my %opt   = @_;
 
-    $opt{ ua } ||= LWP::UserAgent->new( exists $opt{ ua_opts } ? %{$opt{ ua_opts }} : () );
+    $opt{ ua } ||= do {
+        require LWP::UserAgent;
+        LWP::UserAgent->new( exists $opt{ ua_opts } ? %{$opt{ ua_opts }} : () );
+    };
     $opt{ tags } ||= { 'PUBLIC' => '0' };
 
     return bless \%opt, $class;
