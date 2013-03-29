@@ -5,6 +5,16 @@ use warnings;
 use PocketIO::Client::IO;
 use Carp ();
 
+my @event_list = (
+    'user message',
+    'join tag',
+    'nicknames',
+    'announcement',
+    'token login',
+    'no session',
+    'plusplus', 
+);
+
 sub new {
     my $class = shift;
     my %opt   = @_;
@@ -14,6 +24,7 @@ sub new {
         LWP::UserAgent->new( exists $opt{ ua_opts } ? %{$opt{ ua_opts }} : () );
     };
     $opt{ tags } ||= { 'PUBLIC' => '0' };
+    $opt{ event }{ $_ } ||= sub {} for @event_list;
 
     return bless \%opt, $class;
 }
@@ -22,21 +33,7 @@ sub new {
 sub login {
     my ( $self, $url, $login_point, $user ) = @_;
 
-    $self->{ url } = $url;
-
-    $login_point = $url =~ m{/$} ? $url . $login_point : "$url/$login_point";
-    my $res = $self->{ua}->post( $login_point, $user );
-
-    if ( $res->is_error ) {
-        Carp::carp( "login error: " . $res->content );
-        return;
-    }
-
-    #my $cookie = HTTP::Cookies->new->extract_cookies($res); # use?
-    #$self->{ cookie } = $cookie;
-
-    my ( $token ) = $res->header('set-cookie') =~ /yancha_auto_login_token=([-\w]+);/;
-
+    my $token = $self->retrieve_token( $url, $login_point, $user );
     $self->token( $token );
 
     return 1;    
@@ -52,13 +49,7 @@ sub connect {
         return;
     }
 
-    $socket->on('user message', sub {});
-    $socket->on('join tag', sub {});
-    $socket->on('nicknames', sub {});
-    $socket->on('announcement', sub {});
-    $socket->on('token login', sub {});
-    $socket->on('no session', sub {});
-    $socket->on('plusplus', sub {});
+    $socket->on($_ => $self->{event}{$_}) for @event_list;
 
     $self->socket( $socket );
 
@@ -99,6 +90,25 @@ sub update_tags_ltime_from_post {
         $self->{ tags }->{ $tag } = $post->{ created_at_ms };
     }
     return;
+}
+
+sub retrieve_token {
+    my ( $self, $url, $login_point, $user ) = @_;
+
+    $self->{ url } = $url;
+
+    $login_point = $url =~ m{/$} ? $url . $login_point : "$url/$login_point";
+    my $user_agent = $self->{ua};
+    my $res = $user_agent->post( $login_point, $user );
+
+    if ( $res->is_error ) {
+        Carp::carp( "login error: " . $res->content );
+        return;
+    }
+
+    my ( $token ) = $res->header('set-cookie') =~ /yancha_auto_login_token=([-\w]+);/;
+
+    return $token;
 }
 
 1;
