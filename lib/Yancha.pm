@@ -6,6 +6,7 @@ use utf8;
 use Carp   ();
 use Encode ();
 use Data::Dumper ();
+use Yancha::Util qw/ load_module load_plugins /;
 
 our $VERSION = '0.01';
 
@@ -96,44 +97,6 @@ sub build_psgi_endpoint_from_server_info {
     }
 }
 
-sub load_module {
-    my ( $self, $type, $module ) = @_;
-
-    if ( @_ == 2 ) {
-        $module = $type;
-        $module = '+' . $module if $module !~ /^\+/;
-    }
-
-    if ( $module !~ s/^\+// ) {
-        $module = __PACKAGE__ . '::' . $type . '::' . $module;
-    }
-
-    eval {
-        ( my $path = $module . '.pm' ) =~ s{::}{/}g;
-        require $path;
-        $path->import();
-    };
-    if ( $@ ) {
-        Carp::croak $@;
-    }
-
-    return $module;
-}
-
-sub load_plugins {
-    my ( $self, $plugins ) = @_;
-    return unless $plugins and ref($plugins) eq 'ARRAY';
-
-    for my $plugin_and_args ( @{ $plugins } ) {
-        my ( $plugin, $args ) = @{ $plugin_and_args };
-        eval { ( my $path = $plugin . '.pm' ) =~ s{::}{/}g; require $path };
-        if ( $@ ) {
-            Carp::carp $@;
-            next;
-        }
-        $plugin->setup( $self, @$args );
-    }
-}
 
 sub register_hook {
     my ( $self, $hook_name, $subref, $args ) = @_;
