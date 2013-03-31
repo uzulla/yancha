@@ -48,6 +48,19 @@ sub _search_posts {
         $where->{ id } = [ grep { $_ =~ /^[0-9]+$/ } split /,/, $ids ];
     }
 
+
+    my $attr_orders = [];
+
+    if ( my $orders = $req->param('order') ) {
+        for my$order_param( split(/,/, $orders) ) {
+            next unless $order_param =~ m/^(-)?(.+)$/;
+
+            my $order = defined($1) ? $1 : '';
+            
+            push $attr_orders, ($order eq '-') ? "$2 DESC" : "$2 ASC";
+        }
+    }
+
     my $newer = $req->param('newer');
     my $older = $req->param('older');
 
@@ -57,11 +70,11 @@ sub _search_posts {
         if ( ref $where->{ id } ) {
             $where->{ id } = $where->{ id }->[0];
             $where->{ id } = { '>' => $where->{ id } };
-            $attr->{ order_by } = 'id ASC';
+            push $attr_orders, 'id DESC';
         }
         elsif ( ref $where->{ created_at_ms } ) {
             $where->{ created_at_ms } = { '>' => $where->{ created_at_ms }->[0] };
-            $attr->{ order_by } = 'created_at_ms ASC';
+            push $attr_orders, 'created_at_ms DESC';
         }
     }
     elsif ( $older ) {
@@ -70,14 +83,15 @@ sub _search_posts {
         if ( ref $where->{ id } ) {
             $where->{ id } = $where->{ id }->[0];
             $where->{ id } = { '<' => $where->{ id } };
-            $attr->{ order_by } = 'id DESC';
+            push $attr_orders, 'id DESC';
         }
         elsif ( ref $where->{ created_at_ms } ) {
             $where->{ created_at_ms } = { '<' => $where->{ created_at_ms }->[0] };
-            $attr->{ order_by } = 'created_at_ms DESC';
+            push $attr_orders, 'created_at_ms DESC';
         }
     }
 
+    $attr->{ order_by } = $attr_orders;
     $attr->{ limit } ||= 20;
 
     return $self->sys->data_storage->search_post( $where, $attr );
