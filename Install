@@ -4,13 +4,38 @@
 ### このスクリプトを流しこめば、ある程度インストール作業を肩代わりしてくれます.
 ###
 
+create_configuration() {
+  echo -n '[n]'
+  read install
+
+  if [ -z "$install" ] || [ $install = 'n' ] ; then
+    # Do nothing
+    return
+  elif [ $install = 'y' ] ; then
+    # Backup
+    if [ -e $(cd $(dirname $0);pwd)/config.pl ] ; then
+      mv $(cd $(dirname $0);pwd)/config.pl $(cd $(dirname $0);pwd)/config.pl.bak
+    fi
+
+    # Create
+    cp $(cd $(dirname $0);pwd)/config.pl.sample $(cd $(dirname $0);pwd)/config.pl
+    echo 'config.pl を作成しました.'
+    return
+  fi
+
+  echo 'y かn を指定して下さい．'
+  create_configuration
+}
+
 echo '依存モジュールをインストールします.'
 cpanm --installdeps -n $(cd $(dirname $0);pwd)
 $(cd $(dirname $0);pwd)/script/install_DBD.sh
 
-echo "\nconfig.pl を作成します..."
-cp $(cd $(dirname $0);pwd)/config.pl.sample $(cd $(dirname $0);pwd)/config.pl
-echo 'config.pl を作成しました.'
+cat << MSG
+
+config.pl を作成しますか？[y/n]
+MSG
+create_configuration
 
 cat << MSG
 
