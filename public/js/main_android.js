@@ -81,8 +81,8 @@ $(function () {
        wipeRight: function() { showmenu(); },
        //wipeUp: function() { alert("up"); },
        //wipeDown: function() { alert("down"); },
-       min_move_x: 30,
-       min_move_y: 30,
+       min_move_x: 50,
+       min_move_y: 50,
        preventDefaultEvents: false
   });  
 
