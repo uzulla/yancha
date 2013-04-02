@@ -26,7 +26,7 @@ WriteMakefile(
         'Authen::Htpasswd' => 0,
         'AnyEvent::PocketIO::Client' => 0,
         'AnyEvent::Twitter' => 0,
-	'XML::Feed' => 0,
+	'XML::FeedPP' => 0,
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES    => 'Yancha-*' },
