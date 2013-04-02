@@ -56,7 +56,7 @@ use strict;
                 RaiseError => 1,
             }
             # SQLite を使用したい場合は、上のMySQL 関連の設定を削除してから以下のコメントを解除して使用して下さい
-            # 'dbi:SQLite:database=name'
+            # 'dbi:SQLite:database=name', undef, undef, { sqlite_unicode => 1 }
         ],
     },
     'message_log_limit' => 100, # タグ毎のログ数
