@@ -3,6 +3,7 @@ function submitSearch(){
   $('#loading_finish_text_bottom').hide();
   $('#loading_text_bottom').show();
   $('#loading_bottom').show();
+  cancelSelectPostEvent();
 
   (!$('#check_new_is_first').prop('checked')) ? $('#loading_top').show() : $('#loading_bottom').show(); // loading indicator
 
@@ -21,7 +22,9 @@ function submitSearch(){
   }else{
     time = $('input[name=time]', f).val();
   }
- console.log('post'); 
+
+  console.log('post'); 
+
   $.ajax({
     type: 'POST',
     url: getHostRootURL()+"/api/search", // todo
@@ -33,7 +36,7 @@ function submitSearch(){
       time:time
     },
     error: function(XMLHttpRequest, textStatus, errorThrown){
-console.log(textStatus);
+      console.log(textStatus);
     },
     success: (function(){return function(data){
       $('#lines').empty();
@@ -156,18 +159,21 @@ function extendSearchOnScroll(e){ //Auto pagerize
 
 //引用選択機能
 function startSelectPost(){
-  $('.messagecell').on('click', function(){
-    if($(this).hasClass('selectedMessageCell')){
-      $(this).removeClass('selectedMessageCell');
-    }else{
-      $(this).addClass('selectedMessageCell');
+  cancelSelectPostEvent();
+  $('#lines').on('click', function(e){
+    var $mess = $(e.target).closest('.messagecell');
+    if ($mess) {
+      $mess.toggleClass('selectedMessageCell');
     }
-    
   });
 }
 
+function cancelSelectPostEvent(){
+  $('#lines').off('click');
+}
+
 function endSelectPost(){
-  $('.messagecell').off('click');
+  cancelSelectPostEvent();
   var post_id_list = [];
   $('.selectedMessageCell').each(function(){
     post_id_list.push($(this).attr('data-post-id'));
