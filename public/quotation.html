@@ -9,7 +9,7 @@
   //}
   </script>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-  <link href="/stylesheets/pc.css" rel="stylesheet" />
+  <link href="/stylesheets/pc.css" rel="stylesheet">
   <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
   <script src="/js/common.js"></script>
   <script src="/js/filter.js"></script>
@@ -78,33 +78,33 @@ function getUrlVars()
 
 <div id="searchform" style="background-color:#CCCCCC;">
   <form onsubmit="return false">
-    post_id<input name='id' value=""><br />
+    post_id<input name='id' value=""><br>
     <input type="hidden" name="tag" value="">
     <input type="hidden" name="limit" value="1000">
     <input type="hidden" name="keyword" value="">
   </form>
-  
 </div>
+
 <div id="controls">
   <input type="button" onclick="$('#searchform').toggle('slow', function(){$(window).resize()})" value="検索フォームを開閉">
-  <input type="button" value="表示/更新" onclick="submitSearch(event);" >
+  <input type="button" value="表示/更新" onclick="submitSearch(event);">
 </div>
 
 <div id="messages">
-	<div id="scroller">
-		<div id="lines" style="overflow-y:auto;">
-		</div>
-	</div>
+  <div id="scroller">
+    <div id="lines" style="overflow-y:auto;">
+    </div>
+  </div>
 </div>
 
-<div style="display:none" >
+<div style="display:none">
   <div id="template_messagecell" class="messagecell">
-  	<img src="/img/nobody.png" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
-  	<span style="float: right;"><abbr title="" class="timeago messagecell_time"></abbr></span>
-  	<span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
-  	<div style="overflow: auto;" class="messagecell_text"></div>
-  	<div class="messagecell_plusplus"></div>
-  	<br style="clear: both;">
+    <img src="/img/nobody.png" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
+    <span style="float: right;"><abbr class="timeago messagecell_time"></abbr></span>
+    <span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
+    <div style="overflow: auto;" class="messagecell_text"></div>
+    <div class="messagecell_plusplus"></div>
+    <br style="clear: both;">
   </div>
 </div>
 
