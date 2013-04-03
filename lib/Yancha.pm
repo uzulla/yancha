@@ -49,6 +49,12 @@ sub tags { $tags; }
 
 sub tags_reverse { $tags_reverse; }
 
+sub default_tag {
+    $_[0]->{default_tag} ||= do {
+        uc( $_[0]->config->{ server_info }->{ default_tag } || 'PUBLIC' );
+    }
+}
+
 sub extract_tags_from_text {
     my ( $self, $str ) = @_;
     # 将来的にはUnicode Propertyのword(\w)にしたいが、ui側の変更も必要
@@ -295,8 +301,7 @@ sub send_event_to_tag_joined {
 
 sub add_default_tag {
     my ( $self, $tags, $message_ref ) = @_;
-    my $tag = $self->{ default_tag }
-                ||= uc( $self->config->{ server_info }->{ default_tag } || 'PUBLIC' );
+    my $tag = $self->default_tag;
     $$message_ref = $$message_ref . ' #' . $tag;
     push @$tags, $tag;
 }
