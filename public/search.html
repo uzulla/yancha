@@ -9,7 +9,7 @@
   //}
   </script>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-  <link href="/stylesheets/pc.css" rel="stylesheet" />
+  <link href="/stylesheets/pc.css" rel="stylesheet">
   <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
   <script src="/js/common.js"></script>
   <script src="/js/filter.js"></script>
@@ -47,14 +47,14 @@
 
 <div id="searchform" style="background-color:#CCCCCC;">
   <form onsubmit="return false">
-    タグ<input name='tag' value="PUBLIC"><br />
-    キーワード<input type="text" size="30" name="keyword"><br />
+    タグ<input name='tag' value="PUBLIC"><br>
+    キーワード<input type="text" size="30" name="keyword"><br>
     上限<select name="limit">
       <option value="20">20</option>  
       <option value="100">100</option>
       <option value="500">500</option>
       <option value="1000">1000</option>
-    </select><br />
+    </select><br>
     取得期間<select name="time_window">
       <option value="">-</option>  
       <option value="3600">1時間</option>  
@@ -62,41 +62,41 @@
       <option value="86400">一日</option>
       <option value="604800">一週間</option>
       <option value="2592000">一ヶ月</option>
-    </select><br />
-    最新を上部にする<input type="checkbox" id="check_new_is_first" checked=checked><br />
+    </select><br>
+    最新を上部にする<input type="checkbox" id="check_new_is_first" checked=checked><br>
   </form>
-  
 </div>
+
 <div id="controls">
   <input type="button" onclick="$('#searchform').toggle('slow', function(){$(window).resize()})" value="フォーム開閉">
-  <input type="button" value="表示/更新" onclick="submitSearch(event);" >
-  <input type="button" value="引用選択開始" onclick="startSelectPost();" >
-  <input type="button" value="引用選択終了" onclick="endSelectPost();" >
+  <input type="button" value="表示/更新" onclick="submitSearch(event);">
+  <input type="button" value="引用選択開始" onclick="startSelectPost();">
+  <input type="button" value="引用選択終了" onclick="endSelectPost();">
 </div>
 
 <div style="text-align:center;display:none" id="loading_top">
   <img src="/img/loading.gif">
 </div>
 <div id="messages">
-	<div id="scroller">
-		<div id="lines" style="overflow-y:auto;">
-		</div>
-	</div>
+  <div id="scroller">
+    <div id="lines" style="overflow-y:auto;"></div>
+  </div>
 </div>
-<div style="text-align:center;" >
+
+<div style="text-align:center;">
   <img src="/img/loading.gif" id="loading_bottom" style="display:none"><br>
   <span id="loading_text_bottom"style="display:none">Auto Paging...</span>
   <span id="loading_finish_text_bottom"style="display:none">not found older post.</span>
 </div>
 
-<div style="display:none" >
+<div style="display:none">
   <div id="template_messagecell" class="messagecell">
-  	<img src="/img/nobody.png" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
-  	<span style="float: right;"><abbr title="" class="timeago messagecell_time"></abbr></span>
-  	<span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
-  	<div style="overflow: auto;" class="messagecell_text"></div>
-  	<div class="messagecell_plusplus"></div>
-  	<br style="clear: both;">
+    <img src="/img/nobody.png" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
+    <span style="float: right;"><abbr class="timeago messagecell_time"></abbr></span>
+    <span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
+    <div style="overflow: auto;" class="messagecell_text"></div>
+    <div class="messagecell_plusplus"></div>
+    <br style="clear: both;">
   </div>
 </div>
 

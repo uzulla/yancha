@@ -44,7 +44,7 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
 <body>
 
   <div id="nickname">
-    <br />
+    <br>
     <p>yancha chatに参加するには、ログインして下さい。</p>
     <p><a href="/login/twitter/start">Twitterでログイン</a></p>
     <form action="./login" method="post">
@@ -65,12 +65,11 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
   </div>  
   
   <div id="messages" style="overflow-y:auto">
-		<div id="lines" style="overflow-y:auto">
-    <div style="background-color:#CCCCCC;text-align:center">
-      <a href="search.html">過去ログ検索</a>
+    <div id="lines" style="overflow-y:auto">
+      <div style="background-color:#CCCCCC;text-align:center">
+        <a href="search.html">過去ログ検索</a>
+      </div>
     </div>
-
-		</div>
   </div>
   
   <div id="controlpad" style="width:100%">
@@ -100,71 +99,73 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
   
   <div id="infomation" style="width:100%">
     <table>
-    <tr>
-      <td colspan="2" style="text-align:center">
-        <button style="margin:5px;width:200px;" onclick='hidemenu()'>閉じる</button>
-      </td>
-    </tr>
+      <tr>
+        <td colspan="2" style="text-align:center">
+          <button style="margin:5px;width:200px;" onclick='hidemenu()'>閉じる</button>
+        </td>
+      </tr>
     
-    <tr>
-      <td>
+      <tr>
+        <td>
     
-        ONLINE
-        <a style="margin-left:10px;" href="/join_users.html" target="_blank">ユーザー一覧</a>
-        <div id="nicknames">
-        </div>
-        TAGS
-        <table>
-          <tr>
-            <td>
-              <input id="tagname" type="text" style="width:100px">
-            <td style="width:50px">
-              <button onclick="addTag($('#tagname').val());$('#tagname').val('');return false;">追加</button>
-        </table>
-        <span style="font-size:60%;">※クリックでOn/Off</span>
-        <div id="tags">
-        </div>
-        SETTINGS
-        <div style="border-bottom:1px #999 solid;padding:3px;">
-          <label><input type="checkbox" id="sound" checked=checked>音をならす</label><br>
-          <label><input type="checkbox" id="disp_announcement">サーバーメッセージを表示</label>
-        </div>
-        ACTIONS
-        <div style="border-bottom:1px #999 solid;padding:3px;">
-          <button onclick="logout()">Logout</button>
-          <button class="toggleNotify">Notify</button>
-        </div>
-      <td>
+          ONLINE
+          <a style="margin-left:10px;" href="/join_users.html" target="_blank">ユーザー一覧</a>
+          <div id="nicknames">
+          </div>
+          TAGS
+          <table>
+            <tr>
+              <td>
+                <input id="tagname" type="text" style="width:100px">
+              <td style="width:50px">
+                <button onclick="addTag($('#tagname').val());$('#tagname').val('');return false;">追加</button>
+              </td>
+            </tr>
+          </table>
+          <span style="font-size:60%;">※クリックでOn/Off</span>
+          <div id="tags">
+          </div>
+          SETTINGS
+          <div style="border-bottom:1px #999 solid;padding:3px;">
+            <label><input type="checkbox" id="sound" checked=checked>音をならす</label><br>
+            <label><input type="checkbox" id="disp_announcement">サーバーメッセージを表示</label>
+          </div>
+          ACTIONS
+          <div style="border-bottom:1px #999 solid;padding:3px;">
+            <button onclick="logout()">Logout</button>
+            <button class="toggleNotify">Notify</button>
+          </div>
     
-        HINTS<br>
-      	<a href="/search.html" target="_blank" style="font-size:80%;">過去ログ</a><br>
-        <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
-          Shift+Enterで改行<br>
-          ・コードハイライト<br>
-          &gt;|javascript|<br>
-          CODE<br>
-          ||&lt;<br>
-          &gt;|perl|<br>
-          CODE<br>
-          ||&lt;<br>
-          ・PRE<br>
-          &gt;&gt;<br>
-          テキスト<br>
-          &lt;&lt;<br>
-          ・画像ポスト<br>
-          <a href="http://yairc.cfe.jp:5000/" target="_blank">http://yairc.cfe.jp:5000/</a>
-        </div>
-        ABOUT<br>
-        <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
-        <a href="https://github.com/uzulla/yancha" target="_blank">yanchaについて</a>    
-        </div>
-    </tr>
+          HINTS<br>
+          <a href="/search.html" target="_blank" style="font-size:80%;">過去ログ</a><br>
+          <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
+            Shift+Enterで改行<br>
+            ・コードハイライト<br>
+            &gt;|javascript|<br>
+            CODE<br>
+            ||&lt;<br>
+            &gt;|perl|<br>
+            CODE<br>
+            ||&lt;<br>
+            ・PRE<br>
+            &gt;&gt;<br>
+            テキスト<br>
+            &lt;&lt;<br>
+            ・画像ポスト<br>
+            <a href="http://yairc.cfe.jp:5000/" target="_blank">http://yairc.cfe.jp:5000/</a>
+          </div>
+          ABOUT<br>
+          <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
+            <a href="https://github.com/uzulla/yancha" target="_blank">yanchaについて</a>    
+          </div>
+        </td>
+      </tr>
     
-    <tr>
-      <td colspan="2" style="text-align:center">
-        <button style="margin:5px;width:200px;" onclick='hidemenu()'>閉じる</button>
-      </td>
-    </tr>
+      <tr>
+        <td colspan="2" style="text-align:center">
+          <button style="margin:5px;width:200px;" onclick='hidemenu()'>閉じる</button>
+        </td>
+      </tr>
     
     </table>
   </div> 
@@ -172,26 +173,26 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
   
   
   <form id="send-message">
-  <table style="width:100%">
-  <tr>
-    <td style="width:100%"><textarea  id="message"></textarea>
-    <td ><button style="margin:2px 0px 2px 2px;">Send</button>
-    <td ><button style="margin:2px 0px 2px 2px;" onclick='togglemenu()'>MENU</button>
-  </table>
+    <table style="width:100%">
+      <tr>
+        <td style="width:100%"><textarea  id="message"></textarea></td>
+        <td><button style="margin:2px 0px 2px 2px;">Send</button></td>
+      <td><button style="margin:2px 0px 2px 2px;" onclick='togglemenu()'>MENU</button></td>
+    </table>
   </form>
 
-<div style="display:none" >
+<div style="display:none">
   <div id="template_messagecell" style="margin:0px;padding:0px;"  class="messagecell">
-  	<img src="/img/nobody.png" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
-  	<span style="float: right;"><abbr title="" class="timeago messagecell_time"></abbr></span>
-  	<span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
+    <img src="/img/nobody.png" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
+    <span style="float: right;"><abbr class="timeago messagecell_time"></abbr></span>
+    <span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
     <div style="overflow: auto;" class="messagecell_text"></div>
-  	<div class="messagecell_plusplus"></div>
+    <div class="messagecell_plusplus"></div>
     <br style="clear: both;">
   </div>
   <div id="template_announcementcell" class="announcementcell">
-  	<span style="float: right;"><abbr title="" class="timeago announcementcell_time"></abbr></span>
-  	<div class="announcementcell_text"></div>
+    <span style="float: right;"><abbr class="timeago announcementcell_time"></abbr></span>
+    <div class="announcementcell_text"></div>
   </div>    
 </div>
 
