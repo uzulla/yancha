@@ -52,9 +52,12 @@ function announcement(msg){
 //サーバから、参加ニックネームリストの更新
 socket.on('nicknames', function (nicknames) {
   $('#nicknames').empty();
+  var join_num = 0;
   for (var i in nicknames) {
     $('#nicknames').append($('<b>').text(nicknames[i]));
+    join_num += 1;
   }
+  $('#join_num').text(join_num);
   $(window).resize();
 });
 
