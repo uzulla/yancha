@@ -154,10 +154,7 @@ $(function () {
     });
   }
   
-  $('a.popup').click(function(e) {
-    e.preventDefault();
-    ui.openPopup($(this).attr('href'), { position_top: $(this).scrollTop() });
-  });
+  $('a.popup').yanchaPopup();
 });
 
 
