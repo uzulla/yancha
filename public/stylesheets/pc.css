@@ -202,3 +202,27 @@ button.focus {
   -moz-box-shadow: 0 1px 0 0 rgba(255,255,255,0.4), 0 0 4px 0 #377ad0;
   box-shadow: 0 1px 0 0 rgba(255,255,255,0.4), 0 0 4px 0 #377ad0;
 }
+
+#overlay {
+  position        : absolute;
+  top             : 0px;
+  left            : 0px;
+  z-index         : 9999;
+  width           : 100%;
+  height          : 100%;
+  background-color: #FFFFFF;
+  filter          : alpha(opacity=0);
+  -moz-opacity    : 0.0;
+  opacity         : 0.0;
+}
+
+#popup {
+  position        : absolute;
+  border          : 4px solid #ccc;
+  z-index         : 100000;
+  background-color: #FFFFFF;
+  padding         : 2px 2px 2px 2px;
+  filter          : alpha(opacity=0);
+  -moz-opacity    : 0.0;
+  opacity         : 0.0;
+}
