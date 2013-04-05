@@ -113,7 +113,7 @@ var ui = {
     }
 
     // add event
-    $('a.popupClose').click(function(e) {
+    $('a.popupClose, #overlay').click(function(e) {
       e.preventDefault();
       ui.closePopup();
     });
