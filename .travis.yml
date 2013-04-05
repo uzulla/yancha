@@ -1,0 +1,9 @@
+language: perl
+
+before_install:
+    - cpanm --notest --quiet DBD::mysql DBD::SQLite
+
+perl:
+    - "5.12"
+    - "5.14"
+    - "5.16"
