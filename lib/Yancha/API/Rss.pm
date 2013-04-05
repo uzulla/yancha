@@ -5,11 +5,8 @@ use warnings;
 use utf8;
 use Yancha::API;
 use parent qw(Yancha::API);
-use XML::Feed;
-use DateTime;
+use XML::FeedPP;
 use POSIX qw(floor);
-
-use Data::Dumper;
 
 our $VERSION = '0.01';
 
@@ -19,31 +16,30 @@ sub run {
     my $posts = _get_recent_posts($self, $req);
 
     my $last_update_dt = _get_datetime_from_ms($posts->[0]->{created_at_ms});
+    my $server_url = $server_info->{url} || '';
 
-    my $feed = XML::Feed->new('Atom', encode_output => 0);
-    $feed->id($server_info->{url});
+    my $feed = XML::FeedPP::Atom->new();
     $feed->title("yancha::".$server_info->{name});
     $feed->link($server_info->{url});
-    $feed->modified($last_update_dt);
-	
+    $feed->pubDate($last_update_dt);
+
 	foreach my $post ( @$posts) {
-		my $entry = XML::Feed::Entry->new();
-		my $url = $server_info->{url}."quotation.html?id=".$post->{id};
-		$entry->id($url);
+		my $url   = $server_url . "quotation.html?id=" . $post->{id};
+		my $entry = $feed->add_item($url);
 		my $title = my $content = $post->{nickname}." : ".$post->{text};
+		$entry->guid($url);
 		$title =~ s/[\r\n]//g;
 		$title = substr ($title, 0, 64);
 		$entry->link($url);
 		$entry->title($title);
-		$entry->content($content);
-		$entry->modified(_get_datetime_from_ms($post->{created_at_ms}));
-		$feed->add_entry($entry);
+		$entry->description($content);
+		$entry->pubDate(_get_datetime_from_ms($post->{created_at_ms}));
 	}
 
     my $res = Plack::Response->new(200);
 
     $res->content_type( "application/rss+xml; charset=utf-8" );
-    $res->body( $feed->as_xml );
+    $res->body( Encode::encode_utf8( $feed->to_string ) );
 
     return $res;
 }
@@ -59,8 +55,7 @@ sub _get_recent_posts {
 }
 
 sub _get_datetime_from_ms {
-    my $millisec = shift;
-    return DateTime->from_epoch( epoch=>floor($millisec/100_000) );
+    return floor($_[0] / 100_000);
 }
 
 1;

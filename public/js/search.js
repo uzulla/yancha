@@ -30,7 +30,7 @@ function submitSearch(){
       tag:tag,
       id:id,
       limit:limit,
-      time:time,
+      time:time
     },
     error: function(XMLHttpRequest, textStatus, errorThrown){
 console.log(textStatus);
@@ -70,7 +70,7 @@ function extendSearch(){
       keyword:keyword,
       tag:tag,
       id:$(last_post_cell).attr('data-post-id'),
-      older:limit,
+      older:limit
     },
     success: function(data){
       if(data.length == 0){ // これより前がみつからないので。
@@ -158,9 +158,9 @@ function extendSearchOnScroll(e){ //Auto pagerize
 function startSelectPost(){
   $('.messagecell').on('click', function(){
     if($(this).hasClass('selectedMessageCell')){
-      $(this).removeClass('selectedMessageCell')
+      $(this).removeClass('selectedMessageCell');
     }else{
-      $(this).addClass('selectedMessageCell')
+      $(this).addClass('selectedMessageCell');
     }
     
   });
@@ -179,7 +179,7 @@ function endSelectPost(){
   }
   var url = '/quotation.html?id='+post_id_list.join(',');
   $('#popuper').attr('action', url).submit();
-  $('.messagecell').removeClass('selectedMessageCell') 
+  $('.messagecell').removeClass('selectedMessageCell');
 }
 
 

@@ -1,4 +1,4 @@
-# yancha README
+# yancha [![Build Status](https://travis-ci.org/uzulla/yancha.png?branch=master)](https://travis-ci.org/uzulla/yancha)
 yancha (旧名yairc) はログの保全、リアルタイム性、モバイル端末への対応を重視した、Perlで作成されたチャットシステムです。
 
 サンプル

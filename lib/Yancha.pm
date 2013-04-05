@@ -6,6 +6,7 @@ use utf8;
 use Carp   ();
 use Encode ();
 use Data::Dumper ();
+use Yancha::Util qw/ load_module load_plugins /;
 
 our $VERSION = '0.01';
 
@@ -47,6 +48,12 @@ sub users { $users; }
 sub tags { $tags; }
 
 sub tags_reverse { $tags_reverse; }
+
+sub default_tag {
+    $_[0]->{default_tag} ||= do {
+        uc( $_[0]->config->{ server_info }->{ default_tag } || 'PUBLIC' );
+    }
+}
 
 sub extract_tags_from_text {
     my ( $self, $str ) = @_;
@@ -96,44 +103,6 @@ sub build_psgi_endpoint_from_server_info {
     }
 }
 
-sub load_module {
-    my ( $self, $type, $module ) = @_;
-
-    if ( @_ == 2 ) {
-        $module = $type;
-        $module = '+' . $module if $module !~ /^\+/;
-    }
-
-    if ( $module !~ s/^\+// ) {
-        $module = __PACKAGE__ . '::' . $type . '::' . $module;
-    }
-
-    eval {
-        ( my $path = $module . '.pm' ) =~ s{::}{/}g;
-        require $path;
-        $path->import();
-    };
-    if ( $@ ) {
-        Carp::croak $@;
-    }
-
-    return $module;
-}
-
-sub load_plugins {
-    my ( $self, $plugins ) = @_;
-    return unless $plugins and ref($plugins) eq 'ARRAY';
-
-    for my $plugin_and_args ( @{ $plugins } ) {
-        my ( $plugin, $args ) = @{ $plugin_and_args };
-        eval { ( my $path = $plugin . '.pm' ) =~ s{::}{/}g; require $path };
-        if ( $@ ) {
-            Carp::carp $@;
-            next;
-        }
-        $plugin->setup( $self, @$args );
-    }
-}
 
 sub register_hook {
     my ( $self, $hook_name, $subref, $args ) = @_;
@@ -332,8 +301,7 @@ sub send_event_to_tag_joined {
 
 sub add_default_tag {
     my ( $self, $tags, $message_ref ) = @_;
-    my $tag = $self->{ default_tag }
-                ||= uc( $self->config->{ server_info }->{ default_tag } || 'PUBLIC' );
+    my $tag = $self->default_tag;
     $$message_ref = $$message_ref . ' #' . $tag;
     push @$tags, $tag;
 }

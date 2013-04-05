@@ -7,7 +7,7 @@ use HTTP::Request::Common qw(POST GET);
 use Test::More;
 use Yancha::Client;
 use Yancha::DataStorage::DBI;
-use XML::Feed;
+use XML::FeedPP;
 use Data::Dumper;
 use t::Utils;
 
@@ -55,11 +55,11 @@ test_pocketio $server => sub {
     is $rss_res->code => 200;
 
     my $xml = $rss_res->content;
-    my $feed = XML::Feed->parse( \$xml ); 
+    my $feed = XML::FeedPP->new( $xml );
 
     is $feed->title => 'yancha::TEST RSS';
 
-    my @items = $feed->items;
+    my @items = $feed->get_item;
     is scalar @items => 3;
 
 };
