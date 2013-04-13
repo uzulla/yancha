@@ -57,7 +57,7 @@ sub _search_posts {
 
             my $order = defined($1) ? $1 : '';
             
-            push $attr_orders, ($order eq '-') ? "$2 DESC" : "$2 ASC";
+            push @{$attr_orders}, ($order eq '-') ? "$2 DESC" : "$2 ASC";
         }
     }
 
@@ -70,11 +70,11 @@ sub _search_posts {
         if ( ref $where->{ id } ) {
             $where->{ id } = $where->{ id }->[0];
             $where->{ id } = { '>' => $where->{ id } };
-            push $attr_orders, 'id DESC';
+            push @{$attr_orders}, 'id DESC';
         }
         elsif ( ref $where->{ created_at_ms } ) {
             $where->{ created_at_ms } = { '>' => $where->{ created_at_ms }->[0] };
-            push $attr_orders, 'created_at_ms DESC';
+            push @{$attr_orders}, 'created_at_ms DESC';
         }
     }
     elsif ( $older ) {
@@ -83,11 +83,11 @@ sub _search_posts {
         if ( ref $where->{ id } ) {
             $where->{ id } = $where->{ id }->[0];
             $where->{ id } = { '<' => $where->{ id } };
-            push $attr_orders, 'id DESC';
+            push @{$attr_orders}, 'id DESC';
         }
         elsif ( ref $where->{ created_at_ms } ) {
             $where->{ created_at_ms } = { '<' => $where->{ created_at_ms }->[0] };
-            push $attr_orders, 'created_at_ms DESC';
+            push @{$attr_orders}, 'created_at_ms DESC';
         }
     }
 
