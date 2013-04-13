@@ -68,14 +68,12 @@ for my$post ( @{$posts} ) {
 }
 
 
-diag( 'testing ascending order.' );
 $posts = $storage->search_post( {}, { order_by => 'plusplus ASC' });
 my $i = 0;
 for my$msg( sort { $plusplus_values{$a} <=> $plusplus_values{$b} } keys %plusplus_values ) {
     is( $msg, $posts->[$i++]->{text} );
 }
 
-diag( 'testing descending order.' );
 $posts = $storage->search_post( {}, { order_by => 'plusplus DESC' });
 $i = 0;
 for my$msg( sort { $plusplus_values{$b} <=> $plusplus_values{$a} } keys %plusplus_values ) {
@@ -84,7 +82,6 @@ for my$msg( sort { $plusplus_values{$b} <=> $plusplus_values{$a} } keys %plusplu
 
 
 
-diag( 'testing order with API.' );
 
 my $config = {
     database => {connect_info => [$testdb->dsn]},
@@ -114,14 +111,12 @@ test_pocketio $server => sub {
     };
     my $posts;
 
-    diag( 'testing ascending order with API.' );
     $posts = $search_by_api->( { order => 'plusplus' } );
     my $i = 0;
     for my$msg( sort { $plusplus_values{$a} <=> $plusplus_values{$b} } keys %plusplus_values ) {
         is( $msg, $posts->[$i++]->{text} );
     }
 
-    diag( 'testing descending order with API.' );
     $posts = $search_by_api->( { order => '-plusplus' } );
     $i = 0;
     for my$msg( sort { $plusplus_values{$b} <=> $plusplus_values{$a} } keys %plusplus_values ) {
