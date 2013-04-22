@@ -62,8 +62,15 @@
       <option value="86400">一日</option>
       <option value="604800">一週間</option>
       <option value="2592000">一ヶ月</option>
-    </select><br>
-    最新を上部にする<input type="checkbox" id="check_new_is_first" checked=checked><br>
+    </select><br />
+    表示順<select name="sort_key">
+        <option value="created_at_ms">投稿日時</option>
+        <option value="plusplus">☆</option>
+    </select><select name="sort_seq">
+        <option value="desc">降順(新しい/大きい順)</option>
+        <option value="asc">昇順(古い/小さい順</option>
+    </select>
+    最新を上部にする<input type="checkbox" id="check_new_is_first" checked=checked><br />
   </form>
 </div>
 

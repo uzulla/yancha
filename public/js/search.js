@@ -1,3 +1,5 @@
+
+var searchOffset = 0; //for AutoPaging
 function submitSearch(){
   $('#lines').empty();
   $('#loading_finish_text_bottom').hide();
@@ -12,8 +14,12 @@ function submitSearch(){
   var id = $('input[name=id]', f).val();
   var tag = $('input[name=tag]', f).val();
   var limit = $('select[name=limit]', f).val();
+  searchOffset = limit; //for AutoPaging
   var time ;
   var time_window = parseInt($('select[name=time_window]', f).val());
+  var sort_key = $('select[name=sort_key]', f).val();
+  var sort_seq = $('select[name=sort_seq]', f).val();
+  var order = (sort_seq == 'desc') ? '-'+sort_key : sort_key;
 
   if(time_window && time_window != 0){
     var end_epoch = moment().unix();
@@ -33,7 +39,8 @@ function submitSearch(){
       tag:tag,
       id:id,
       limit:limit,
-      time:time
+      time:time,
+      order:order
     },
     error: function(XMLHttpRequest, textStatus, errorThrown){
       console.log(textStatus);
@@ -66,14 +73,17 @@ function extendSearch(){
   var limit = 50;
   var last_post_cell = $('#lines .messagecell:last-child').get(0);
 
+  var sort_key = $('select[name=sort_key]', f).val();
+  var sort_seq = $('select[name=sort_seq]', f).val();
+  var order = sort_seq == 'desc' ? '-'+sort_key : sort_key;
   $.ajax({
     type: 'POST',
     url: location.href.split('/search')[0]+"/api/search", // todo
     data: {
       keyword:keyword,
       tag:tag,
-      id:$(last_post_cell).attr('data-post-id'),
-      older:limit
+      limit:limit+','+searchOffset,
+      order:order
     },
     success: function(data){
       if(data.length == 0){ // これより前がみつからないので。
@@ -91,6 +101,7 @@ function extendSearch(){
         }
         
       }
+      searchOffset = parseInt(searchOffset) + parseInt(limit);
       pagerize = false;
     },
     dataType: 'json'
