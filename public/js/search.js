@@ -76,6 +76,17 @@ function extendSearch(){
   var sort_key = $('select[name=sort_key]', f).val();
   var sort_seq = $('select[name=sort_seq]', f).val();
   var order = sort_seq == 'desc' ? '-'+sort_key : sort_key;
+
+  var time;
+  var time_window = parseInt($('select[name=time_window]', f).val());
+  if(time_window && time_window != 0){
+    var end_epoch = moment().unix();
+    var start_epoch = end_epoch - time_window;
+    time = start_epoch+','+end_epoch;
+  }else{
+    time = $('input[name=time]', f).val();
+  }
+
   $.ajax({
     type: 'POST',
     url: location.href.split('/search')[0]+"/api/search", // todo
@@ -83,6 +94,7 @@ function extendSearch(){
       keyword:keyword,
       tag:tag,
       limit:limit+','+searchOffset,
+      time:time,
       order:order
     },
     success: function(data){
