@@ -42,7 +42,7 @@ path '/join_users' => sub {
     };
 };
 
-path '/quotation' => sub {
+path '/quot' => sub {
     my $req = shift;
 
     my $where;
@@ -57,7 +57,7 @@ path '/quotation' => sub {
     }
 
     return {
-        template => 'quotation.tx',
+        template => 'quot.tx',
         posts    => $posts,
         post_count => scalar(@$posts),
     };

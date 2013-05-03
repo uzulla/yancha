@@ -11,7 +11,7 @@ use Yancha::Config::Simple;
 use Yancha::DataStorage::DBI;
 use File::Copy::Recursive qw(dircopy);
 
-my @test_uri = qw( / /quotation /search /hints /about /login );
+my @test_uri = qw( / /quot /search /hints /about /login );
 
 
 my $config = Yancha::Config::Simple->load_file( "./config.pl.sample" );

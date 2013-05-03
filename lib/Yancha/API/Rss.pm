@@ -24,7 +24,7 @@ sub run {
     $feed->pubDate($last_update_dt);
 
 	foreach my $post ( @$posts) {
-		my $url   = $server_url . "quotation?id=" . $post->{id};
+		my $url   = $server_url . "quot/" . $post->{id};
 		my $entry = $feed->add_item($url);
 		my $title = my $content = $post->{nickname}." : ".$post->{text};
 		$entry->guid($url);

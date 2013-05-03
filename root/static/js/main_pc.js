@@ -204,7 +204,7 @@ function endSelectPost(){
     alert('一つも選択されていません');
     return;
   }
-  var url = '/quotation?id='+post_id_list.join(',');
+  var url = '/quot?id='+post_id_list.join(',');
   $('#popuper').attr('action', url).submit();
   $('.messagecell').removeClass('selectedMessageCell') 
 }
