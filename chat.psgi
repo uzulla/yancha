@@ -1,6 +1,6 @@
 use strict;
-use utf8;
 use warnings;
+use utf8;
 use FindBin;
 use lib ("$FindBin::Bin/lib");
 
@@ -16,13 +16,18 @@ BEGIN {
     unshift @INC, "$root/../../lib";
 }
 
+use File::Spec;
+use File::Basename 'dirname';
+
 use Plack::Builder;
 use Plack::Middleware::Static;
 use Plack::App::File;
 use Plack::Session;
 
+use lib ("$FindBin::Bin/lib", "$FindBin::Bin/extlib/lib/perl5");
 use PocketIO;
 use Yancha;
+use Yancha::Web;
 use Yancha::DataStorage::DBI;
 use Yancha::Config::Simple;
 
@@ -30,18 +35,23 @@ my $config = Yancha::Config::Simple->load_file( $ENV{ YAIRC_CONFIG_FILE } || "$r
 my $data_storage = Yancha::DataStorage::DBI->connect( connect_info => $config->{ database }->{ connect_info } );
 my $yancha = Yancha->new( config => $config, data_storage => $data_storage );
 
+
 builder {
     enable 'Session';
     enable "SimpleLogger", level => 'debug';
 
+    enable 'Plack::Middleware::Static',
+        path => qr{^(?:/robots\.txt|/favicon\.ico)$},
+        root => File::Spec->catdir(dirname(__FILE__), 'root', 'static');
+
     mount '/socket.io/socket.io.js' =>
-      Plack::App::File->new(file => "$root/public/socket.io.js");
+      Plack::App::File->new(file => File::Spec->catfile($root, 'root', 'static', 'socket.io.js'));
 
     mount '/socket.io/static/flashsocket/WebSocketMain.swf' =>
-      Plack::App::File->new(file => "$root/public/WebSocketMain.swf");
+      Plack::App::File->new(file => File::Spec->catfile($root, 'root', 'static', 'WebSocketMain.swf'));
 
     mount '/socket.io/static/flashsocket/WebSocketMainInsecure.swf' =>
-      Plack::App::File->new(file => "$root/public/WebSocketMainInsecure.swf");
+      Plack::App::File->new(file => File::Spec->catfile($root, 'static', 'WebSocketMainInsecure.swf'));
 
     mount '/socket.io' => PocketIO->new( socketio => $config->{ socketio }, instance => $yancha );
 
@@ -49,12 +59,5 @@ builder {
 
     $yancha->build_psgi_endpoint_from_server_info('auth');
 
-    mount '/' => builder {
-        enable "Static",
-          path => qr/\.(?:js|css|jpe?g|gif|png|html?|swf|ico)$/,
-          root => "$root/public";
-
-        mount '/' => Plack::App::File->new( file => "$root/public/chat.html" );
-    };
-
-};
+    mount '/' => Yancha::Web->run( %$config );
+}

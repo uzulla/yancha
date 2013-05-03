@@ -4,27 +4,22 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <title>yancha</title>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<script>
-if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
-  //location.href="/";
-}
-</script>
-<link href="/stylesheets/iphone.css" rel="stylesheet">
+<link href="<: '/stylesheets/iphone.css' | static :>" rel="stylesheet">
 <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-<script src="/js/socket.io.js"></script>
-<script src="/js/common.js"></script>
-<script src="/js/filter.js"></script>
-<script src="/js/hook.js"></script>
-<script src="/js/connection.js"></script>
-<script src="/js/moment.min.js"></script>
-<script src="/js/jquery.cookie.js"></script>
-<script src="/js/jquery.timeago.js"></script>
-<script src="/js/jquery.touchwipe.js"></script>
-<script type="text/javascript" src="/shjs/sh_main.min.js"></script>
-<script type="text/javascript" src="/shjs/sh_javascript.min.js"></script>
-<script type="text/javascript" src="/shjs/sh_perl.min.js"></script>
-<link type="text/css" rel="stylesheet" href="/shjs/sh_style.css">
-<script src="/js/main_android.js"></script>
+<script src="<: '/js/socket.io.js' | static :>"></script>
+<script src="<: '/js/common.js' | static :>"></script>
+<script src="<: '/js/filter.js' | static :>"></script>
+<script src="<: '/js/hook.js' | static :>"></script>
+<script src="<: '/js/connection.js' | static :>"></script>
+<script src="<: '/js/moment.min.js' | static :>"></script>
+<script src="<: '/js/jquery.cookie.js' | static :>"></script>
+<script src="<: '/js/jquery.timeago.js' | static :>"></script>
+<script src="<: '/js/jquery.touchwipe.js' | static :>"></script>
+<script type="text/javascript" src="<: '/shjs/sh_main.min.js' | static :>"></script>
+<script type="text/javascript" src="<: '/shjs/sh_javascript.min.js' | static :>"></script>
+<script type="text/javascript" src="<: '/shjs/sh_perl.min.js' | static :>"></script>
+<link type="text/css" rel="stylesheet" href="<: '/shjs/sh_style.css' | static :>">
+<script src="<: '/js/main_android.js' | static :>"></script>
 
 <script type="text/javascript">
   var _gaq = _gaq || [];
@@ -46,8 +41,8 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
   <div id="nickname">
     <br>
     <p>yancha chatに参加するには、ログインして下さい。</p>
-    <p><a href="/login/twitter/start">Twitterでログイン</a></p>
-    <form action="./login" method="post">
+    <p><a href="<: '/login/twitter/start' | uri :>">Twitterでログイン</a></p>
+    <form action="<: '/login' | uri :>" method="post">
       <p>または…シンプルログイン</p>
       ニックネーム<input type="text" name="nick"><input type="submit" name="login" value="login">
     </form>
@@ -67,7 +62,7 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
   <div id="messages" style="overflow-y:auto">
     <div id="lines" style="overflow-y:auto">
       <div style="background-color:#CCCCCC;text-align:center">
-        <a href="search.html">過去ログ検索</a>
+        <a href="<: '/search' | uri :>">過去ログ検索</a>
       </div>
     </div>
   </div>
@@ -109,7 +104,7 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
         <td>
     
           ONLINE
-          <a style="margin-left:10px;" href="/join_users.html" target="_blank">ユーザー一覧</a>
+          <a style="margin-left:10px;" href="<: '/join_users' | uri :>" target="_blank">ユーザー一覧</a>
           <div id="nicknames">
           </div>
           TAGS
@@ -137,7 +132,7 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
           </div>
     
           HINTS<br>
-          <a href="/search.html" target="_blank" style="font-size:80%;">過去ログ</a><br>
+          <a href="<: '/search' | uri :>" target="_blank" style="font-size:80%;">過去ログ</a><br>
           <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
             Shift+Enterで改行<br>
             ・コードハイライト<br>
@@ -183,7 +178,7 @@ if(!navigator.userAgent.match(/(iPod|iPhone|iPad|Android)/)) {
 
 <div style="display:none">
   <div id="template_messagecell" style="margin:0px;padding:0px;"  class="messagecell">
-    <img src="/img/nobody.png" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
+    <img src="<: '/img/nobody.png' | static :>" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
     <span style="float: right;"><abbr class="timeago messagecell_time"></abbr></span>
     <span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
     <div style="overflow: auto;" class="messagecell_text"></div>

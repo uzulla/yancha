@@ -4,11 +4,11 @@
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>yancha user list</title>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-  <link href="/stylesheets/pc.css" rel="stylesheet">
-  <link href="/stylesheets/user.css" rel="stylesheet">
+  <link href="<: '/stylesheets/pc.css' | static :>" rel="stylesheet">
+  <link href="<: '/stylesheets/user.css' | static :>" rel="stylesheet">
   <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-  <script src="/js/common.js"></script>
-  <script type="text/javascript" src="/js/user.js"></script>
+  <script src="<: '/js/common.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/js/user.js' | static :>"></script>
   <script type="text/javascript">
     joinMembers();
   </script>
@@ -17,7 +17,7 @@
 <body>
 
 <div class="header" style="text-align:right; background-color:#004065">
-  <a href="/"><img src="img/header_logo.png"></a>
+<a href="<: '/' | uri :>"><img src="<: '/img/header_logo.png' | static :>"></a>
 </div>
 
 <h1>ログインユーザー一覧</h1>

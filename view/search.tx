@@ -3,26 +3,21 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>yancha search</title>
-  <script>
-  //if(navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
-  //  location.href="/search_iphone.html";
-  //}
-  </script>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-  <link href="/stylesheets/pc.css" rel="stylesheet">
+  <link href="<: '/stylesheets/pc.css' | static :>" rel="stylesheet" />
   <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-  <script src="/js/common.js"></script>
-  <script src="/js/filter.js"></script>
-  <script src="/js/moment.min.js"></script>
-  <script src="/js/jquery.cookie.js"></script>
-  <script src="/js/jquery.timeago.js"></script>
-  <script src="/js/jquery.scrollto.js"></script>
-  <script type="text/javascript" src="/shjs/sh_main.min.js"></script>
-  <script type="text/javascript" src="/shjs/sh_javascript.min.js"></script>
-  <script type="text/javascript" src="/shjs/sh_perl.min.js"></script>
-  <link type="text/css" rel="stylesheet" href="/shjs/sh_style.css">
+  <script src="<: '/js/common.js' | static :>"></script>
+  <script src="<: '/js/filter.js' | static :>"></script>
+  <script src="<: '/js/moment.min.js' | static :>"></script>
+  <script src="<: '/js/jquery.cookie.js' | static :>"></script>
+  <script src="<: '/js/jquery.timeago.js' | static :>"></script>
+  <script src="<: '/js/jquery.scrollto.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_main.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_javascript.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_perl.min.js' | static :>"></script>
+  <link type="text/css" rel="stylesheet" href="<: '/shjs/sh_style.css' | static :>">
 
-  <script type="text/javascript" src="/js/search.js"></script>
+  <script type="text/javascript" src="<: '/js/search.js' | static :>"></script>
 
   <script type="text/javascript">
   var _gaq = _gaq || [];
@@ -39,7 +34,7 @@
 <body>
 
 <div class="header" style="text-align:right; background-color:#004065">
-  <a href="/"><img src="img/header_logo.png"></a>
+  <a href="<: '/' | uri :>"><img src="<: '/img/header_logo.png' | static :>"></a>
 </div>
 
 <form action="#" target="_blank" method="post" id="popuper"></form>
@@ -82,28 +77,27 @@
 </div>
 
 <div style="text-align:center;display:none" id="loading_top">
-  <img src="/img/loading.gif">
+  <img src="<: '/img/loading.gif' | static :>">
 </div>
 <div id="messages">
   <div id="scroller">
     <div id="lines" style="overflow-y:auto;"></div>
   </div>
 </div>
-
-<div style="text-align:center;">
-  <img src="/img/loading.gif" id="loading_bottom" style="display:none"><br>
+<div style="text-align:center;" >
+  <img src="<: '/img/loading.gif' | static :>" id="loading_bottom" style="display:none"><br>
   <span id="loading_text_bottom"style="display:none">Auto Paging...</span>
   <span id="loading_finish_text_bottom"style="display:none">not found older post.</span>
 </div>
 
 <div style="display:none">
   <div id="template_messagecell" class="messagecell">
-    <img src="/img/nobody.png" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
-    <span style="float: right;"><abbr class="timeago messagecell_time"></abbr></span>
-    <span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
-    <div style="overflow: auto;" class="messagecell_text"></div>
-    <div class="messagecell_plusplus"></div>
-    <br style="clear: both;">
+  	<img src="<: '/img/nobody.png' | static :>" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
+  	<span style="float: right;"><abbr title="" class="timeago messagecell_time"></abbr></span>
+  	<span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
+  	<div style="overflow: auto;" class="messagecell_text"></div>
+  	<div class="messagecell_plusplus"></div>
+  	<br style="clear: both;">
   </div>
 </div>
 

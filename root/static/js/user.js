@@ -10,7 +10,7 @@ function joinMembers () {
     success: (function(data){
       var join_users = $('#join-users');
       for (var i in data) {
-        var profile_image_url = (data[i].profile_image_url !== '') ? data[i].profile_image_url : 'nobody.png';
+        var profile_image_url = (data[i].profile_image_url !== '') ? data[i].profile_image_url : '/static/img/nobody.png';
         var profile_url = getSnsProfileUrl(data[i]);
 
         //todo: マルチバイト文字列の場合の文字数計算
@@ -35,7 +35,7 @@ function joinMembers () {
         else {
           join_users.append(
             '<div class="join_member" style="width:' + block_width + 'px;">' +
-            '<img class="profile_url" src="/img/' + profile_image_url + '">' +
+            '<img class="profile_url" src="' + profile_image_url + '">' +
             '<br>' +
             data[i].nickname +
             '</div>'
@@ -59,7 +59,7 @@ function getSnsProfileUrl(user_data) {
 }
 
 function getSnsIconPath(sns) {
-  var path = '/img/sns/';
+  var path = '/static/img/sns/';
   var image_name = '';
 
   switch (sns) {
