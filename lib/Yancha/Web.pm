@@ -10,7 +10,7 @@ path '/' => sub {
     my ($req, @args) = @_;
 
     my $template;
-    if (Yancha::Util->is_smartphone($req->env->{HTTP_USER_AGENT})) {
+    if (Yancha::Util->is_smartphone( $req->env->{HTTP_USER_AGENT} || '' )) {
         $template = 'chat_sp.tx';
     } else {
         $template = 'chat.tx';
