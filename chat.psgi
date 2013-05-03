@@ -35,6 +35,8 @@ my $config = Yancha::Config::Simple->load_file( $ENV{ YAIRC_CONFIG_FILE } || "$r
 my $data_storage = Yancha::DataStorage::DBI->connect( connect_info => $config->{ database }->{ connect_info } );
 my $yancha = Yancha->new( config => $config, data_storage => $data_storage );
 
+$config->{app} = $yancha;
+
 
 builder {
     enable 'Session';

@@ -44,8 +44,22 @@ path '/join_users' => sub {
 
 path '/quotation' => sub {
     my $req = shift;
+
+    my $where;
+    my $posts = [];
+    if ( my $ids = $req->param('id') ) {
+        $where->{ id } = [ grep { $_ =~ /^[0-9]+$/ } split /,/, $ids ];
+        $posts = config->{app}->data_storage->search_post( $where, {order_by => 'created_at_ms ASC'} );
+
+        for my$p( @$posts ) {
+            $p->{profile_image_url} = config->{view}->{function}->{static}('/img/nobody.png') unless $p->{profile_image_url};
+        }
+    }
+
     return {
         template => 'quotation.tx',
+        posts    => $posts,
+        post_count => scalar(@$posts),
     };
 };
 

@@ -367,7 +367,7 @@ sub search_post {
         $where = $where & $_;
     }
 
-    my ( $sql, @binds ) = $maker->select( 'post', ['*'], $where, $attr );
+    my ( $sql, @binds ) = $maker->select( 'post', ['*'],  $where, $attr );
 
 #print STDERR $sql,"\n";
 #print STDERR Data::Dumper::Dumper(\@binds);
@@ -379,6 +379,10 @@ sub search_post {
     while ( my $post = $sth->fetchrow_hashref ) {
         $post->{ tags } =~ s{^ | $}{}g;
         $post->{ tags } = [ split / /, $post->{ tags } ];
+
+        my ($sec,$min,$hour, $mday,$mon,$year) = localtime(int($post->{created_at_ms}/100000));
+        $post->{ created_at_datetime } = sprintf('%04d-%02d-%02d %02d:%02d:%02d', $year+1900,$mon+1,$mday, $hour,$min,$sec);
+
         push @posts, $post;
     }
 

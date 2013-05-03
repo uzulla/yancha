@@ -8,57 +8,11 @@
   <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
   <script src="<: '/js/common.js' | static :>"></script>
   <script src="<: '/js/filter.js' | static :>"></script>
-  <script src="<: '/js/moment.min.js' | static :>"></script>
-  <script src="<: '/js/jquery.cookie.js' | static :>"></script>
-  <script src="<: '/js/jquery.timeago.js' | static :>"></script>
   <script src="<: '/js/jquery.scrollto.js' | static :>"></script>
   <script type="text/javascript" src="<: '/shjs/sh_main.min.js' | static :>"></script>
   <script type="text/javascript" src="<: '/shjs/sh_javascript.min.js' | static :>"></script>
   <script type="text/javascript" src="<: '/shjs/sh_perl.min.js' | static :>"></script>
   <link type="text/css" rel="stylesheet" href="<: '/shjs/sh_style.css' | static :>">
-
-  <script type="text/javascript" src="<: '/js/search.js' | static :>"></script>
-
-  <script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-19063513-4']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-  
-$(function () {
-  var hash=window.location.hash;
-  
-  var hashes = getUrlVars()
-  
-  console.log(hashes);
-  if(hashes.id){
-    $('input[name=id]', $('#searchform')).val(hashes.id);
-    submitSearch($('#form'));
-    $('#searchform').hide();
-    $('#controls').hide();
-  }
-});
-
-
-function getUrlVars()
-{
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for(var i = 0; i < hashes.length; i++)
-    {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
-}
-  
-  </script>
 </head>
 <body>
 
@@ -69,39 +23,38 @@ function getUrlVars()
 <iframe allowtransparency="true" frameborder="0" scrolling="no"
   src="//platform.twitter.com/widgets/tweet_button.html?text=yancha!! %23hachiojipm"
   style="width:130px; height:20px;"></iframe>
-
-
-<div id="searchform" style="background-color:#CCCCCC;">
-  <form onsubmit="return false">
-    post_id<input name='id' value=""><br>
-    <input type="hidden" name="tag" value="">
-    <input type="hidden" name="limit" value="1000">
-    <input type="hidden" name="keyword" value="">
-  </form>
-</div>
-
-<div id="controls">
-  <input type="button" onclick="$('#searchform').toggle('slow', function(){$(window).resize()})" value="検索フォームを開閉">
-  <input type="button" value="表示/更新" onclick="submitSearch(event);">
-</div>
+<div style="display:inline-block;"><: $post_count :>件表示</div>
 
 <div id="messages">
   <div id="scroller">
     <div id="lines" style="overflow-y:auto;">
+      <: for $posts -> $post { :>
+      <div class="messagecell" data-post-id="<: $post.id :>" data-tags="<: $post.tags :>">
+        <img src="<: $post.profile_image_url :>" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
+        <span style="float: right;"><abbr class="timeago messagecell_time"><: $post.created_at_datetime :></abbr></span>
+        <span style="font-weight: bold;" class="messagecell_nickname"><: $post.nickname :></span><br>
+        <div style="overflow: auto;" class="messagecell_text"><: $post.text :></div>
+        <div class="messagecell_plusplus">
+        <: if $post.plusplus { :>
+          <span class='messagecell_plusplus_stars'>
+          <: if $post.plusplus < 100 { :>
+            <: for repeat($post.plusplus) -> $i { :>
+            ★<span style="font-size:0.01em"> </span>
+            <: } :>
+          <: } else { :>
+            ★x<: $post.plusplus :>
+          <: } :>
+          </span>
+        <: } :>
+        </div>
+        <br style="clear: both;">
+      </div>
+      <: } :>
     </div>
   </div>
 </div>
 
-<div style="display:none">
-  <div id="template_messagecell" class="messagecell">
-    <img src="<: '/img/nobody.png' | static :>" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
-    <span style="float: right;"><abbr class="timeago messagecell_time"></abbr></span>
-    <span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
-    <div style="overflow: auto;" class="messagecell_text"></div>
-    <div class="messagecell_plusplus"></div>
-    <br style="clear: both;">
-  </div>
-</div>
+
 
 </body>
 </html>
