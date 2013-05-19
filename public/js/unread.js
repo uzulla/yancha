@@ -21,7 +21,7 @@ unreadManager.unreadcheck = function() {
  * 未読セルに対し、画面に表示されていたら既読処理をする
  * @function
  * @param {Number} index セルのインデックス。eachメソッドの既定引数として用意しているだけなので、使用していない
- * @param {Dom} cell 1つの未読セル。このセルに対して既読処理を行う
+ * @param {Dom} cell_dom 1つの未読セル。このセルに対して既読処理を行う
  */
 unreadManager.unread2read = function(index, cell_dom) {
 	var cell = $(cell_dom);
