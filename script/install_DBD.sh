@@ -28,4 +28,4 @@ cat << message
 message
 
 install_dbd
-return $?
+exit $?
