@@ -55,6 +55,25 @@ export YANCHA_DEBUG=1
 twiggy -l :3000 --access-log access_log chat.psgi >> yancha_log 2>&1
 ```
 
+## よくある質問 ##
+
+Q.
+yanchaを起動できたけど、どうすればTwitterでログインできるの？
+
+A.
+まず http://dev.twitter.com/ に行って、アプリケーションの登録を行ってください。
+その際、Callback URL というものを入力できる箇所がありますので、
+
+    (あなたのサーバ上のyanchaのURL)/login/twitter 
+
+を指定してください。
+
+例:
+yanchaのURLが "http://isu.mohikan.example/yancha" であれば、Callback URLは
+
+    http://isu.mohikan.example/yancha/login/twitter
+
+となります。
 
 ## ライセンスについて ##
 MIT License です。
