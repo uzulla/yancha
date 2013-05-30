@@ -75,6 +75,31 @@ yanchaのURLが "http://isu.mohikan.example/yancha" であれば、Callback URL�
 
 となります。
 
+アプリケーションの登録ができたら、config.plでConsumer Key および Consumer Secret を以下のように設定します。
+
+    'server_info' => {
+        
+        ... 中略 ...
+        
+        auth_endpoint => { 
+            
+            ... 中略 ...
+            
+            '/login/twitter' => [
+                'Yancha::Auth::Twitter' => {
+                    consumer_key    => 'ここにConsumer Keyを入力',
+                    consumer_secret => 'ここにConsumer Secretを入力',
+                }, => { description => 'Twitter!' },
+            ],
+        },
+        
+        ... 中略 ...
+        
+    },
+
+最後にyanchaを再起動すれば、Twitter経由でのログインが有効になります。
+
+
 ## ライセンスについて ##
 MIT License です。
 http://www.opensource.org/licenses/mit-license.php
