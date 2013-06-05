@@ -42,7 +42,9 @@ path '/join_users' => sub {
     };
 };
 
-path '/quot' => sub {
+
+# 下位互換のためにquotation.htmlを残しておく
+path qr{^/quot(ation\.html)?$} => sub {
     my $req = shift;
 
     my $where;
