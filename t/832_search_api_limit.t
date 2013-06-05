@@ -54,8 +54,8 @@ my %post_messages = (
     111222333444888 => 'あいう えお',
 );
 
-for my$text ( keys %post_messages ) {
-    $storage->add_post( text2post( $text, $post_messages{$text} ), $user );
+for my$created_at_ms ( keys %post_messages ) {
+    $storage->add_post( text2post( $post_messages{$created_at_ms}, $created_at_ms ), $user );
 }
 is( $storage->count_post, 7 );
 
