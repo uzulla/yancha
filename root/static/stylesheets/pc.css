@@ -7,6 +7,18 @@ a{
   color:#f25d06;
 }
 
+pre{
+background-color: #CCCCCC;
+font-size:90%;
+border: dotted 2px #888888;
+}
+
+blockquote{
+background-color: #CCCCCC;
+font-size:90%;
+border: dotted 2px #888888;
+}
+
 #nickname, #connecting, #loading {
   position: absolute;
   width: 100%;

@@ -1,6 +1,6 @@
 # config.plのサンプル
 # デフォルトでchat.psgiと同じディレクトリのconfig.plが呼ばれる
-# あるいはYAIRC_CONFIG_FILEで指定する。（暫定）
+# あるいはYANCHA_CONFIG_FILEで指定する。（暫定）
 
 use strict;
 

@@ -52,9 +52,12 @@ function announcement(msg){
 //サーバから、参加ニックネームリストの更新
 socket.on('nicknames', function (nicknames) {
   $('#nicknames').empty();
+  var join_num = 0;
   for (var i in nicknames) {
     $('#nicknames').append($('<b>').text(nicknames[i]));
+    join_num += 1;
   }
+  $('#join_num').text(join_num);
   $(window).resize();
 });
 
@@ -86,6 +89,10 @@ socket.on('delete user message', function(hash){
 
 //メッセージイベント
 socket.on('user message', function(hash){
+  if(hash.user_key == data.user_key){
+    input_enable();
+    clear();
+  }
 
   //タグ毎新着時刻保存
   for(var i=0; hash.tags.length > i; i++){
@@ -332,9 +339,12 @@ function sendTags(){
   socket.emit('join tag', data.tags);
 }
 
-
 //メッセージ送信
 function sendMessage(){
+  if( is_input_disable() ){
+    alert("sending...");
+    return false;
+  }
   var message = $('#message').val();
   var unfamiliar_tags = getUnfamiliarTagsInMessage(message);
   if ( unfamiliar_tags ) {
@@ -358,7 +368,7 @@ function sendMessage(){
   message = message.replace(/\s/g, '');
   if(message.length>0){
     socket.emit('user message', $('#message').val());
-    clear();
+    input_disable(); //clear();
   }
   return false;
 }
@@ -401,8 +411,24 @@ function autologin(){
   $('#loading').hide();
 }
 
+// input 入力欄を一時的につかえなくする
+function input_disable(){
+  $('#message').attr("disabled", "disabled");
+}
+function input_enable(){
+  $('#message').removeAttr("disabled");
+}
+function is_input_disable(){
+  if( $('#message').attr("disabled") ){
+    return true;
+  }else{
+    return false;
+  }
+}
+
 //テキスト入力欄をクリア、ただし、タグは残しておく
 function clear () {
+  input_enable();
   var tag_list = getTagsInMessage($('#message').val());
   var str  = tag_list.join(' ');
   $('#message').val(' '+str).focus();

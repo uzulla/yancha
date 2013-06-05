@@ -2,7 +2,7 @@ function user_message_filter(message){
 
     //auto inline display(pyazo)
     message = message.replace(/http(s)?:\/\/yairc.cfe.jp:5000(\/[\x21-\x7e]+)/gi,
-                              "<a href='//yairc.cfe.jp:5000$2' target='_blank'><img src='//yairc.cfe.jp:5000$2' style='max-width:300px;max-height:300px;'/></a>");
+                              "<a href='//yairc.cfe.jp$2' target='_blank'><img src='//yairc.cfe.jp$2' style='max-width:300px;max-height:300px;'/></a>");
 
     // YT thumbnail
     message = message.replace(/http(s)?:\/\/www.youtube.com\/[\x21-\x7e]*v=([a-zA-Z0-9\-]+)/g,
@@ -33,7 +33,7 @@ function user_message_filter(message){
     });
     
     message = message.replace(/&#62;&#62;\n([\s\S]*?)\n&#60;&#60;/g, function(whole,s1) {
-        return( '<pre>' + s1 + '</pre>' );
+        return( '<blockquote>' + s1 + '</blockquote>' );
     });  
     
     message = message.replace(/\n/g, "<br />");

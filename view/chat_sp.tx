@@ -104,7 +104,7 @@
         <td>
     
           ONLINE
-          <a style="margin-left:10px;" href="<: '/join_users' | uri :>" target="_blank">ユーザー一覧</a>
+          <a style="margin-left:10px;" href="<: '/join_users' | uri :>" target="_blank">ユーザー一覧</a>&nbsp;<span id="join_num">0</span>人
           <div id="nicknames">
           </div>
           TAGS
