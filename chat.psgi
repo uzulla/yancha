@@ -32,6 +32,31 @@ use Yancha::DataStorage::DBI;
 use Yancha::Config::Simple;
 
 my $config = Yancha::Config::Simple->load_file( $ENV{ YANCHA_CONFIG_FILE } || "$root/config.pl" );
+unless (defined($config->{view})) {
+    die <<'ERR'
+
+config.plに以下の設定が見つかりません.
+config.pl.sampleからコピーしてから起動してください
+------
+    'view' => {
+        'function' => {
+            static => sub {
+                my $uri = shift;
+                $uri =~ s/^\///;
+                return '/static/'.$uri;
+            },  
+            uri => sub {
+                my $uri = shift;
+                $uri =~ s/^\///;
+                return '/'.$uri;
+            },
+        },
+    },
+------
+
+ERR
+}
+
 my $data_storage = Yancha::DataStorage::DBI->connect( connect_info => $config->{ database }->{ connect_info } );
 my $yancha = Yancha->new( config => $config, data_storage => $data_storage );
 
