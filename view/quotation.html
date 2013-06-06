@@ -3,23 +3,38 @@
 <head>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <title>yancha search</title>
+  <script>
+  //if(navigator.userAgent.match(/(iPod|iPhone|iPad)/)) {
+  //  location.href="/search_iphone.html";
+  //}
+  </script>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-  <link href="<: '/stylesheets/pc.css' | static :>" rel="stylesheet">
+  <link href="/stylesheets/pc.css" rel="stylesheet" />
   <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-  <script src="<: '/js/common.js' | static :>"></script>
-  <script src="<: '/js/filter.js' | static :>"></script>
-  <script src="<: '/js/moment.min.js' | static :>"></script>
-  <script src="<: '/js/jquery.cookie.js' | static :>"></script>
-  <script src="<: '/js/jquery.timeago.js' | static :>"></script>
-  <script src="<: '/js/jquery.scrollto.js' | static :>"></script>
-  <script type="text/javascript" src="<: '/shjs/sh_main.min.js' | static :>"></script>
-  <script type="text/javascript" src="<: '/shjs/sh_javascript.min.js' | static :>"></script>
-  <script type="text/javascript" src="<: '/shjs/sh_perl.min.js' | static :>"></script>
-  <link type="text/css" rel="stylesheet" href="<: '/shjs/sh_style.css' | static :>">
+  <script src="/js/common.js"></script>
+  <script src="/js/filter.js"></script>
+  <script src="/js/moment.min.js"></script>
+  <script src="/js/jquery.cookie.js"></script>
+  <script src="/js/jquery.timeago.js"></script>
+  <script src="/js/jquery.scrollto.js"></script>
+  <script type="text/javascript" src="/shjs/sh_main.min.js"></script>
+  <script type="text/javascript" src="/shjs/sh_javascript.min.js"></script>
+  <script type="text/javascript" src="/shjs/sh_perl.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="/shjs/sh_style.css">
 
-    <script type="text/javascript" src="<: 'js/search.js' | static :>"></script>
+  <script type="text/javascript" src="/js/search.js"></script>
 
-    <script type="text/javascript">
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19063513-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+  
 $(function () {
   var hash=window.location.hash;
   
@@ -53,13 +68,13 @@ function getUrlVars()
 <body>
 
 <div class="header" style="text-align:right; background-color:#004065">
-  <a href="<: '/' | uri :>"><img src="<: '/img/header_logo.png' | static :>"></a>
+  <a href="/"><img src="img/header_logo.png"></a>
 </div>
 
 <iframe allowtransparency="true" frameborder="0" scrolling="no"
   src="//platform.twitter.com/widgets/tweet_button.html?text=yancha!! %23hachiojipm"
   style="width:130px; height:20px;"></iframe>
-<div style="display:inline-block;"><: $post_count :>件表示</div>
+
 
 <div id="searchform" style="background-color:#CCCCCC;">
   <form onsubmit="return false">
@@ -69,6 +84,10 @@ function getUrlVars()
     <input type="hidden" name="keyword" value="">
   </form>
   
+</div>
+<div id="controls">
+  <input type="button" onclick="$('#searchform').toggle('slow', function(){$(window).resize()})" value="検索フォームを開閉">
+  <input type="button" value="表示/更新" onclick="submitSearch(event);" >
 </div>
 
 <div id="messages">
@@ -80,7 +99,7 @@ function getUrlVars()
 
 <div style="display:none" >
   <div id="template_messagecell" class="messagecell">
-  	<img src="<: '/img/nobody.png' | static :>" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
+  	<img src="/img/nobody.png" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
   	<span style="float: right;"><abbr title="" class="timeago messagecell_time"></abbr></span>
   	<span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
   	<div style="overflow: auto;" class="messagecell_text"></div>
