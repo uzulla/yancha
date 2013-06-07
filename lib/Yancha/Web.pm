@@ -27,21 +27,21 @@ path '/android.html' => sub {
     };
 };
 
-path '/about(\.html)?' => sub {
+path qr{^/about(\.html)?} => sub {
     my $req = shift;
     return {
         template => 'about.tx',
     };
 };
 
-path '/hints(\.html)?' => sub {
+path qr{/hints(\.html)?} => sub {
     my $req = shift;
     return {
         template => 'hints.tx',
     };
 };
 
-path '/join_users(\.html)?' => sub {
+path qr{^/join_users(\.html)?} => sub {
     my $req = shift;
     return {
         template => 'join_users.tx',
@@ -55,7 +55,7 @@ path qr{^/quot(ation\.html)?$} => sub {
     };
 };
 
-path '/search(\.html)?' => sub {
+path qr{^/search(\.html)?$} => sub {
     my $req = shift;
     return {
         template => 'search.tx',
