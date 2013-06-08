@@ -100,6 +100,12 @@ yanchaのURLが "http://isu.mohikan.example/yancha" であれば、Callback URL�
 最後にyanchaを再起動すれば、Twitter経由でのログインが有効になります。
 
 
+## お役立ち情報 ##
+
+その他情報はWIkiをご参照ください
+
+https://github.com/uzulla/yancha/wiki
+
 ## ライセンスについて ##
 MIT License です。
 http://www.opensource.org/licenses/mit-license.php
