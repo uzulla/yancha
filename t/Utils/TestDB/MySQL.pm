@@ -18,6 +18,12 @@ sub new {
 
     my $dbh = DBI->connect( $mysqld->dsn() );
 
+    my $version = $dbh->do('SELECT VERSION();');
+    warn $version;
+    if($version =~ /5.5/){
+        $schema_file =~ s/\.sql$/_sqlite.sql/;
+    }
+
     open( my $fh, '<', $schema_file ) or plan skip_all => "Can't open schema file $schema_file.";
 
     for my $lines ( split/;\n/, do { <$fh>; local $/; <$fh> } ) {
