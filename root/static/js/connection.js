@@ -484,3 +484,8 @@ function getUnfamiliarTagsInMessage (message) {
   });
   return unfamiliar.length>0 ? unfamiliar : null;
 }
+
+//unreadを全消去する
+function reset_unread(){
+  $(".unread").removeClass('unread');
+}

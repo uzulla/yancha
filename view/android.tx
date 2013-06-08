@@ -86,6 +86,11 @@
       </td>
     </tr>
     <tr>
+      <td colspan="2" style="text-align:center">
+        <button style="margin:5px;width:200px;" onclick='reset_unread()'>未読マーク消去</button>
+      </td>
+    </tr>
+    <tr>
       <td colspan="2" style="text-align:center;">
         <button style="margin:5px;width:200px;" onclick='hideControlpad()'>閉じる</button>
       </td>
