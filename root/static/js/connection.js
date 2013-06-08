@@ -108,11 +108,6 @@ function announcement(msg){
 
 //メッセージイベント
 socket.on('user message', function(hash){
-  if(hash.user_key == data.user_key){
-    input_enable();
-    clear();
-  }
-
   //タグ毎新着時刻保存
   for(var i=0; hash.tags.length > i; i++){
     if(typeof(data.tags[hash.tags[i]]) != 'undefined' ){
@@ -161,8 +156,6 @@ socket.on('user message', function(hash){
       ppstar_elm
     );
   }
-
-  console.log(moment(hash.created_at_ms/100).format("YYYY-MM-DDTHH:mm:ss")+TIMEZONE_STR)
   
   $('.messagecell_time', cell)
     .attr('title', moment(hash.created_at_ms/100).format("YYYY-MM-DDTHH:mm:ss")+TIMEZONE_STR)
@@ -212,6 +205,12 @@ socket.on('user message', function(hash){
       hook.doHook('doScrollBottom', hash);
     }
   }else{
+    //メッセージ入力欄をクリアし、再利用可能にする
+    if(hash.user_key == data.user_key){ // 2つのウインドウを同じアカウントで開いていると、もう片方も消えてしまう（仕様）
+      input_enable();
+      clear();
+    }
+
     $('#lines').append( cell );
     hook.doHook('doScrollBottom', hash);
   }
