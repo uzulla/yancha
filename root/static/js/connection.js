@@ -161,8 +161,6 @@ socket.on('user message', function(hash){
       ppstar_elm
     );
   }
-
-  console.log(moment(hash.created_at_ms/100).format("YYYY-MM-DDTHH:mm:ss")+TIMEZONE_STR)
   
   $('.messagecell_time', cell)
     .attr('title', moment(hash.created_at_ms/100).format("YYYY-MM-DDTHH:mm:ss")+TIMEZONE_STR)
