@@ -34,20 +34,6 @@ socket.on('announcement', function (msg) {
   announcement(msg)
 });
 
-function announcement(msg){
-  if($('#disp_announcement').attr('checked')){
-    var cell = $('#template_announcementcell').clone().removeAttr('id');
-    $('.announcementcell_text', cell).text(msg);
-    $('.announcementcell_text', cell).html( $('.announcementcell_text', cell).html().replace(/(\r|\n)/g, '<br />') );
-    $('.announcementcell_time', cell)
-      .attr('title', moment().format("YYYY-MM-DDTHH:mm:ss")+"Z+09:00")
-      .text("("+moment().format('YYYY-MM-DD HH:mm')+")")
-      .timeago();    
-    $('#lines').append(cell);
-    hook.doHook('doScrollBottom', undefined);
-  }
-}
-
 
 //サーバから、参加ニックネームリストの更新
 socket.on('nicknames', function (nicknames) {
@@ -86,6 +72,39 @@ socket.on('delete user message', function(hash){
   });
   
 });
+
+function getTimezonStr(){
+  var date = new Date();
+  var drift_min_num = date.getTimezoneOffset();
+  var zone_time_str = '';
+  if(drift_min_num < 0){
+      zone_time_str += '+';
+  }else{
+      zone_time_str += '-';
+
+  }
+
+  drift_min_num = Math.abs(drift_min_num);
+  var drift_hour = drift_min_num / 60;
+  var drift_min = drift_min_num % 60;
+  zone_time_str+=sprintf("%02d:%02d", drift_hour, drift_min);
+  return zone_time_str;
+}
+var TIMEZONE_STR = getTimezonStr();
+
+function announcement(msg){
+  if($('#disp_announcement').attr('checked')){
+    var cell = $('#template_announcementcell').clone().removeAttr('id');
+    $('.announcementcell_text', cell).text(msg);
+    $('.announcementcell_text', cell).html( $('.announcementcell_text', cell).html().replace(/(\r|\n)/g, '<br />') );
+    $('.announcementcell_time', cell)
+      .attr('title', moment().format("YYYY-MM-DDTHH:mm:ss")+TIMEZONE_STR)
+      .text("("+moment().format('YYYY-MM-DD HH:mm')+")")
+      .timeago();    
+    $('#lines').append(cell);
+    hook.doHook('doScrollBottom', undefined);
+  }
+}
 
 //メッセージイベント
 socket.on('user message', function(hash){
@@ -142,9 +161,11 @@ socket.on('user message', function(hash){
       ppstar_elm
     );
   }
+
+  console.log(moment(hash.created_at_ms/100).format("YYYY-MM-DDTHH:mm:ss")+TIMEZONE_STR)
   
   $('.messagecell_time', cell)
-    .attr('title', moment(hash.created_at_ms/100).format("YYYY-MM-DDTHH:mm:ss")+"Z+09:00")
+    .attr('title', moment(hash.created_at_ms/100).format("YYYY-MM-DDTHH:mm:ss")+TIMEZONE_STR)
     .text("("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")")
     .timeago();
 
