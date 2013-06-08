@@ -57,7 +57,10 @@ config.pl.sampleからコピーしてから起動してください
 ERR
 }
 
-my $data_storage = Yancha::DataStorage::DBI->connect( connect_info => $config->{ database }->{ connect_info } );
+my $data_storage = Yancha::DataStorage::DBI->connect(
+    connect_info => $config->{ database }->{ connect_info },
+    on_connect_exec => $config->{ database }->{ on_connect_exec }
+    );
 my $yancha = Yancha->new( config => $config, data_storage => $data_storage );
 
 $config->{app} = $yancha;

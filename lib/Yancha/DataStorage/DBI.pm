@@ -17,6 +17,7 @@ sub connect {
     my $class = shift;
     my %args = @_;
     my $connect_info = $args{ connect_info };
+    my $on_connect_exec = $args{ on_connect_exec };
 
     Carp::croak("Not connect_info.") unless $connect_info;
 
@@ -29,6 +30,11 @@ sub connect {
     Carp::croak( $@ ) if ( $@ );
 
     my $dbh  = DBI->connect( @$connect_info ) or Carp::croak(DBI::errstr);
+
+    if($on_connect_exec){
+        $dbh->do($on_connect_exec) or Carp::croak($dbh->errstr);
+    }
+
     my $self = $class->new( dbh => $dbh );
 
     return $self;
