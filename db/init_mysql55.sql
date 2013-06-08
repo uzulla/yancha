@@ -31,4 +31,3 @@ CREATE TABLE IF NOT EXISTS `session` (
   `expire_at` datetime NOT NULL,
   PRIMARY KEY (`token`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-

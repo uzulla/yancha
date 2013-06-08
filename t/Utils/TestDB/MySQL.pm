@@ -18,10 +18,13 @@ sub new {
 
     my $dbh = DBI->connect( $mysqld->dsn() );
 
-    my $version = $dbh->do('SELECT VERSION();');
-    warn $version;
-    if($version =~ /5.5/){
-        $schema_file =~ s/\.sql$/_sqlite.sql/;
+    my $res = $dbh->selectall_arrayref('SELECT VERSION();');
+    my $mysql_version = $res->[0][0];
+
+    my @mysql_version_list = split(/\./, $mysql_version);
+
+    if($mysql_version_list[0] >= 5 && $mysql_version_list[1] >= 5){
+        $schema_file =~ s/\.sql$/_mysql55.sql/;
     }
 
     open( my $fh, '<', $schema_file ) or plan skip_all => "Can't open schema file $schema_file.";
