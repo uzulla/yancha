@@ -488,4 +488,5 @@ function getUnfamiliarTagsInMessage (message) {
 //unreadを全消去する
 function reset_unread(){
   $(".unread").removeClass('unread');
+  updateTitle();
 }
