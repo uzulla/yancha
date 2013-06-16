@@ -247,8 +247,13 @@ button.focus {
   color:white;
   padding:5px;
   text-height:1em;
+  cursor: pointer;
 }
 
 #toggleNotifyBtn.notify_on {
   background-color: #f25d07;
+}
+
+.virtualcheckbox{
+  cursor: pointer;
 }
