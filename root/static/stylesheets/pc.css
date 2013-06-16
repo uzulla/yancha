@@ -238,3 +238,17 @@ button.focus {
   -moz-opacity    : 0.0;
   opacity         : 0.0;
 }
+
+.flat-b-btn{
+  display:inline-block;
+  width:70px;
+  height:70px;
+  background-color:#004065;
+  color:white;
+  padding:5px;
+  text-height:1em;
+}
+
+#toggleNotifyBtn.notify_on {
+  background-color: #f25d07;
+}

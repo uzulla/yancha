@@ -106,19 +106,22 @@ $(function () {
   if (jwNotify.status) {
     if ( jwNotify.notifications.checkPermission() == 0 ) {
       notify = true; // TODO cookieに保存？
-      $('button.toggleNotify').text('Disable Notify');
+      $('#toggleNotifyBtn').text('disable notify').addClass("notify_on");
     }else{
-      $('button.toggleNotify').text('Enable Notify');
+      $('#toggleNotifyBtn').text('enable notify').removeClass("notify_on");
     }
 
-    $('button.toggleNotify').click(function(e){
+    $('#toggleNotifyBtn').click(function(e){
       e.preventDefault();
       if(jwNotify.notifications.checkPermission() != 0){ // Chromeが許可していない
         $.jwNotify({
           image: '/img/nobody.png',
           title: 'デスクトップ通知の許可',
           body: 'デスクトップ通知が許可されました',
-          onshow: function(){notify = true; $('button.toggleNotify').text('Disable Notify');}
+          onshow: function(){
+            notify = true;
+            $('#toggleNotifyBtn').text('disable notify').addClass("notify_on");
+          }
         });
       }else{
         if (notify) {
@@ -128,7 +131,7 @@ $(function () {
             body: 'デスクトップ通知を停止します'
           });
           notify = false;
-          $('button.toggleNotify').text('Enable Notify');
+          $('#toggleNotifyBtn').text('enable notify').removeClass("notify_on");
         } else {
           $.jwNotify({
             image: '/img/nobody.png',
@@ -136,12 +139,12 @@ $(function () {
             body: 'デスクトップ通知が許可されました'
           });
           notify = true;
-          $('button.toggleNotify').text('Disable Notify');
+          $('#toggleNotifyBtn').text('disable notify').addClass("notify_on");
         }
       }
     });
   }else{
-    $('button.toggleNotify').remove();
+    $('#toggleNotifyBtn').remove();
   }
   
   if(Tinycon){

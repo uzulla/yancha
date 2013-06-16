@@ -124,8 +124,8 @@
       <img src="<: 'img/chat_btn_logout.gif' | static :>" alt="chat_btn_logout" width="" height="" class="onclk" onclick="logout()"/>
       <a href="search"><img src="<: 'img/chat_btn_logsearch.gif' | static :>" alt="chat_btn_logsearch" width="" height=""/></a>
       <img src="<: 'img/chat_sw_select.gif' | static :>" alt="chat_sw_select" width="" class="virtualcheckbox" height="" class="onclk virtualcheckbox" onclick="startOrEndSelectPost(event);"/><br>
-      <div onclick="reset_unread();" style="display:inline-block;width:70px;height:70px;background-color:#004065;color:white;padding:5px;text-height:1em;">clear<br>unread</div>
-      <button class="toggleNotify">デスクトップ通知切換</button>
+      <div onclick="reset_unread();" class="flat-b-btn">clear<br>unread</div>
+      <div id="toggleNotifyBtn" class="flat-b-btn" onclick="toggle_notify();" >enable notify</div>
     </div>
     <img src="<: 'img/chat_h_info.gif' | static :>" alt="action" width="" height="" />
     <div style="font-size:80%; 3px;font-size:80%">
