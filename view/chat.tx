@@ -122,7 +122,7 @@
     <div style="3px; padding-left:5px;">
       <a class="popup" href="hints"><img src="<: 'img/chat_btn_hints.gif' | static :>" alt="chat_btn_hints" width="" height="" class="onclk"/></a>
       <img src="<: 'img/chat_btn_logout.gif' | static :>" alt="chat_btn_logout" width="" height="" class="onclk" onclick="logout()"/>
-      <a href="search"><img src="<: 'img/chat_btn_logsearch.gif' | static :>" alt="chat_btn_logsearch" width="" height=""/></a>
+      <a href="search" target="_blank"><img src="<: 'img/chat_btn_logsearch.gif' | static :>" alt="chat_btn_logsearch" width="" height=""/></a>
       <img src="<: 'img/chat_sw_select.gif' | static :>" alt="chat_sw_select" width="" class="virtualcheckbox" height="" class="onclk virtualcheckbox" onclick="startOrEndSelectPost(event);"/><br>
       <div onclick="reset_unread();" class="flat-b-btn">clear<br>unread</div>
       <div id="toggleNotifyBtn" class="flat-b-btn" onclick="toggle_notify();" >enable notify</div>
@@ -131,6 +131,7 @@
     <div style="font-size:80%; 3px;font-size:80%">
     <ul style="padding-left:20px">
       <li><a class="popup" href="about">yanchaについて</a></li>
+      <li><a href="https://www.github.com/uzulla/yancha" target="_blank">github:yancha</a></li>
     </ul>
     </div>
   </div>
