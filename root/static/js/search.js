@@ -13,7 +13,7 @@ function submitSearch(){
   var keyword = $('input[name=keyword]', f).val();
   var id = $('input[name=id]', f).val();
   var tag = $('input[name=tag]', f).val();
-  var limit = $('select[name=limit]', f).val();
+  var limit = $('input[name=limit]', f).val() || $('select[name=limit]', f).val();
   searchOffset = limit; //for AutoPaging
   var time ;
   var time_window = parseInt($('select[name=time_window]', f).val());
