@@ -28,7 +28,7 @@ $(function () {
   console.log(hashes);
   if(hashes.id){
     $('input[name=id]', $('#searchform')).val(hashes.id);
-    submitSearch($('#form'));
+    submitSearch();
     $('#searchform').hide();
     $('#controls').hide();
   }
