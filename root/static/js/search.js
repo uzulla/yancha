@@ -15,7 +15,7 @@ function submitSearch(){
   var tag = $('input[name=tag]', f).val();
   var limit = $('input[name=limit]', f).val();
   if(!limit){
-    $('select[name=limit]', f).val();
+    limit = $('select[name=limit]', f).val();
   }
   searchOffset = limit; //for AutoPaging
   var time ;
