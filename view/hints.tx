@@ -9,19 +9,23 @@
 Shift+Enterで改行
 
 ・コードハイライト
-
+<div class="hints-high-light">
 >|javascript|
-CODE
+<span class="wrapped-text">CODE</span>
 ||<
-
+</div>
+<div class="hints-high-light">
 >|perl|
-CODE
+<span class="wrapped-text">CODE</span>
 ||<
+</div>
 
 ・PRE
+<div class="hints-high-light">
 >>
-テキスト
+<span class="wrapped-text">テキスト</span>
 <<
+</div>
 
 ・画像ポスト
 <a href="http://yairc.cfe.jp:5000/" target="_blank">http://yairc.cfe.jp:5000/ </a>
@@ -29,6 +33,17 @@ CODE
 
 
 </pre>
+
+<script>
+$('.hints-high-light').click(function(){
+  var $template  = $(this).clone(true)
+  var $msg_area = $('#message');
+
+  $template.find('.wrapped-text').replaceWith( $msg_area.val() );
+  $msg_area.val($template.text());
+  $('#send-message').submit();
+});
+</script>
 
 </body>
 </html>
