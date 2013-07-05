@@ -39,8 +39,8 @@ $('.hints-high-light').click(function(){
   var $template  = $(this).clone(true)
   var $msg_area = $('#message');
 
-  $msg = $msg_area.val().replace(/(^\s+)|(\s+$)/, "");
-  if ($msg != ""){
+  $msg = $msg_area.val();
+  if ($msg.replace(/(^\s+)|(\s+$)/, "") != "") {
     $template.find('.wrapped-text').replaceWith( $msg );
     $msg_area.val($template.text());
     $('#send-message').submit();
