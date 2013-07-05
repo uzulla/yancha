@@ -39,9 +39,12 @@ $('.hints-high-light').click(function(){
   var $template  = $(this).clone(true)
   var $msg_area = $('#message');
 
-  $template.find('.wrapped-text').replaceWith( $msg_area.val() );
-  $msg_area.val($template.text());
-  $('#send-message').submit();
+  $msg = $msg_area.val().replace(/(^\s+)|(\s+$)/, "");
+  if ($msg != ""){
+    $template.find('.wrapped-text').replaceWith( $msg );
+    $msg_area.val($template.text());
+    $('#send-message').submit();
+  }
 });
 </script>
 
