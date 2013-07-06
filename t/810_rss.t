@@ -23,8 +23,8 @@ my $config = {
     server_info => {
         name => 'TEST RSS',
         api_endpoint => {
-            '/api/post' => ['Yancha::API::Post', {}, 'For testing'],
-            '/api/rss'  => ['Yancha::API::Rss',  {}, 'For testing'],
+            '/api/post' => ['Yancha::API::Post',   {}, 'For testing'],
+            '/api/rss'  => ['Yancha::API::Search', { 'format' => 'rss' }, 'For testing'],
         }
     },
 };
