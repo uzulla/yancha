@@ -64,7 +64,8 @@ my $data_storage = Yancha::DataStorage::DBI->connect(
 my $yancha = Yancha->new( config => $config, data_storage => $data_storage );
 
 $config->{app} = $yancha;
-
+require Scalar::Util;
+Scalar::Util::weaken $config->{app};
 
 builder {
     enable 'Session';
