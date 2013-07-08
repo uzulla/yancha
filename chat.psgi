@@ -86,5 +86,5 @@ builder {
 
     $yancha->build_psgi_endpoint_from_server_info('auth');
 
-    mount '/' => Yancha::Web->run( %$config );
+    mount '/' => Yancha::Web->run({ view => $config->{view} });
 }
