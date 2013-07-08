@@ -11,6 +11,7 @@ use Yancha::Config::Simple;
 use Yancha::DataStorage::DBI;
 use Plack::Builder;
 use File::Copy::Recursive qw(dircopy);
+use File::Path qw(rmtree);
 
 my @test_uri = (
     ['/', 200],
@@ -32,12 +33,12 @@ my $app = builder {
     mount '/' => Yancha::Web->run(%$config);
 };
 
-dircopy('./view', './t/view');
+dircopy('./view', './t/view') or die $!;
 test_psgi
     app => $app,
     client => sub {
         my $cb = shift;
-        
+
         for my$case ( @test_uri ) {
             my ($uri, $status) = @$case;
             my $req = HTTP::Request->new(GET => 'http://localhost' . $uri);
@@ -46,5 +47,7 @@ test_psgi
             #diag "$uri: " . $res->code unless $res->status == $status;
         }
     };
+
+rmtree 't/view' or die $!;
 
 done_testing;
