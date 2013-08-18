@@ -11,7 +11,9 @@ var data = {
 //各種接続、切断、エラーイベント
 socket.on('connect', function () {
   console.log('Connected to the server');
-  clear ();
+  if( is_input_disable() ){ 
+    clear ();
+  }
   $('#connecting').hide();
   hook.doHook('onConnect', undefined);
 
