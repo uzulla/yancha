@@ -249,13 +249,6 @@ function updateTitle(){
   
 }
 
-function getTagsStrInHashFragment(){
-  var hash_str = location.hash.substring(1); // will be ?tags=hage ...
-  hash_list = hash_str.split(/&/, $hash_str);
-
-
-}
-
 //トークンを使ってログインした後、レスポンスされる自分情報を保存
 socket.on('token login', function(res){
   if(res.status == 'ok'){
@@ -266,17 +259,14 @@ socket.on('token login', function(res){
     data.profile_image_url = ud.profile_image_url;
     data.profile_url = ud.profile_url;
     
-    tags_str = '';
-    //Hash Flagment にtagsがあればそれを利用、なければCookieから読み込み
+    //Cookieに保持されたTagsリストがあれば、それをデフォルトタグにする
     if($.cookie('chat_tag_list')){
-      var tags_str = $.cookie('chat_tag_list');
-      console.log('initial tag is '+ tags_str);
-
-      var list = tags_str.split(',');
-      if(list.length>0){ data.tags = {}; } //初期値設定されているなら、tagsを消す
-
-      for( i in list ){
-        data.tags[list[i]] = 0;
+      var list = $.cookie('chat_tag_list').split(',');
+      if(list.length>0){ 
+        data.tags = {};//初期値設定されているなら、tagsを消す
+        for( i in list ){
+          data.tags[list[i]] = 0;
+        }
       }
     }
 

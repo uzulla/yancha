@@ -104,8 +104,7 @@ $(function () {
 
   //もしHash FlagmentにTags指定があれば、Cookieにいれておく
   if(location.hash.substring(1).length>0 && location.hash.match('tags=') ){
-    var hash_str = location.hash.substring(1); // will be ?tags=hage ...
-    var hash_list = hash_str.split('&');
+    var hash_list = location.hash.substring(1).split('&')// will be remove head '#'
     $.each(hash_list, function(){
         var kv = this.split('=');
         if(kv[0]=="tags"){
