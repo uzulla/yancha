@@ -157,6 +157,19 @@ $(function () {
     });
   }
   
+  //もしHash FlagmentにTags指定があれば、Cookieにいれておく
+  if(location.hash.substring(1).length>0 && location.hash.match('tags=') ){
+    var hash_str = location.hash.substring(1); // will be ?tags=hage ...
+    var hash_list = hash_str.split('&');
+    $.each(hash_list, function(){
+        var kv = this.split('=');
+        if(kv[0]=="tags"){
+          $.cookie('chat_tag_list', kv[1], { expires: 1 });
+          return false;
+        }
+    });
+  }
+
   $('a.popup').yanchaPopup();
 });
 
