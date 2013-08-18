@@ -385,7 +385,6 @@ function sendMessage(){
   }
 
   message = message.replace(/(?:^| |　)#[a-zA-Z0-9]+/mg, '');
-  message = message.replace(/\s/g, '');
   if(message.length>0){
     $.ajax({
       cache: false,
