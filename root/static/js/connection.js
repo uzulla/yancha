@@ -394,7 +394,6 @@ function sendMessage(){
         token:data.token,
         text:$('#message').val()
       },
-      complete: function(){input_enable()},
       error: function(){ alert('send fail');},
       beforeSend: function(){input_disable();},
       dataType:"text"
