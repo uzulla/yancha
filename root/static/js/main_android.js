@@ -89,16 +89,16 @@ $(function () {
 
   $("#infomation").touchwipe({
        wipeLeft: function() { hidemenu(); },
-       min_move_x: 30,
-       min_move_y: 30,
+       min_move_x: 50,
+       min_move_y: 50,
        preventDefaultEvents: false
   });  
 
 
   $("#controlpad").touchwipe({
        wipeRight: function() { hideControlpad(); },
-       min_move_x: 30,
-       min_move_y: 30,
+       min_move_x: 50,
+       min_move_y: 50,
        preventDefaultEvents: false
   });
 

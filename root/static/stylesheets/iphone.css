@@ -199,3 +199,29 @@ button.focus {
   -moz-box-shadow: 0 1px 0 0 rgba(255,255,255,0.4), 0 0 4px 0 #377ad0;
   box-shadow: 0 1px 0 0 rgba(255,255,255,0.4), 0 0 4px 0 #377ad0;
 }
+
+
+.flat-login-btn {
+    background-color: #004065;
+    color: white;
+    font-weight: bold;
+    display: inline-block;
+    text-decoration: none;
+    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+}
+
+.flat-b-btn {
+    background-color: #004065;
+    color: white;
+    cursor: pointer;
+    display: inline-block;
+    height: 70px;
+    padding-bottom: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 5px;
+    width: 70px;
+}
