@@ -40,12 +40,16 @@
 <body>
 
   <div id="nickname">
-    <br>
-    <p>yancha chatに参加するには、ログインして下さい。</p>
-    <p><a href="<: '/login/twitter/start' | uri :>">Twitterでログイン</a></p>
+    <div class="header" style="text-align:right; background-color:#004065">
+      <a href="<: '/' | uri :>"><img src="<: '/img/header_logo.png' | static :>"></a>
+    </div>
+    <h1>yancha</h1>
+    <p>yet another network chat</p>
+    <hr>
+    <p><a class="flat-login-btn" href="<: '/login/twitter/start' | uri :>">Twitterでログイン</a></p>
     <form action="<: '/login' | uri :>" method="post">
       <p>または…シンプルログイン</p>
-      ニックネーム<input type="text" name="nick"><input type="submit" name="login" value="login">
+      <input type="text" name="nick" placeholder='ニックネーム'><input type="submit" name="login" value="login">
     </form>
     <br>
     <br>
@@ -63,36 +67,23 @@
   <div id="messages" style="overflow-y:auto">
     <div id="lines" style="overflow-y:auto">
       <div style="background-color:#CCCCCC;text-align:center">
-        <a href="<: '/search' | uri :>">過去ログ検索</a>
+        <a href="<: '/search' | uri :>" style="font-size:150%">過去ログ検索</a>
       </div>
     </div>
   </div>
   
   <div id="controlpad" style="width:100%">
-    <table>
+    <table style="margin-left:auto;margin-right:auto">
     <tr>
-      <td colspan="2" style="text-align:center">
-        <button style="margin:5px;width:200px;" onclick='hideControlpad()'>閉じる</button>
+      <td style="text-align:center">
+        <div class="flat-b-btn" onclick='reset_unread()'>clear unread</div>
+        <div class="flat-b-btn" onclick='$(window).scrollTop(0);'>Scroll<br>Top</div>
+        <div class="flat-b-btn" onclick='$(window).scrollTop(10000000);'>Scroll<br>Bottom</div>
       </td>
     </tr>
     <tr>
-      <td colspan="2" style="text-align:center">
-        <button style="margin:5px;width:200px;" onclick='$(window).scrollTop(0);'>スクロールトップ</button>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" style="text-align:center">
-        <button style="margin:5px;width:200px;" onclick='$(window).scrollTop(10000000);'>スクロールボトム</button>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" style="text-align:center">
-        <button style="margin:5px;width:200px;" onclick='reset_unread()'>未読マーク消去</button>
-      </td>
-    </tr>
-    <tr>
-      <td colspan="2" style="text-align:center;">
-        <button style="margin:5px;width:200px;" onclick='hideControlpad()'>閉じる</button>
+      <td style="text-align:center">
+        <div class="flat-b-btn" onclick='hideControlpad()'>close</div>
       </td>
     </tr>
     </table>    
