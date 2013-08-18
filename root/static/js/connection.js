@@ -385,13 +385,14 @@ function sendMessage(){
   }
 
   message = message.replace(/(?:^| |　)#[a-zA-Z0-9]+/mg, '');
+  message = message.replace(/\s/g, '');
   if(message.length>0){
     $.ajax({
       cache: false,
       url: '/api/post',
       data: {
         token:data.token,
-        text:message
+        text:$('#message').val()
       },
       complete: function(){input_enable()},
       error: function(){ alert('send fail');},
