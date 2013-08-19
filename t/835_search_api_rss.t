@@ -23,8 +23,8 @@ my $config = {
     server_info => {
         name => 'TEST RSS',
         api_endpoint => {
-            '/api/post' => ['Yancha::API::Post',   {}, 'For testing'],
-            '/api/rss'  => ['Yancha::API::Search', { 'format' => 'rss' }, 'For testing'],
+            '/api/post'   => ['Yancha::API::Post',   {}, 'For testing'],
+            '/api/search' => ['Yancha::API::Search', {}, 'For testing'],
         }
     },
 };
@@ -49,7 +49,7 @@ test_pocketio $server => sub {
     $post_by_api->("Hello world.");
     $post_by_api->("Hello Perl.");
 
-    my $req = GET "http://localhost:$port/api/rss";
+    my $req = GET "http://localhost:$port/api/search?t=rss";
     my $rss_res = $ua->request($req);
     
     is $rss_res->code => 200;

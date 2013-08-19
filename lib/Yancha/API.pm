@@ -33,8 +33,11 @@ sub build_psgi_endpoint {
 }
 
 sub response {
-    my ($self, $data, $code) = @_;
+    my ($self, $data, $code, $content_type) = @_;
     my $res = Plack::Response->new($code || 200);
+
+    $res->content_type( $content_type || 'text/plain' );
+    $res->body( Encode::encode_utf8( $data ) );
 
     return $res;
 }
