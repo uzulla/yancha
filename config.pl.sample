@@ -42,8 +42,8 @@ use strict;
         api_endpoint => {
             '/api/post'    => [ 'Yancha::API::Post'   => {} => 'user message投稿用api' ],
             '/api/search'  => [ 'Yancha::API::Search' => {} => 'user message検索用api' ],
+            '/api/rss'     => [ 'Yancha::API::Search' => { 'format' => 'rss' } => 'RSS取得用api' ],
             '/api/user'    => [ 'Yancha::API::User'   => {} => 'user data取得用api' ],
-            '/api/rss'     => [ 'Yancha::API::Rss'    => {} => 'RSS取得用api' ],
         },
     },
 

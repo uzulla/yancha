@@ -6,17 +6,29 @@ use utf8;
 use Yancha::API;
 use parent qw(Yancha::API);
 use Encode ();
+use XML::FeedPP;
+use POSIX qw(floor);
 
 our $VERSION = '0.01';
 
 
 sub run {
-    my ( $self, $req ) = @_;
+    my ( $self, $req, $opt ) = @_;
     my $posts  = $self->_search_posts( $req );
-    my $format = $req->param('t') || 'json';
+
+    my $format;
+    if ( defined $opt->{format} ) {
+        $format = $opt->{format};
+    }
+    else {
+        $format = $req->param('t') || 'json';
+    }
 
     if ( $format eq 'text' ) {
         return $self->response_as_text( ref $posts eq 'ARRAY' ? $posts : [ $posts ] );
+    }
+    elsif ( $format eq 'rss' ) {
+        return $self->response( $self->_rss_feed( $posts ), 200, "application/rss+xml; charset=utf-8" );
     }
     else {
         return $self->response_as_json( $posts );
@@ -97,5 +109,41 @@ sub _search_posts {
     return $self->sys->data_storage->search_post( $where, $attr );
 }
 
+sub _rss_feed {
+    my ($self, $posts) = @_;
+
+    my $server_info = $self->sys->config->{server_info};
+
+    my $last_update_dt = _get_datetime_from_ms($posts->[0]->{created_at_ms});
+    my $server_url = $server_info->{url} || '';
+
+    my $feed = XML::FeedPP::Atom->new();
+    $feed->title("yancha::".$server_info->{name});
+    $feed->link($server_info->{url});
+    $feed->pubDate($last_update_dt);
+
+	foreach my $post ( @$posts) {
+        next unless $post->{id};
+
+		my $url   = $server_url . "quot/" . $post->{id};
+		my $entry = $feed->add_item($url);
+		my $title = my $content = $post->{nickname}." : ".$post->{text};
+		$entry->guid($url);
+		$title =~ s/[\r\n]//g;
+		$title = substr ($title, 0, 64);
+		$entry->link($url);
+		$entry->title($title);
+		$entry->description($content);
+		$entry->pubDate(_get_datetime_from_ms($post->{created_at_ms}));
+	}
+
+    return $feed->to_string;
+}
+
+sub _get_datetime_from_ms {
+    my ($self, $time_ms) = @_;
+    return 0 unless ($time_ms && $time_ms =~ /^[0-9]+$/);
+    return floor($time_ms / 100_000);
+}
 
 1;
