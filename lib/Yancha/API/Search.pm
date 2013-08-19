@@ -123,6 +123,8 @@ sub _rss_feed {
     $feed->pubDate($last_update_dt);
 
 	foreach my $post ( @$posts) {
+        next unless $post->{id};
+
 		my $url   = $server_url . "quot/" . $post->{id};
 		my $entry = $feed->add_item($url);
 		my $title = my $content = $post->{nickname}." : ".$post->{text};
@@ -139,7 +141,9 @@ sub _rss_feed {
 }
 
 sub _get_datetime_from_ms {
-    return floor($_[0] / 100_000);
+    my ($self, $time_ms) = @_;
+    return 0 unless ($time_ms && $time_ms =~ /^[0-9]+$/);
+    return floor($time_ms / 100_000);
 }
 
 1;
