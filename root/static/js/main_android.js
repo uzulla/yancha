@@ -100,7 +100,19 @@ $(function () {
        min_move_x: 50,
        min_move_y: 50,
        preventDefaultEvents: false
-  });  
+  });
+
+  //もしHash FlagmentにTags指定があれば、Cookieにいれておく
+  if(location.hash.substring(1).length>0 && location.hash.match('tags=') ){
+    var hash_list = location.hash.substring(1).split('&')// will be remove head '#'
+    $.each(hash_list, function(){
+        var kv = this.split('=');
+        if(kv[0]=="tags"){
+          $.cookie('chat_tag_list', kv[1], { expires: 1 });
+          return false;
+        }
+    });
+  }
 
 });
 
