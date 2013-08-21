@@ -141,8 +141,7 @@ sub _rss_feed {
 }
 
 sub _get_datetime_from_ms {
-    my ($self, $time_ms) = @_;
-    return 0 unless ($time_ms && $time_ms =~ /^[0-9]+$/);
+    my $time_ms = shift;
     return floor($time_ms / 100_000);
 }
 
