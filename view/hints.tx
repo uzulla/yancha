@@ -6,7 +6,11 @@
 <br />
 
 <pre>
-Shift+Enterで改行
+・Shift+Enterでメッセージ改行が可能
+
+・Tagsを初期変更したいときは…
+http://yancha.hachiojipm.org/#tags=PUBLIC,GITHUB
+などと指定すれば可能です。
 
 ・コードハイライト
 <div class="hints-high-light">
