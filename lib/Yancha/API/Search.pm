@@ -14,8 +14,6 @@ our $VERSION = '0.01';
 
 sub run {
     my ( $self, $req, $opt ) = @_;
-    my $posts  = $self->_search_posts( $req );
-
     my $format;
     if ( defined $opt->{format} ) {
         $format = $opt->{format};
@@ -23,6 +21,8 @@ sub run {
     else {
         $format = $req->param('t') || 'json';
     }
+
+    my $posts  = $self->_search_posts( $req, $format );
 
     if ( $format eq 'text' ) {
         return $self->response_as_text( ref $posts eq 'ARRAY' ? $posts : [ $posts ] );
@@ -36,7 +36,7 @@ sub run {
 }
 
 sub _search_posts {
-    my ( $self, $req ) = @_;
+    my ( $self, $req, $format ) = @_;
     my $where = {};
     my $attr  = {};
 
@@ -101,6 +101,11 @@ sub _search_posts {
             $where->{ created_at_ms } = { '<' => $where->{ created_at_ms }->[0] };
             push @{$attr_orders}, 'created_at_ms DESC';
         }
+    }
+
+    
+    if (!@$attr_orders && $format eq 'rss') {
+        push @{$attr_orders}, 'id DESC';
     }
 
     $attr->{ order_by } = $attr_orders;
