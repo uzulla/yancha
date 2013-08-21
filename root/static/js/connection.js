@@ -280,10 +280,20 @@ socket.on('token login', function(res){
 
 //タグ登録処理完了イベント
 socket.on('join tag', function(tags){
+
+  var disabledTags = new Array();
+  var tagcell = $('.tagcell');
+  for (var i=0; i<tagcell.length; i++) {
+    var cell = $(tagcell[i]);
+    var tag = cell.attr('data-tag-name');
+    disabledTags[tag] = cell.hasClass('disable_tag');
+  }
+
   $('#tags').empty();
   for (var i in tags) {
+    var tagDisabled = disabledTags[i] ? ' disable_tag' : '' ;
     $('#tags').append(
-      $('<b class="tagcell">')
+      $('<b class="tagcell'+tagDisabled+'">')
         .attr('data-tag-name', i)
         .append( 
           i, 
