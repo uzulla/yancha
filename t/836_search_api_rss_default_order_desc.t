@@ -68,10 +68,12 @@ test_pocketio $server => sub {
     $feed->sort_item;
 
     my @items = $feed->get_item;
-    is scalar @items => 3;
+    my $item_count = scalar @items;
+    is scalar @items => $item_count;
 
-    for my$i( 0..2 ) {
-        is $items[$i]->description, $nick . " : " . $posts[2-$i];
+    my $last_index = $item_count - 1;
+    for my$i( 0..$last_index ) {
+        is $items[$i]->description, $nick . " : " . $posts[$last_index-$i];
     }
 
 };
