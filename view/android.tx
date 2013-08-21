@@ -11,7 +11,6 @@
 <script src="<: '/js/filter.js' | static :>"></script>
 <script src="<: '/js/hook.js' | static :>"></script>
 <script src="<: '/js/sprintf.js' | static :>"></script>
-<script src="<: '/js/connection.js' | static :>"></script>
 <script src="<: '/js/moment.min.js' | static :>"></script>
 <script src="<: '/js/jquery.cookie.js' | static :>"></script>
 <script src="<: '/js/jquery.timeago.js' | static :>"></script>
@@ -21,6 +20,7 @@
 <script type="text/javascript" src="<: '/shjs/sh_perl.min.js' | static :>"></script>
 <link type="text/css" rel="stylesheet" href="<: '/shjs/sh_style.css' | static :>">
 <script src="<: '/js/main_android.js' | static :>"></script>
+<script src="<: 'js/connection.js' | static :>"></script>
 
 <script type="text/javascript">
   var _gaq = _gaq || [];
