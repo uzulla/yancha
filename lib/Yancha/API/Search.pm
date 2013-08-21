@@ -14,8 +14,6 @@ our $VERSION = '0.01';
 
 sub run {
     my ( $self, $req, $opt ) = @_;
-    my $posts  = $self->_search_posts( $req );
-
     my $format;
     if ( defined $opt->{format} ) {
         $format = $opt->{format};
@@ -23,6 +21,8 @@ sub run {
     else {
         $format = $req->param('t') || 'json';
     }
+
+    my $posts  = $self->_search_posts( $req, $format );
 
     if ( $format eq 'text' ) {
         return $self->response_as_text( ref $posts eq 'ARRAY' ? $posts : [ $posts ] );
@@ -36,7 +36,7 @@ sub run {
 }
 
 sub _search_posts {
-    my ( $self, $req ) = @_;
+    my ( $self, $req, $format ) = @_;
     my $where = {};
     my $attr  = {};
 
@@ -103,6 +103,11 @@ sub _search_posts {
         }
     }
 
+    
+    if (!@$attr_orders && $format eq 'rss') {
+        push @{$attr_orders}, 'id DESC';
+    }
+
     $attr->{ order_by } = $attr_orders;
     $attr->{ limit } ||= 20;
 
@@ -141,8 +146,7 @@ sub _rss_feed {
 }
 
 sub _get_datetime_from_ms {
-    my ($self, $time_ms) = @_;
-    return 0 unless ($time_ms && $time_ms =~ /^[0-9]+$/);
+    my $time_ms = shift;
     return floor($time_ms / 100_000);
 }
 
