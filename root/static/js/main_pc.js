@@ -195,16 +195,19 @@ function startOrEndSelectPost(e){
   }
 }
 
-
+//引用選択機能
 function startSelectPost(){
-  $('.messagecell').on('click', function(){
-    if($(this).hasClass('selectedMessageCell')){
-      $(this).removeClass('selectedMessageCell')
-    }else{
-      $(this).addClass('selectedMessageCell')
+  cancelSelectPostEvent();
+  $('#lines').on('click', function(e){
+    var $mess = $(e.target).closest('.messagecell');
+    if ($mess && e.target.tagName!="A") {
+      $mess.toggleClass('selectedMessageCell');
     }
-    
   });
+}
+
+function cancelSelectPostEvent(){
+  $('#lines').off('click');
 }
 
 function endSelectPost(){

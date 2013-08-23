@@ -188,7 +188,7 @@ function startSelectPost(){
   cancelSelectPostEvent();
   $('#lines').on('click', function(e){
     var $mess = $(e.target).closest('.messagecell');
-    if ($mess) {
+    if ($mess && e.target.tagName!="A") {
       $mess.toggleClass('selectedMessageCell');
     }
   });
