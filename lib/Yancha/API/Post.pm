@@ -32,6 +32,13 @@ sub run {
     });
     return $self->response({}, 400) unless $post;
 
+
+    my $ctx = { record_post => 1 }; # このメッセージに対する各プラグイン間でのやりとり用
+
+    $self->sys->call_hook( 'user_message', undef, \$text, $ctx );
+
+    $self->sys->call_hook( 'before_send_post', undef, $post, $ctx );
+
     $data_storage->add_post($post);
 
     $self->sys->send_post_to_tag_joined( $post, \@tags );
