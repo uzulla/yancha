@@ -21,9 +21,7 @@ sub run {
     return $self->response({}, 400) unless $text;
 
     my @tags = $self->sys->extract_tags_from_text( $text );
-    unless (@tags) {
-        @tags = qw(PUBLIC);
-    }
+    $self->sys->add_default_tag( \@tags, \$text ) unless @tags;
 
     my $post = $data_storage->make_post({
         text => $text,
@@ -38,6 +36,10 @@ sub run {
     $self->sys->call_hook( 'user_message', undef, \$text, $ctx );
 
     $self->sys->call_hook( 'before_send_post', undef, $post, $ctx );
+
+    my $tmp = $post->{text};
+    $self->sys->add_default_tag( $post->{tags}, \$tmp) unless @{$post->{tags}};
+    $post->{text} = $tmp;
 
     $data_storage->add_post($post);
 
