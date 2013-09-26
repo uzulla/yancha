@@ -34,6 +34,18 @@
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
+
+  $(function(){
+    var param = {};
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i in hashes){
+      var qs = hashes[i].split('=');
+      param[qs[0]] = decodeURIComponent(qs[1]);
+    }
+
+    submitSearch(param);
+    setParam(param);
+  });
   </script>
 </head>
 <body>
@@ -76,7 +88,7 @@
 
 <div id="controls">
   <input type="button" onclick="$('#searchform').toggle('slow', function(){$(window).resize()})" value="フォーム開閉">
-  <input type="button" value="表示/更新" onclick="submitSearch(event);">
+  <input type="button" value="表示/更新" onclick="submitSearchForm(event);">
   <input type="button" value="引用選択開始" onclick="startSelectPost();">
   <input type="button" value="引用選択終了" onclick="endSelectPost();">
 </div>

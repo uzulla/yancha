@@ -1,5 +1,16 @@
 
-function submitSearch(){
+function setParam(param){
+  if("tag" in param){
+    $('input[name="tag"]').val(param.tag);
+  }
+  if("keyword" in param){
+    $('input[name="keyword"]').val(param.keyword);
+  }
+}
+
+
+
+function submitSearchForm(){
   $('#lines').empty();
   $('#loading_finish_text_bottom').hide();
   $('#loading_text_bottom').show();
@@ -32,17 +43,22 @@ function submitSearch(){
 
   console.log('post'); 
 
-  $.ajax({
-    type: 'POST',
-    url: getHostRootURL()+"/api/search", // todo
-    data: {
+  var query = {
       keyword:keyword,
       tag:tag,
       id:id,
       limit:limit,
       time:time,
       order:order
-    },
+  };
+  submitSearch(query);
+}
+
+function submitSearch(query) {
+  $.ajax({
+    type: 'POST',
+    url: getHostRootURL()+"/api/search", // todo
+    data: query,
     error: function(XMLHttpRequest, textStatus, errorThrown){
       console.log(textStatus);
     },
@@ -52,13 +68,13 @@ function submitSearch(){
       $(window).on('scroll', extendSearchOnScroll);
       $('#loading_top , #loading_bottom').hide();
       $('#loading_text_bottom').show();
-      if(data.length == limit){ // これより前がみつからないので。
+      if(data.length == query.limit){ // これより前がみつからないので。
         if($(document).height() > $('body').height()){
           pagerize = true;
           extendSearch();
         }
       }
-    }})(limit),
+    }})(query.limit),
     dataType: 'json'
   });
 }
