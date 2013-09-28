@@ -18,7 +18,7 @@ CODE
 ||<
 </textarea>
 ※以下のボタンを押すと現在のメッセージをくくって送信します
-<button onclick="setPreAndSend('javascript')">JS</button><button onclick="setPreAndSend('perl')">perl</button><button onclick="setPreAndSend('PHP')">PHP</button><button onclick="setPreAndSend('c')">C</button><button onclick="setPreAndSend('ruby')">ruby</button><button onclick="setPreAndSend('python')">python</button><button onclick="setPreAndSend('')">汎用</button>
+<button onclick="setPreAndSend('javascript')">JS</button><button onclick="setPreAndSend('perl')">perl</button><button onclick="setPreAndSend('php')">PHP</button><button onclick="setPreAndSend('c')">C</button><button onclick="setPreAndSend('ruby')">ruby</button><button onclick="setPreAndSend('python')">python</button><button onclick="setPreAndSend('')">汎用</button>
 
 ・PRE
 例<textarea rows=3>
