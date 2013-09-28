@@ -328,12 +328,17 @@ sub search_post {
         $where_tag->add('tags', [ map { { 'like' => '% ' . uc($_) . ' %' } } @$tags ]);
     }
 
-    my $where_text;
+    my $where_text_and_nick;
     if ( exists $params->{ text } ) {
-        $where_text = $maker->new_condition;
+        my $where_text = $maker->new_condition;
         my $keywords = $params->{ text };
         $keywords = ref $keywords ? $keywords : [ $keywords ];
         $where_text->add( 'text', [ '-and', map { { 'like', => '%' . $_ . '%' } } grep { $_ ne '' } @$keywords ] );
+
+        my $where_nick = $maker->new_condition;
+        $where_nick->add( 'nickname', [ '-and', map { { 'like', => '%' . $_ . '%' } } grep { $_ ne '' } @$keywords ] );
+
+        $where_text_and_nick = $where_text | $where_nick;
     }
 
     my $where_time;
@@ -364,7 +369,7 @@ sub search_post {
         }
     }
 
-    for ( $where_id, $where_tag, $where_text, $where_time ) {
+    for ( $where_id, $where_tag, $where_text_and_nick, $where_time ) {
         if ( !$where and $_ ) {
             $where = $_;
             next;
