@@ -12,7 +12,7 @@
 http://yancha.hachiojipm.org/#tags=PUBLIC,GITHUB
 などと指定すれば可能です。
 
-・コードハイライト
+・コードハイライト（以下をクリックすることで、入力欄をくくって送信できます（裏技））
 <div class="hints-high-light">
 >|javascript|
 <span class="wrapped-text">CODE</span>
@@ -20,6 +20,26 @@ http://yancha.hachiojipm.org/#tags=PUBLIC,GITHUB
 </div>
 <div class="hints-high-light">
 >|perl|
+<span class="wrapped-text">CODE</span>
+||<
+</div>
+<div class="hints-high-light">
+>|ruby|
+<span class="wrapped-text">CODE</span>
+||<
+</div>
+<div class="hints-high-light">
+>|python|
+<span class="wrapped-text">CODE</span>
+||<
+</div>
+<div class="hints-high-light">
+>|c|
+<span class="wrapped-text">CODE</span>
+||<
+</div>
+<div class="hints-high-light">
+>|php|
 <span class="wrapped-text">CODE</span>
 ||<
 </div>
