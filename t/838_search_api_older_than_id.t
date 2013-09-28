@@ -68,7 +68,7 @@ test_pocketio $server => sub {
     my $search_by_api = sub {
         my ($param, $older_than_id) = @_;
         my $keyword = defined($param->{text}) ? $param->{text} : '';
-        my $older_than_id = defined($param->{older_than_id}) ? $param->{older_than_id} : 9999; 
+        $older_than_id = defined($param->{older_than_id}) ? $param->{older_than_id} : 9999; 
 
         my $req = POST "http://localhost:$port/api/search" => {
             keyword => $keyword,
