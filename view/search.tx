@@ -15,6 +15,11 @@
   <script type="text/javascript" src="<: '/shjs/sh_main.min.js' | static :>"></script>
   <script type="text/javascript" src="<: '/shjs/sh_javascript.min.js' | static :>"></script>
   <script type="text/javascript" src="<: '/shjs/sh_perl.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_php.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_ruby.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_c.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_python.min.js' | static :>"></script>
+
   <link type="text/css" rel="stylesheet" href="<: '/shjs/sh_style.css' | static :>">
 
   <script type="text/javascript" src="<: '/js/search.js' | static :>"></script>
