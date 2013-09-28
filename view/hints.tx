@@ -8,68 +8,45 @@
 <pre>
 ・Shift+Enterでメッセージ改行が可能
 
-・Tagsを初期変更したいときは…
-http://yancha.hachiojipm.org/#tags=PUBLIC,GITHUB
-などと指定すれば可能です。
+・Tagsを初期変更する場合は、「#tags=TAG名,TAG名」などと指定ください
+例：http://yancha.hachiojipm.org/#tags=PUBLIC,GITHUB
 
-・コードハイライト（以下をクリックすることで、入力欄をくくって送信できます（裏技））
-<div class="hints-high-light">
+・コードハイライト
+例<textarea rows=3>
 >|javascript|
-<span class="wrapped-text">CODE</span>
+CODE
 ||<
-</div>
-<div class="hints-high-light">
->|perl|
-<span class="wrapped-text">CODE</span>
-||<
-</div>
-<div class="hints-high-light">
->|ruby|
-<span class="wrapped-text">CODE</span>
-||<
-</div>
-<div class="hints-high-light">
->|python|
-<span class="wrapped-text">CODE</span>
-||<
-</div>
-<div class="hints-high-light">
->|c|
-<span class="wrapped-text">CODE</span>
-||<
-</div>
-<div class="hints-high-light">
->|php|
-<span class="wrapped-text">CODE</span>
-||<
-</div>
+</textarea>
+※以下のボタンを押すと現在のメッセージをくくって送信します
+<button onclick="setPreAndSend('javascript')">JS</button><button onclick="setPreAndSend('perl')">perl</button><button onclick="setPreAndSend('PHP')">PHP</button><button onclick="setPreAndSend('c')">C</button><button onclick="setPreAndSend('ruby')">ruby</button><button onclick="setPreAndSend('python')">python</button><button onclick="setPreAndSend('')">汎用</button>
 
 ・PRE
-<div class="hints-high-light">
+例<textarea rows=3>
 >>
-<span class="wrapped-text">テキスト</span>
+テキスト
 <<
-</div>
+</textarea>
+※以下のボタンを押すと現在のメッセージをくくって送信します
+<button onclick="setPlainPreAndSend()">PRE</button>
 
 ・画像ポスト
 <a href="http://yairc.cfe.jp:5000/" target="_blank">http://yairc.cfe.jp:5000/ </a>
 ※Gyazo互換です
-
-
 </pre>
 
 <script>
-$('.hints-high-light').click(function(){
-  var $template  = $(this).clone(true)
+function setPreAndSend($lang){
   var $msg_area = $('#message');
-
   $msg = $msg_area.val();
-  if ($msg.replace(/(^\s+)|(\s+$)/, "") != "") {
-    $template.find('.wrapped-text').replaceWith( $msg );
-    $msg_area.val($template.text());
-    $('#send-message').submit();
-  }
-});
+  $msg_area.val(">|"+$lang+"|\n"+$msg+"\n||<\n");
+  $('#send-message').submit();
+}
+function setPlainPreAndSend($lang){
+  var $msg_area = $('#message');
+  $msg = $msg_area.val();
+  $msg_area.val(">>\n"+$msg+"\n<<\n");
+  $('#send-message').submit();
+}
 </script>
 
 </body>
