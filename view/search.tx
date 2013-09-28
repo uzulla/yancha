@@ -34,6 +34,10 @@
     ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
   })();
+
+  $(function(){
+    submitSearchByQueryString();
+  });
   </script>
 </head>
 <body>
@@ -48,7 +52,7 @@
 <div id="searchform" style="background-color:#CCCCCC;">
   <form onsubmit="return false">
     タグ<input name='tag' value="PUBLIC"><br>
-    キーワード<input type="text" size="30" name="keyword" onKeyDown="if(event.keyCode==13){submitSearch();}"><br>
+    キーワード<input type="text" size="30" name="keyword" onKeyDown="if(event.keyCode==13){submitSearchForm();}"><br>
     上限<select name="limit">
       <option value="20">20</option>  
       <option value="100">100</option>
@@ -76,7 +80,7 @@
 
 <div id="controls">
   <input type="button" onclick="$('#searchform').toggle('slow', function(){$(window).resize()})" value="フォーム開閉">
-  <input type="button" value="表示/更新" onclick="submitSearch(event);">
+  <input type="button" value="表示/更新" onclick="submitSearchForm(event);">
   <input type="button" value="引用選択開始" onclick="startSelectPost();">
   <input type="button" value="引用選択終了" onclick="endSelectPost();">
 </div>
