@@ -9,6 +9,28 @@ function setParam(param){
 }
 
 
+function submitSearchByQueryString(){
+  var param = {};
+
+  var url = window.location.href;
+  if(url.indexOf('?') === -1){
+    return ;
+  }
+
+  var hashes = window.location.href.slice(url.indexOf('?') + 1).split('&');
+  for(var i in hashes){
+    var qs = hashes[i].split('=');
+    if(!qs[1]){ continue; }
+    param[qs[0]] = decodeURIComponent(qs[1]);
+  }
+
+  if(Object.keys(param).length === 0){
+    return ;
+  }
+
+  submitSearch(param);
+  setParam(param);
+}
 
 function submitSearchForm(){
   $('#lines').empty();
