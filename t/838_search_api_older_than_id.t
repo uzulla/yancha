@@ -66,9 +66,9 @@ test_pocketio $server => sub {
 
     my $ua = LWP::UserAgent->new;
     my $search_by_api = sub {
-        my ($param, $older_than_id) = @_;
+        my ($param) = @_;
         my $keyword = defined($param->{text}) ? $param->{text} : '';
-        $older_than_id = defined($param->{older_than_id}) ? $param->{older_than_id} : 9999; 
+        my $older_than_id = defined($param->{older_than_id}) ? $param->{older_than_id} : 9999; 
 
         my $req = POST "http://localhost:$port/api/search" => {
             keyword => $keyword,
