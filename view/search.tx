@@ -37,7 +37,13 @@
 
   $(function(){
     var param = {};
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    var url = window.location.href;
+    console.log(url.indexOf('?'));
+    if(url.indexOf('?') === -1){
+      return ;
+    }
+    var hashes = window.location.href.slice(url.indexOf('?') + 1).split('&');
+    console.log(hashes);
     for(var i in hashes){
       var qs = hashes[i].split('=');
       param[qs[0]] = decodeURIComponent(qs[1]);
