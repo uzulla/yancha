@@ -15,6 +15,11 @@
   <script type="text/javascript" src="<: '/shjs/sh_main.min.js' | static :>"></script>
   <script type="text/javascript" src="<: '/shjs/sh_javascript.min.js' | static :>"></script>
   <script type="text/javascript" src="<: '/shjs/sh_perl.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_php.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_ruby.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_c.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_python.min.js' | static :>"></script>
+
   <link type="text/css" rel="stylesheet" href="<: '/shjs/sh_style.css' | static :>">
 
   <script type="text/javascript" src="<: '/js/search.js' | static :>"></script>
@@ -32,7 +37,13 @@
 
   $(function(){
     var param = {};
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    var url = window.location.href;
+    console.log(url.indexOf('?'));
+    if(url.indexOf('?') === -1){
+      return ;
+    }
+    var hashes = window.location.href.slice(url.indexOf('?') + 1).split('&');
+    console.log(hashes);
     for(var i in hashes){
       var qs = hashes[i].split('=');
       param[qs[0]] = decodeURIComponent(qs[1]);
@@ -55,7 +66,7 @@
 <div id="searchform" style="background-color:#CCCCCC;">
   <form onsubmit="return false">
     タグ<input name='tag' value="PUBLIC"><br>
-    キーワード<input type="text" size="30" name="keyword"><br>
+    キーワード<input type="text" size="30" name="keyword" onKeyDown="if(event.keyCode==13){submitSearch();}"><br>
     上限<select name="limit">
       <option value="20">20</option>  
       <option value="100">100</option>

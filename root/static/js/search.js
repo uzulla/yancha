@@ -28,7 +28,6 @@ function submitSearchForm(){
   if(!limit){
     limit = $('select[name=limit]', f).val();
   }
-  searchOffset = limit; //for AutoPaging
   var time ;
   var time_window = parseInt($('select[name=time_window]', f).val());
   var sort_key = $('select[name=sort_key]', f).val();
@@ -91,6 +90,7 @@ function extendSearch(){
   var tag = $('input[name=tag]', f).val();
   var limit = 50;
   var last_post_cell = $('#lines .messagecell:last-child').get(0);
+  var oldest_post_id = $(last_post_cell).attr('data-post-id');
 
   var sort_key = $('select[name=sort_key]', f).val();
   var sort_seq = $('select[name=sort_seq]', f).val();
@@ -112,7 +112,8 @@ function extendSearch(){
     data: {
       keyword:keyword,
       tag:tag,
-      limit:limit+','+searchOffset,
+      limit:limit,
+      older_than_id:oldest_post_id,
       time:time,
       order:order
     },
@@ -132,7 +133,6 @@ function extendSearch(){
         }
         
       }
-      searchOffset = parseInt(searchOffset) + parseInt(limit);
       pagerize = false;
     },
     dataType: 'json'
