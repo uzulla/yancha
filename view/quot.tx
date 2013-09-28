@@ -34,7 +34,7 @@ $(function () {
   if(hashes.id){
     $('#quot_count').show();
     $('input[name=id]', $('#searchform')).val(hashes.id);
-    submitSearch();
+    submitSearchForm();
     $('#searchform').hide();
     $('#controls').hide();
   }else{
