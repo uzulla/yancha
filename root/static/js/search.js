@@ -1,9 +1,9 @@
 
 function setParam(param){
-  if("tag" in param){
+  if("tag" in param && param.tag !== "undefined"){
     $('input[name="tag"]').val(param.tag);
   }
-  if("keyword" in param){
+  if("keyword" in param && param.keyword !== "undefined"){
     $('input[name="keyword"]').val(param.keyword);
   }
 }
