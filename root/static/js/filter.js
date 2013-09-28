@@ -24,6 +24,22 @@ function user_message_filter(message){
         return( '<pre class="sh_perl">' + s1 + '</pre>' );
     });
 
+    message = message.replace(/&#62;\|ruby\|\n([\s\S]*?)\n\|\|&#60;/g, function(whole,s1) {
+        return( '<pre class="sh_ruby">' + s1 + '</pre>' );
+    });
+
+    message = message.replace(/&#62;\|python\|\n([\s\S]*?)\n\|\|&#60;/g, function(whole,s1) {
+        return( '<pre class="sh_python">' + s1 + '</pre>' );
+    });
+
+    message = message.replace(/&#62;\|c\|\n([\s\S]*?)\n\|\|&#60;/g, function(whole,s1) {
+        return( '<pre class="sh_c">' + s1 + '</pre>' );
+    });
+
+    message = message.replace(/&#62;\|php\|\n([\s\S]*?)\n\|\|&#60;/g, function(whole,s1) {
+        return( '<pre class="sh_php">' + s1 + '</pre>' );
+    });
+
     message = message.replace(/&#62;\|AA\|\n([\s\S]*?)\n\|\|&#60;/gi, function(whole,s1) {
         return( '<pre style=\'font-family: "Mona","IPA MONAPGOTHIC","MS PGothic","ＭＳ Ｐゴシック","MS Pｺﾞｼｯｸ","MS Pゴシック",sans-serif; \'>'
                 + s1
