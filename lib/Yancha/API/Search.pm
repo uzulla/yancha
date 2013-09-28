@@ -60,6 +60,10 @@ sub _search_posts {
         $where->{ id } = [ grep { $_ =~ /^[0-9]+$/ } split /,/, $ids ];
     }
 
+    if ( my $older_than_id = $req->param('older_than_id') ) {
+        delete $attr->{ offset };
+        $where->{ older_than_id } = $older_than_id;
+    }
 
     my $attr_orders = [];
 

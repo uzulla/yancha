@@ -369,7 +369,13 @@ sub search_post {
         }
     }
 
-    for ( $where_id, $where_tag, $where_text_and_nick, $where_time ) {
+    my $older_than_id;
+    if ( exists $params->{ older_than_id } ) {
+        $older_than_id = $maker->new_condition;
+        $older_than_id->add( 'id', { '<' => $params->{ older_than_id } });
+    }
+
+    for ( $where_id, $where_tag, $where_text_and_nick, $where_time, $older_than_id ) {
         if ( !$where and $_ ) {
             $where = $_;
             next;
