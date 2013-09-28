@@ -37,10 +37,20 @@
 
   $(function(){
     var param = {};
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+
+    var url = window.location.href;
+    if(url.indexOf('?') === -1){
+      return ;
+    }
+
+    var hashes = window.location.href.slice(url.indexOf('?') + 1).split('&');
     for(var i in hashes){
       var qs = hashes[i].split('=');
+      if(!qs[1]){ continue; }
       param[qs[0]] = decodeURIComponent(qs[1]);
+    }
+    if(Object.keys(param).length === 0){
+      return ;
     }
 
     submitSearch(param);
@@ -60,7 +70,7 @@
 <div id="searchform" style="background-color:#CCCCCC;">
   <form onsubmit="return false">
     タグ<input name='tag' value="PUBLIC"><br>
-    キーワード<input type="text" size="30" name="keyword" onKeyDown="if(event.keyCode==13){submitSearch();}"><br>
+    キーワード<input type="text" size="30" name="keyword" onKeyDown="if(event.keyCode==13){submitSearchForm();}"><br>
     上限<select name="limit">
       <option value="20">20</option>  
       <option value="100">100</option>
