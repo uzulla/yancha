@@ -6,6 +6,7 @@ use Plack::Builder;
 use PocketIO;
 use AnyEvent;
 
+$ENV{ YANCHA_CONFIG_FILE } ||= './config.pl.sample';
 
 sub server_with_dbi {
 
