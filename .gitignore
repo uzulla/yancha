@@ -8,3 +8,5 @@ start.sh.log
 yancha.pid
 access_log
 .htpasswd
+.carton/
+local/
