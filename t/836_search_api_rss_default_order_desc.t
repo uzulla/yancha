@@ -49,9 +49,9 @@ test_pocketio $server => sub {
     };
 
     my @posts = (
-        "Hello World. #public",
-        "Hello world.",
-        "Hello Perl.",
+        "Hello World. #PUBLIC",
+        "Hello world. #PUBLIC",
+        "Hello Perl. #PUBLIC",
     );
     
     for my$text( @posts ) {
