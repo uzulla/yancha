@@ -71,21 +71,21 @@ sub token_login {
     my $nickname = $user->{nickname};
 
     DEBUG && w sprintf('%s: hello %s (%s)', $socket->id, _nickname_and_token( $user, 8 ));
-    
+
     $socket->set(user_data => $user);
-    
+
     #nickname listを更新し、周知
     $users->{ $socket_id } = $user;
     $socket->sockets->emit('nicknames', _get_uniq_and_anon_nicknames($users));
 
     #サーバー告知メッセージ
     $socket->broadcast->emit('announcement', $nickname . ' connected');
-    
+
     $socket->emit('token login', {
       "status"    => "ok",
       "user_data" => $user,
     });
-    
+
     $cb->(JSON::true);
 }
 
@@ -180,6 +180,10 @@ sub delete_user_message {
     $socket->get('user_data' => sub {
         my ($socket, $err, $user) = @_;
 
+        if ($user->{nickname} =~ /papix/) {
+            return;
+        }
+
         #userがない(セッションが無い)場合、再ログインを依頼して終わる。
         if(!defined($user)){
             return;
@@ -191,7 +195,7 @@ sub delete_user_message {
           DEBUG && w sprintf('delete message but mismatch user_key %s / %s',
                                      $post->{user_key}, $user->{user_key});
           return;
-          
+
         }
 
         DEBUG && w sprintf('delete message from %s (%s) => "%s"',
@@ -199,16 +203,12 @@ sub delete_user_message {
 
         my $result = $self->sys->data_storage->remove_post($post);
 
-        if($result){          
+        if($result){
           $post->{is_message_log} = JSON::true;
-      
+
           $self->sys->send_delete_post_to_tag_joined( $post => $post->{ tags } );
         }
-
     });
-
-
-
 }
 
 
