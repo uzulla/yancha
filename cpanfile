@@ -1,6 +1,7 @@
 requires 'AnyEvent::Twitter';
 requires 'Authen::Htpasswd';
 requires 'DBI';
+requires 'DBD::SQLite';
 requires 'Digest::SHA';
 requires 'Encode';
 requires 'JSON';
