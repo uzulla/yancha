@@ -13,7 +13,7 @@ BEGIN {
     $root = File::Basename::dirname(__FILE__);
     $root = File::Spec->rel2abs($root);
 
-    unshift @INC, "$root/../../lib";
+    unshift @INC, "$root/lib";
 }
 
 use File::Spec;
