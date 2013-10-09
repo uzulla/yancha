@@ -22,6 +22,8 @@ requires 'Time::Piece';
 requires 'Try::Tiny';
 requires 'XML::FeedPP';
 requires 'parent';
+requires 'Nephia::Plugin::Dispatch';
+requires 'Nephia::Plugin::View::Xslate';
 suggests 'Twiggy';
 
 on test => sub {
