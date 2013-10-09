@@ -32,30 +32,6 @@ use Yancha::DataStorage::DBI;
 use Yancha::Config::Simple;
 
 my $config = Yancha::Config::Simple->load_file( $ENV{ YANCHA_CONFIG_FILE } || "$root/config.pl" );
-unless (defined($config->{view})) {
-    die <<'ERR'
-
-config.plに以下の設定が見つかりません.
-config.pl.sampleからコピーしてから起動してください
-------
-    'view' => {
-        'function' => {
-            static => sub {
-                my $uri = shift;
-                $uri =~ s/^\///;
-                return '/static/'.$uri;
-            },  
-            uri => sub {
-                my $uri = shift;
-                $uri =~ s/^\///;
-                return '/'.$uri;
-            },
-        },
-    },
-------
-
-ERR
-}
 
 my $data_storage = Yancha::DataStorage::DBI->connect(
     connect_info => $config->{ database }->{ connect_info },
@@ -68,14 +44,18 @@ builder {
     enable "SimpleLogger", level => 'debug';
 
     enable 'Plack::Middleware::Static',
+        root => $root,
+        path => qr{^/static/};
+
+    enable 'Plack::Middleware::Static',
         path => qr{^(?:/robots\.txt|/favicon\.ico)$},
-        root => File::Spec->catdir(dirname(__FILE__), 'root', 'static');
+        root => File::Spec->catdir($root, 'static');
 
     mount '/socket.io/socket.io.js' =>
-      Plack::App::File->new(file => File::Spec->catfile($root, 'root', 'static', 'socket.io.js'));
+      Plack::App::File->new(file => File::Spec->catfile($root, 'static', 'socket.io.js'));
 
     mount '/socket.io/static/flashsocket/WebSocketMain.swf' =>
-      Plack::App::File->new(file => File::Spec->catfile($root, 'root', 'static', 'WebSocketMain.swf'));
+      Plack::App::File->new(file => File::Spec->catfile($root, 'static', 'WebSocketMain.swf'));
 
     mount '/socket.io/static/flashsocket/WebSocketMainInsecure.swf' =>
       Plack::App::File->new(file => File::Spec->catfile($root, 'static', 'WebSocketMainInsecure.swf'));
@@ -86,5 +66,5 @@ builder {
 
     $yancha->build_psgi_endpoint_from_server_info('auth');
 
-    mount '/' => Yancha::Web->run({ view => $config->{view} });
+    mount '/' => Yancha::Web->run(%$config);
 }
