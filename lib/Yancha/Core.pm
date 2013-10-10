@@ -180,10 +180,6 @@ sub delete_user_message {
     $socket->get('user_data' => sub {
         my ($socket, $err, $user) = @_;
 
-        if ($user->{nickname} =~ /papix/) {
-            return;
-        }
-
         #userがない(セッションが無い)場合、再ログインを依頼して終わる。
         if(!defined($user)){
             return;
