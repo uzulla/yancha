@@ -24,7 +24,7 @@ app {
     
         my $template;
         if (Yancha::Util->is_smartphone( $req->env->{HTTP_USER_AGENT} || '' )) {
-            return $req->redirect('/android.html');
+            return redirect('/android.html');
         }
     
         return [200, [], render('chat.tx')];
