@@ -476,8 +476,9 @@ function is_input_disable(){
 function clear () {
   input_enable();
   var tag_list = getTagsInMessage($('#message').val());
-  var str  = tag_list.join(' ');
-  $('#message').val(' '+str).focus();
+  var str = tag_list.join(' ');
+  if(str.length>0){ str = ' '+str}
+  $('#message').val(str).focus();
   $('#message')[0].selectionStart = 0;
   $('#message')[0].selectionEnd = 0;
   resizeMessageTextarea(1);
