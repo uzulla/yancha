@@ -40,6 +40,8 @@
   });
   </script>
 </head>
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
 <body>
 
 <div class="header" style="text-align:right; background-color:#004065">

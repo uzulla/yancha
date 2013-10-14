@@ -12,6 +12,11 @@ function user_message_filter(message){
         return( 'https://gist.github.com/'+s1+'/ <br><iframe data-gist-id="'+s1+'" style="width:100%;"></iframe><script>load_gist('+s1+')</script><br>' );
     });
 
+    //twitter inline https://twitter.com/uzulla/status/389391040480051200
+    message = message.replace(/https:(\/\/twitter.com\/[a-zA-Z0-9\-_]{1,40}\/status\/[0-9]{1,40})/g, function(whole,s1) {
+        return( 'https:'+s1+' <br><blockquote class="twitter-tweet"><a href="'+s1+'"></blockquote><script>twttr.widgets.load();</script>' );
+    });
+
     // YT thumbnail
     message = message.replace(/http(s)?:\/\/www.youtube.com\/[\x21-\x7e]*v=([a-zA-Z0-9\-]+)/g,
                               "<img src='//i1.ytimg.com/vi/$2/default.jpg'><br />http://www.youtube.com/watch?v=$2");
