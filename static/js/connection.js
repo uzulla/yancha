@@ -486,7 +486,8 @@ function clear () {
 
 //メッセージのタグを取得
 function getTagsInMessage (message) {
-  var message_copy = message.replace(/>\|[^\|]*\|[\s\S]*?\|\|</g, "");
+  var message_copy = message.replace(/>\|[^\|]*\|\n[\s\S]*?\n\|\|</g, "");
+  var message_copy = message_copy.replace(/>>\n[\s\S]*?\n<</g, "");
   var re = /(^| |　)#[a-zA-Z0-9]+/g;
   var list = message_copy.match(re) || [];
   var list2 = $.map(list, function(tag){
