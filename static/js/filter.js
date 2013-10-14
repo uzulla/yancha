@@ -69,7 +69,7 @@ function user_message_filter(message){
         return( '<pre>' + s1 + '</pre>' );
     });
 
-    message = message.replace(/&#62#62;\n([\s\S]*?)\n&#60;&#60;/g, function(whole,s1) {
+    message = message.replace(/&#62;&#62;\n([\s\S]*?)\n&#60;&#60;/g, function(whole,s1) {
         return( '<blockquote>' + s1 + '</blockquote>' );
     });  
     
