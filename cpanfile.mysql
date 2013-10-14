@@ -1,0 +1,5 @@
+requires 'DBD::mysql';
+
+on test => sub {
+    requires 'Test::mysqld';
+}
