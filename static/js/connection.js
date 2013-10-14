@@ -486,11 +486,13 @@ function clear () {
 
 //メッセージのタグを取得
 function getTagsInMessage (message) {
-  var list = (message.match(/(^| |　)#[a-zA-Z0-9]+/g, '#')!=null) ? message.match(/(^| |　)#[a-zA-Z0-9]+/g, '#') : [];
-  $.each(list, function(i, val){
-    list[i] = val.replace(/( |　)/,'');
+  var message_copy = message.replace(/>\|[^\|]*\|[\s\S]*?\|\|</g, "");
+  var re = /(^| |　)#[a-zA-Z0-9]+/g;
+  var list = message_copy.match(re) || [];
+  var list2 = $.map(list, function(tag){
+    return tag.replace(/^( |　)/, '');
   });
-  return list;
+  return list2;
 }
 
 //現在購読しているタグの一覧
