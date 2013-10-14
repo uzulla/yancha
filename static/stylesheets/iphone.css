@@ -101,16 +101,9 @@ margin:0px;
 
 #send-message textarea {
   border: 1px solid gray;
-  height: 1.4em;
-  margin-right:15px;
   padding: 5px 0px;
-  line-height: 1.2em;
   vertical-align: middle;
   width: 100%;
-  -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
-  border-radius: 10px;
-
 }
 #send-message button {
   margin-top: 5px;
@@ -126,6 +119,10 @@ margin:0px;
   background: linear-gradient(top, orange 0%, #be9200 100%);
   border: 0px solid #2e70c4;
   text-shadow: 0 -1px 1px #FFFFFF;
+  -webkit-border-radius: 16px;
+  -moz-border-radius: 16px;
+  border-radius: 16px;
+
 }
 .messagecell_plusplus button:hover {
   padding: 10px;
@@ -161,15 +158,7 @@ button {
   user-select: none;
   display: inline-block;
   text-decoration: none;
-  background: #43a1f7;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #43a1f7), color-stop(1, #377ad0));
-  background: -webkit-linear-gradient(top, #43a1f7 0%, #377ad0 100%);
-  background: -moz-linear-gradient(top, #43a1f7 0%, #377ad0 100%);
-  background: linear-gradient(top, #43a1f7 0%, #377ad0 100%);
-  border: 1px solid #2e70c4;
-  -webkit-border-radius: 16px;
-  -moz-border-radius: 16px;
-  border-radius: 16px;
+  background-color: #004065;
   color: #fff;
   font-family: "lucida grande", sans-serif;
   font-size: 11px;
@@ -177,32 +166,8 @@ button {
   line-height: 1;
   padding: 3px 10px 5px 10px;
   text-align: center;
-  text-shadow: 0 -1px 1px #2d6dc0;
-}
-button:hover,
-button.hover {
-  background: darker;
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #43a1f7), color-stop(1, #2e70c4));
-  background: -webkit-linear-gradient(top, #43a1f7 0%, #2e70c4 100%);
-  background: -moz-linear-gradient(top, #43a1f7 0%, #2e70c4 100%);
-  background: linear-gradient(top, #43a1f7 0%, #2e70c4 100%);
-  border: 1px solid #2e70c4;
-  cursor: pointer;
-  text-shadow: 0 -1px 1px #2c6bbb;
-}
-button:active,
-button.active {
-  background: #2e70c4;
-  border: 1px solid #2e70c4;
-  border-bottom: 1px solid #2861aa;
-  text-shadow: 0 -1px 1px #2b67b5;
-}
-button:focus,
-button.focus {
-  outline: none;
-  -webkit-box-shadow: 0 1px 0 0 rgba(255,255,255,0.4), 0 0 4px 0 #377ad0;
-  -moz-box-shadow: 0 1px 0 0 rgba(255,255,255,0.4), 0 0 4px 0 #377ad0;
-  box-shadow: 0 1px 0 0 rgba(255,255,255,0.4), 0 0 4px 0 #377ad0;
+  font-weight:bold;
+  border: none;
 }
 
 

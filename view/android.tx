@@ -175,9 +175,9 @@
   <form id="send-message">
     <table style="width:100%">
       <tr>
-        <td style="width:100%"><textarea  id="message"></textarea></td>
-        <td><button style="margin:2px 0px 2px 2px;">Send</button></td>
-      <td><button style="margin:2px 0px 2px 2px;" onclick='togglemenu()'>MENU</button></td>
+        <td style="width:100%"><textarea id="message"></textarea></td>
+        <td><button style="margin:0px;padding:10px">Send</button></td>
+      <td><button style="margin:0px;padding:10px" onclick='togglemenu()'>MENU</button></td>
     </table>
   </form>
 
