@@ -48,7 +48,7 @@ builder {
         path => qr{^/static/};
 
     enable 'Plack::Middleware::Static',
-        path => qr{^(?:/robots\.txt|/favicon\.ico)$},
+        path => qr{^(?:/robots\.txt|/favicon\.ico|/apple-touch-icon\.png)$},
         root => File::Spec->catdir($root, 'static');
 
     mount '/socket.io/socket.io.js' =>
