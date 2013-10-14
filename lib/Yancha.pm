@@ -58,7 +58,7 @@ sub default_tag {
 sub extract_tags_from_text {
     my ( $self, $str ) = @_;
     # Pre範囲内( >>〜<< >|{syntax}|〜||<はタグとみなさない
-    $str =~ s/>|[^\|]|\n.*\n||<//mg;
+    $str =~ s/>\|[^\|]\|\n.*\n\|\|<//mg;
     $str =~ s/>>\n.*\n<<//mg;
     # 将来的にはUnicode Propertyのword(\w)にしたいが、ui側の変更も必要
     # タグ前のスペース、全角にも対応
