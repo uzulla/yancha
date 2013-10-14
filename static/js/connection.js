@@ -484,7 +484,7 @@ function clear () {
 
 //メッセージのタグを取得
 function getTagsInMessage (message) {
-  return (message.match(/#[a-zA-Z0-9]+/g, '#')!=null) ? message.match(/#[a-zA-Z0-9]+/g, '#') : [];
+  return (message.match(/(^| |　)#[a-zA-Z0-9]+/g, '#')!=null) ? message.match(/#[a-zA-Z0-9]+/g, '#') : [];
 }
 
 //現在購読しているタグの一覧
