@@ -53,7 +53,12 @@
     <p><a class="flat-login-btn" href="<: '/login/twitter/start' | uri :>">Twitterでログイン</a></p>
     <form action="<: '/login' | uri :>" method="post">
       <p>または…シンプルログイン</p>
-      <input type="text" name="nick" placeholder='ニックネーム'><input type="submit" name="login" value="login">
+      <table style="margin-left:auto;margin-right:auto">
+        <tr>
+          <td style="padding:0px;margin:0px;"><input type="text" name="nick" placeholder='ニックネーム' style="margin:0px;border-radius:0px;-webkit-appearance: none;border-width:2px"></td>
+          <td style="padding:0px;margin:0px;"><input type="submit" name="login" value="ログイン" class="flat-login-btn" style="margin:0px;border-style:none;border-radius:0px;-webkit-appearance: none;"></td>
+        </tr>
+      </table>
     </form>
     <br>
     <br>
