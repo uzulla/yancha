@@ -85,14 +85,16 @@
     <table style="margin-left:auto;margin-right:auto">
     <tr>
       <td style="text-align:center">
+        <div class="flat-b-btn" onclick='logout()'>logout</div>
         <div class="flat-b-btn" onclick='reset_unread()'>clear unread</div>
         <div class="flat-b-btn" onclick='$(window).scrollTop(0);'>Scroll<br>Top</div>
-        <div class="flat-b-btn" onclick='$(window).scrollTop(10000000);'>Scroll<br>Bottom</div>
       </td>
     </tr>
     <tr>
       <td style="text-align:center">
+        <a class="flat-b-btn" href="http://yairc.cfe.jp:5000/">pyazo<br>uploader</a>
         <div class="flat-b-btn" onclick='hideControlpad()'>close</div>
+        <div class="flat-b-btn" onclick='$(window).scrollTop(10000000);'>Scroll<br>Bottom</div>
       </td>
     </tr>
     </table>    
@@ -125,34 +127,6 @@
           </table>
           <span style="font-size:60%;">※クリックでOn/Off</span>
           <div id="tags">
-          </div>
-          SETTINGS
-          <div style="border-bottom:1px #999 solid;padding:3px;">
-            <label><input type="checkbox" id="sound" checked=checked>音をならす</label><br>
-            <label><input type="checkbox" id="disp_announcement">サーバーメッセージを表示</label>
-          </div>
-          ACTIONS
-          <div style="border-bottom:1px #999 solid;padding:3px;">
-            <button onclick="logout()">Logout</button>
-          </div>
-    
-          HINTS<br>
-          <a href="<: '/search' | uri :>" target="_blank" style="font-size:80%;">過去ログ</a><br>
-          <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
-            Shift+Enterで改行<br>
-            ・コードハイライト<br>
-            &gt;|javascript|<br>
-            CODE<br>
-            ||&lt;<br>
-            &gt;|perl|<br>
-            CODE<br>
-            ||&lt;<br>
-            ・PRE<br>
-            &gt;&gt;<br>
-            テキスト<br>
-            &lt;&lt;<br>
-            ・画像ポスト<br>
-            <a href="http://yairc.cfe.jp:5000/" target="_blank">http://yairc.cfe.jp:5000/</a>
           </div>
           ABOUT<br>
           <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
