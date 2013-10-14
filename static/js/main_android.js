@@ -84,24 +84,24 @@ $(function () {
        wipeRight: function() { showmenu(); },
        //wipeUp: function() { alert("up"); },
        //wipeDown: function() { alert("down"); },
-       min_move_x: 50,
-       min_move_y: 50,
+       min_move_x: 100,
+       min_move_y: 100,
        preventDefaultEvents: false
   });  
 
 
   $("#infomation").touchwipe({
        wipeLeft: function() { hidemenu(); },
-       min_move_x: 50,
-       min_move_y: 50,
+       min_move_x: 100,
+       min_move_y: 100,
        preventDefaultEvents: false
   });  
 
 
   $("#controlpad").touchwipe({
        wipeRight: function() { hideControlpad(); },
-       min_move_x: 50,
-       min_move_y: 50,
+       min_move_x: 100,
+       min_move_y: 100,
        preventDefaultEvents: false
   });
 
