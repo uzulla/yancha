@@ -156,15 +156,16 @@ socket.on('user message', function(hash){
     }
     
     $('.messagecell_plusplus', cell).append(
-      $("<button onclick='addPlusPlus("+hash.id+");'>++</button>"),
+      $("<button onclick='addPlusPlus("+hash.id+");'>++</button>")
+        .bind('touchstart', (function(hash) {
+          return function(){
+            event.preventDefault();                     // ページが動いたり、反応を止める（A タグなど）
+            addPlusPlus(hash.id);
+          }
+        })(hash)),
       ' ',
       ppstar_elm
-    ).bind('touchstart', (function(hash) {
-      return function(){
-          event.preventDefault();                     // ページが動いたり、反応を止める（A タグなど）
-          addPlusPlus(hash.id);
-      }
-    })(hash));
+    );
   }
   
   $('.messagecell_time', cell)
