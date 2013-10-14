@@ -412,17 +412,8 @@ function sendMessage(){
   message = message.replace(/(?:^| |　)#[a-zA-Z0-9]+/mg, '');
   message = message.replace(/\s/g, '');
   if(message.length>0){
-    $.ajax({
-      cache: false,
-      url: '/api/post',
-      data: {
-        token:data.token,
-        text:$('#message').val()
-      },
-      error: function(){ alert('send fail');},
-      beforeSend: function(){input_disable();},
-      dataType:"text"
-    });
+    input_disable();
+    socket.emit('user message', $('#message').val());
   }
   return false;
 }
