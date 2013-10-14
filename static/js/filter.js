@@ -13,10 +13,10 @@ function user_message_filter(message){
     });
 
     //アサマシエイト （サーバー運営費に当てます！！！）
-    message = message.replace(/\/\/www\.amazon\.co\.jp[\x21-\x7e]*\/dp\/([0-9A-Z]{10,13})\/[\x21-\x7e]+/ig, function(whole,s1) {
+    message = message.replace(/\/\/www\.amazon\.co\.jp[\x21-\x7e]*\/dp\/([0-9A-Z]{10,13})[\x21-\x7e]*/ig, function(whole,s1) {
         return( whole+' <br><iframe src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&t=uzulla-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins='+s1+'" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>' );
     });
-    message = message.replace(/\/\/www\.amazon\.co\.jp[\x21-\x7e]*\/gp\/product\/([0-9A-Z]{10,13})\/[\x21-\x7e]+/ig, function(whole,s1) {
+    message = message.replace(/\/\/www\.amazon\.co\.jp[\x21-\x7e]*\/gp\/product\/([0-9A-Z]{10,13})[\x21-\x7e]*/ig, function(whole,s1) {
         return( whole+' <br><iframe src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&t=uzulla-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins='+s1+'" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>' );
     });
 
