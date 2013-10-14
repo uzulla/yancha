@@ -13,7 +13,7 @@ function user_message_filter(message){
     });
 
     //twitter inline https://twitter.com/uzulla/status/389391040480051200
-    message = message.replace(/https:(\/\/twitter.com\/[a-zA-Z0-9\-_]{1,40}\/status\/[0-9]{1,40})/g, function(whole,s1) {
+    message = message.replace(/http[s]*:(\/\/twitter.com\/[a-zA-Z0-9\-_]{1,40}\/status[e|s]*\/[0-9]{1,40})/g, function(whole,s1) {
         return( 'https:'+s1+' <br><blockquote class="twitter-tweet"><a href="'+s1+'"></blockquote><script>twttr.widgets.load();</script>' );
     });
 
