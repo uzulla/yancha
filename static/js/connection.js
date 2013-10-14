@@ -360,6 +360,7 @@ function removeTag(tag){
 function addTag(newtag){
   newtag = newtag.toUpperCase();
   if(newtag.length==0 || newtag.match(/[^A-Z0-9]/)){
+    console.log(newtag);
     alert('タグは /^A-Z0-9/ の必要が有ります。');
     return;
   }
@@ -484,7 +485,11 @@ function clear () {
 
 //メッセージのタグを取得
 function getTagsInMessage (message) {
-  return (message.match(/(^| |　)#[a-zA-Z0-9]+/g, '#')!=null) ? message.match(/#[a-zA-Z0-9]+/g, '#') : [];
+  var list = (message.match(/(^| |　)#[a-zA-Z0-9]+/g, '#')!=null) ? message.match(/(^| |　)#[a-zA-Z0-9]+/g, '#') : [];
+  $.each(list, function(i, val){
+    list[i] = val.replace(/( |　)/,'');
+  });
+  return list;
 }
 
 //現在購読しているタグの一覧
