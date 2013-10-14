@@ -159,7 +159,7 @@ socket.on('user message', function(hash){
       $("<button onclick='addPlusPlus("+hash.id+");'>++</button>")
         .bind('touchstart', (function(hash) {
           return function(){
-            event.preventDefault();                     // ページが動いたり、反応を止める（A タグなど）
+            event.preventDefault(); // onclickが反応しないように
             addPlusPlus(hash.id);
           }
         })(hash)),
