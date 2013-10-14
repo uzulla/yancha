@@ -12,6 +12,14 @@ function user_message_filter(message){
         return( 'https://gist.github.com/'+s1+'/ <br><iframe data-gist-id="'+s1+'" style="width:100%;"></iframe><script>load_gist('+s1+')</script><br>' );
     });
 
+    //アサマシエイト （サーバー運営費に当てます！！！）
+    message = message.replace(/\/\/www\.amazon\.co\.jp[\x21-\x7e]*\/dp\/([0-9A-Z]{10,13})\/[\x21-\x7e]+/ig, function(whole,s1) {
+        return( whole+' <br><iframe src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&t=uzulla-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins='+s1+'" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>' );
+    });
+    message = message.replace(/\/\/www\.amazon\.co\.jp[\x21-\x7e]*\/gp\/product\/([0-9A-Z]{10,13})\/[\x21-\x7e]+/ig, function(whole,s1) {
+        return( whole+' <br><iframe src="//rcm-fe.amazon-adsystem.com/e/cm?lt1=_blank&t=uzulla-22&o=9&p=8&l=as4&m=amazon&f=ifr&ref=ss_til&asins='+s1+'" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>' );
+    });
+
     //twitter inline https://twitter.com/uzulla/status/389391040480051200
     message = message.replace(/http[s]*:(\/\/twitter.com\/[a-zA-Z0-9\-_]{1,40}\/status[e|s]*\/[0-9]{1,40})/g, function(whole,s1) {
         return( 'https:'+s1+' <br><blockquote class="twitter-tweet"><a href="'+s1+'"></blockquote><script>twttr.widgets.load();</script>' );
@@ -60,8 +68,8 @@ function user_message_filter(message){
     message = message.replace(/&#62;\|\|\n([\s\S]*?)\n\|\|&#60;/g, function(whole,s1) {
         return( '<pre>' + s1 + '</pre>' );
     });
-    
-    message = message.replace(/&#62;&#62;\n([\s\S]*?)\n&#60;&#60;/g, function(whole,s1) {
+
+    message = message.replace(/&#62#62;\n([\s\S]*?)\n&#60;&#60;/g, function(whole,s1) {
         return( '<blockquote>' + s1 + '</blockquote>' );
     });  
     
