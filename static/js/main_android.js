@@ -37,7 +37,8 @@ function resizeMessageTextarea(linenum){
     linenum=10; // hard limit
   }
 
-  char_num = $("#message").val().length/17;
+  //改行無しでもそれなりに入力欄を広げる
+  char_num =  Math.floor($("#message").val().length/17); // 17 is Portrait iphone magic number.
 
   var em = ((linenum * 1.2) + (char_num*1.2)) + 'em';
   $("#message").css('height', em);
