@@ -37,7 +37,7 @@ function resizeMessageTextarea(linenum){
     linenum=10; // hard limit
   }
 
-  char_num = $("#message").val().length/40;
+  char_num = $("#message").val().length/17;
 
   var em = ((linenum * 1.2) + (char_num*1.2)) + 'em';
   $("#message").css('height', em);
