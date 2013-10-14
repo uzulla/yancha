@@ -36,5 +36,4 @@ on test => sub {
     requires 'Plack::Util';
     requires 'PocketIO::Test';
     requires 'Test::More';
-    requires 'Test::mysqld';
 };
