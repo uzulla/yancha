@@ -7,6 +7,11 @@ function user_message_filter(message){
     message = message.replace(/http(s)?:\/\/yairc.cfe.jp(:5000)?(\/[\x21-\x7e]+)\.^(png|gif|jpg|jpeg)/gi,
                                                   "<a href='//yairc.cfe.jp$3.$4' target='_blank'>//yairc.cfe.jp$3.$4</a>");
 
+    //gist inline
+    message = message.replace(/https:\/\/gist.github.com\/[a-zA-Z0-9\-_]{1,10}\/([0-9]{1,10})/g, function(whole,s1) {
+        return( 'https://gist.github.com/'+s1+'/ <br><iframe data-gist-id="'+s1+'" style="width:100%;"></iframe><script>load_gist('+s1+')</script><br>' );
+    });
+
     // YT thumbnail
     message = message.replace(/http(s)?:\/\/www.youtube.com\/[\x21-\x7e]*v=([a-zA-Z0-9\-]+)/g,
                               "<img src='//i1.ytimg.com/vi/$2/default.jpg'><br />http://www.youtube.com/watch?v=$2");
@@ -60,8 +65,29 @@ function user_message_filter(message){
 
     message = message.replace(/#([a-zA-Z0-9]+)($| )/g, function(whole,s1) {
         return( ' <span style="color:orange;font-weight:bold" onclick="addTag(\''+s1+'\')">#' + s1 + '</span> ' );
-    });  
+    });
 
     return message;
 
+}
+
+function load_gist(gistid){
+    var gistFrame = $('iframe[data-gist-id='+gistid+']').last().get(0);
+
+    if (gistFrame.contentDocument) {
+        var gistFrameDoc = gistFrame.contentDocument;
+    } else if (gistFrame.contentWindow) {
+        var gistFrameDoc = gistFrame.contentWindow.document;
+    }
+
+    var gistFrameHTML = '<html><body onload="parent.adjustIframeSize('+gistid+', document.body.scrollHeight)"><scr' + 'ipt type="text/javascript" src="https://gist.github.com/' + gistid + '.js"></sc'+'ript></body></html>';
+
+    gistFrameDoc.open();
+    gistFrameDoc.writeln(gistFrameHTML);
+    gistFrameDoc.close();
+}
+
+function adjustIframeSize(gistid, newHeight) {
+    var i = $('iframe[data-gist-id='+gistid+']');
+    i.css('height',parseInt(newHeight) + "px");
 }
