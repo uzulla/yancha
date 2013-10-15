@@ -424,6 +424,34 @@ sub plusplus {
     $self->dbh->do($sql, {}, @binds);
 }
 
+sub count_tags {
+    my ($self, %opt) = @_;
+    my $limit = $opt{limit} // 1000;
+    my $offset = $opt{offset} // 0;
+    my $ignore_tags = $opt{ignore_tags} // ['PUBLIC'];
+
+    my ($sql, @binds) =
+        $self->{sql_maker}->select(
+            'post', ['tags'], {},
+            { limit => $limit, offset => $offset }
+        );
+
+    my $sth = $self->dbh->prepare($sql);
+    $sth->execute(@binds);
+    my %tag_count;
+
+    while (my $row = $sth->fetchrow_hashref) {
+        my @tags = split / /, $row->{tags};
+        for my $tag (@tags) {
+            next if grep { $_ eq $tag } @$ignore_tags;
+            next if $tag eq '';
+            $tag_count{$tag}++;
+        }
+    }
+
+    return \%tag_count;
+}
+
 1;
 __END__
 

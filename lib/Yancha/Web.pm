@@ -41,6 +41,12 @@ app {
     get qr{/hints(\.html)?} => sub {
         return [200, [], render('hints.tx')];
     };
+
+
+    get qr{/tagcloud(\.html)?} => sub {
+        return [200, [], render('tagcloud.tx')];
+    };
+
     
     get qr{^/join_users(\.html)?} => sub {
         return [200, [], render('join_users.tx')];
