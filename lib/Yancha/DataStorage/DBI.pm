@@ -433,7 +433,7 @@ sub count_tags {
     my ($sql, @binds) =
         $self->{sql_maker}->select(
             'post', ['tags'], {},
-            { limit => $limit, offset => $offset }
+            { limit => $limit, offset => $offset, order_by => 'id DESC' }
         );
 
     my $sth = $self->dbh->prepare($sql);
