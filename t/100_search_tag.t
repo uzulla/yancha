@@ -64,5 +64,26 @@ is( scalar(@$posts), 1, 'exact matching' );
 $posts = $storage->search_post( { tag => [qw/tokyoeki/] } );
 is( scalar(@$posts), 1 );
 
+my $tag_counts = $storage->count_tags();
+
+note explain $tag_counts;
+is_deeply $tag_counts, +{
+    BAR         => 1,
+    FOO         => 2,
+    TAG1        => 1,
+    TAG10       => 1,
+    TAG2        => 1,
+    TAG3        => 1,
+    TAG4        => 1,
+    TAG5        => 1,
+    TAG6        => 1,
+    TAG7        => 1,
+    TAG8        => 1,
+    TAG9        => 1,
+    TOKYOEKI    => 1,
+    TOKYOTO     => 1,
+    TOKYOTOTYOU => 1
+};
+
 done_testing;
 
