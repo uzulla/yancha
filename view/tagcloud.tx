@@ -1,7 +1,6 @@
 <html>
 <head>
 <meta charset="utf-8">
-<script src="<: 'js/jquery.js' | static :>"></script>
 <script src="<: 'js/jqcloud-1.0.4.min.js' | static :>"></script>
 <script>
 $(function (){
