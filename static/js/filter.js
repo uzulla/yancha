@@ -8,8 +8,8 @@ function user_message_filter(message){
                                                   "<a href='//yairc.cfe.jp$3.$4' target='_blank'>//yairc.cfe.jp$3.$4</a>");
 
     //gist inline
-    message = message.replace(/https:\/\/gist.github.com\/[a-zA-Z0-9\-_]{1,10}\/([0-9]{1,10})/g, function(whole,s1) {
-        return( 'https://gist.github.com/'+s1+'/ <br><iframe data-gist-id="'+s1+'" style="width:100%;"></iframe><script>load_gist('+s1+')</script><br>' );
+    message = message.replace(/https:\/\/gist.github.com\/[a-zA-Z0-9\-_]{1,30}\/([0-9a-zA-Z]{1,30})/g, function(whole,s1) {
+        return( 'https://gist.github.com/'+s1+'/ <br><iframe data-gist-id="'+s1+'" style="width:100%;"></iframe><script>load_gist("'+s1+'")</script><br>' );
     });
 
     //アサマシエイト （サーバー運営費に当てます！！！）
