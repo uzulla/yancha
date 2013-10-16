@@ -44,6 +44,7 @@ use strict;
             '/api/search'  => [ 'Yancha::API::Search' => {} => 'user message検索用api' ],
             '/api/rss'     => [ 'Yancha::API::Search' => { 'format' => 'rss' } => 'RSS取得用api' ],
             '/api/user'    => [ 'Yancha::API::User'   => {} => 'user data取得用api' ],
+            '/api/tag'     => [ 'Yancha::API::Tag'    => {} => 'tag cloud取得用api' ],
         },
     },
 
