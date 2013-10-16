@@ -57,6 +57,10 @@ app {
         return [200, [], render('quot.tx')];
     };
     
+    post qr{^/quot(ation\.html)?$} => sub {
+        return [200, [], render('quot.tx')];
+    };
+
     get qr{^/search(\.html)?$} => sub {
         return [200, [], render('search.tx')];
     };
