@@ -128,10 +128,10 @@
       <a class="popup" href="hints"><img src="<: 'img/chat_btn_hints.gif' | static :>" alt="chat_btn_hints" width="" height="" class="onclk"/></a>
       <img src="<: 'img/chat_btn_logout.gif' | static :>" alt="chat_btn_logout" width="" height="" class="onclk" onclick="logout()"/>
       <a href="search" target="_blank"><img src="<: 'img/chat_btn_logsearch.gif' | static :>" alt="chat_btn_logsearch" width="" height=""/></a>
-      <img src="<: 'img/chat_sw_select.gif' | static :>" alt="chat_sw_select" width="" class="virtualcheckbox" height="" class="onclk virtualcheckbox" onclick="startOrEndSelectPost(event);"/>
-      <a class="popup" href="tagcloud"><img src="<: 'img/chat_btn_tagcloud.gif' | static :>" alt="chat_btn_cloud" width="" height="" class="onclk"/></a><br>
+      <img src="<: 'img/chat_sw_select.gif' | static :>" alt="chat_sw_select" width="" class="virtualcheckbox" height="" class="onclk virtualcheckbox" onclick="startOrEndSelectPost(event);"/><br>
       <div onclick="reset_unread();" class="flat-b-btn">clear<br>unread</div>
       <div id="toggleNotifyBtn" class="flat-b-btn" onclick="toggle_notify();" >enable notify</div>
+      <a class="flat-b-btn popup" href="tagcloud" onclick="">tag cloud</a>
     </div>
     <img src="<: 'img/chat_h_info.gif' | static :>" alt="action" width="" height="" />
     <div style="font-size:80%; 3px;font-size:80%">
