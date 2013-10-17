@@ -59,7 +59,7 @@ use strict;
             # SQLite を使用したい場合は、上のMySQL 関連の設定を削除してから以下のコメントを解除して使用して下さい
             # 'dbi:SQLite:database=name', undef, undef, { sqlite_unicode => 1 }
         ],
-	'on_connect_exec' => 'SET NAMES utf8mb4;', # for Mysql
+	      'on_connect_exec' => 'SET NAMES utf8mb4;', # for Mysql, SQLiteの場合、コメントアウトしてください。
     },
     'message_log_limit' => 100, # タグ毎のログ数
 
