@@ -10,7 +10,7 @@ use Plack::Builder;
 use Plack::Request;
 use Plack::Response;
 use Plack::Session;
-
+use Encode;
 
 sub build_psgi_endpoint {
     my ( $self, $opt ) = @_;
@@ -28,7 +28,7 @@ sub build_psgi_endpoint {
             my $env     = shift;
             my $req     = Plack::Request->new($env);
             my $session = Plack::Session->new( $env );
-            my $nick    = $req->parameters->{ $name_field };
+            my $nick    = decode_utf8 $req->parameters->{ $name_field };
 
             my $url = $self->redirect_url( $env );
             my $res = Plack::Response->new;
