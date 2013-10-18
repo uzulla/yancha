@@ -81,6 +81,9 @@ $(function () {
   //各エレメントのサイズ計算
   $(window).resize(function(){
     var height = $(window).height() - $('#send-message').height();
+    if(window.navigator.userAgent.toLowerCase().match(/chrome/)){
+      height --; // chromeの謎の描画バグ対応
+    }
     $("#messages").css('height', height+'px');
     $("#lines").css('height', height+'px');
     $("#infomation").css('height', height+'px');
