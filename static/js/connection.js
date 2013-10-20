@@ -304,7 +304,7 @@ socket.on('join tag', function(tags){
         .append( 
           i, 
           "&nbsp;", 
-          $('<a href="javascript:return void();" style="text-decoration:none;">X</a>')
+          $('<span style="text-decoration:none; cursor: pointer; color:#CCCCCC">X</a>')
             .on('click', function(e){
               e.stopPropagation();
               removeTag($(e.target).parent().attr('data-tag-name'));
