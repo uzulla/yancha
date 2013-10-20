@@ -14,12 +14,31 @@ $(function (){
     var normalized = [];
     for (var key in data) {
       var weight = Math.round(data[key] / max * 20);
-      normalized.push({ text: key, weight: weight });
+      normalized.push({
+        text: "#"+key,
+        weight: weight,
+        handlers: { click: (function(key){
+                             return function(){ 
+                               addTag(key);
+                               $('#popup').hide();
+                               $('#overlay').hide();
+                             }
+                           })(key) 
+                  }
+      });
     }
     $('#tagcloud').jQCloud(normalized);
   });
 });
 </script>
+<style>
+/* TODO:move to css file... */
+div#tagcloud span{
+ color:orange;
+ cursor:pointer;
+ font-weight:bold;
+}
+</style>
 </head>
 <body id="body">
 <br />
@@ -28,3 +47,4 @@ $(function (){
 
 </body>
 </html>
+
