@@ -5,6 +5,7 @@ use warnings;
 use Digest::SHA ();
 use Time::HiRes  ();
 use Plack::Response;
+use URI;
 
 sub new {
     my ( $class, @args ) = @_;
@@ -22,14 +23,24 @@ sub redirect_url {
         $root = $self->sys->{ server_info }->{ root };
     }
     $root ||= '';
-    return $url . $root;
+    return URI->new( $url . $root );
 }
 
 sub response_token_only {
-    my ( $self, $token ) = @_;
-    my $res = Plack::Response->new(200);
+    my ( $self, $token, $callback_url ) = @_;
+    my ($code);
     $token = $token->{ token } if ref $token;
-    $res->body( $token );
+    $callback_url //= '';
+
+    my $res = Plack::Response->new();
+    if ($callback_url ne '') {
+        my $uri = URI->new( $callback_url );
+        $uri->query_form( token => $token );
+        $res->redirect( $uri );
+    } else {
+        $res->status(200);
+        $res->body( $token );
+    }
     return $res;
 }
 

@@ -29,12 +29,15 @@ sub build_psgi_endpoint {
         mount '/start' => builder {
             sub {
                 my $env     = shift;
+                my $req = Plack::Request->new($env);
                 my $ret_url = $self->redirect_url( $env, "$endpoint/callback" );
+                if ( my $callback_url = $req->param('callback_url') ) {
+                    $ret_url->query_form( callback_url => $callback_url );
+                }
                 
                 return sub {
                     my $responder = shift;
                     my $headers = [];
-                    my $req     = Plack::Request->new($env);
                     my $session = Plack::Session->new($env);
 
                     AnyEvent::Twitter->get_request_token(
@@ -108,7 +111,8 @@ sub build_psgi_endpoint {
                             my $_token = $user->{ token };
                             
                             if($session->remove( 'token_only' )){
-                              $responder->($self->response_token_only($_token)->finalize);
+                              my $callback_url = $req->param('callback_url');
+                              $responder->($self->response_token_only($_token, $callback_url)->finalize);
                             }else{
                               my $res = Plack::Response->new();
                               my $ret_url = $self->redirect_url( $env );
