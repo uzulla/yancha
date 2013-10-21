@@ -47,8 +47,9 @@ sub build_psgi_endpoint {
             } );
 
             # TODO: ここから下まとめる
-            return $self->response_token_only($user)->finalize
-                                    if $req->parameters->{ token_only };
+            if ( $req->parameters->{ token_only } ) {
+                return $self->response_token_only($user, $req->parameters->{ callback_url } )->finalize;
+            }
 
             $session->set( 'token', $user->{ token } );
 
