@@ -1,18 +1,12 @@
 var filterPlugins = filterPlugins || [];
 
-var defaultFilterPlugins = [
-    filterPluginPyazoAutoInlineDisplay,
-    filterPluginGistInline,
-    filterPluginAsamashiate,
-    filterPluginTwitterInline,
-    filterPluginYoutubeThumbnail,
-    filterPluginAutoLink,
-    filterPluginSyntaxHilight,
-];
-
-for(var i in defaultFilterPlugins){
-    filterPlugins.push(defaultFilterPlugins[i]);
-}
+filterPlugins.push(filterPluginPyazoAutoInlineDisplay);
+filterPlugins.push(filterPluginGistInline);
+filterPlugins.push(filterPluginAsamashiate);
+filterPlugins.push(filterPluginTwitterInline);
+filterPlugins.push(filterPluginYoutubeThumbnail);
+filterPlugins.push(filterPluginAutoLink);
+filterPlugins.push(filterPluginSyntaxHilight);
 
 function user_message_filter(message){
     for(var i in filterPlugins){
