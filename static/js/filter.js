@@ -1,16 +1,16 @@
-var filterPlugins = filterPlugins || [];
+var messageFilters = messageFilters || [];
 
-filterPlugins.push(filterPluginPyazoAutoInlineDisplay);
-filterPlugins.push(filterPluginGistInline);
-filterPlugins.push(filterPluginAsamashiate);
-filterPlugins.push(filterPluginTwitterInline);
-filterPlugins.push(filterPluginYoutubeThumbnail);
-filterPlugins.push(filterPluginAutoLink);
-filterPlugins.push(filterPluginSyntaxHilight);
+messageFilters.push(filterPluginPyazoAutoInlineDisplay);
+messageFilters.push(filterPluginGistInline);
+messageFilters.push(filterPluginAsamashiate);
+messageFilters.push(filterPluginTwitterInline);
+messageFilters.push(filterPluginYoutubeThumbnail);
+messageFilters.push(filterPluginAutoLink);
+messageFilters.push(filterPluginSyntaxHilight);
 
 function user_message_filter(message){
-    for(var i in filterPlugins){
-        message = filterPlugins[i](message);
+    for(var i in messageFilters){
+        message = messageFilters[i](message);
     }
     return message;
 }
