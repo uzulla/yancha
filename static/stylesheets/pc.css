@@ -258,3 +258,11 @@ button.focus {
 .virtualcheckbox{
   cursor: pointer;
 }
+
+/* pyazo dnd upload */
+#file_dnd_box.on {
+    background-color: green;
+}
+#file_dnd_box.send {
+    background-color: red;
+}

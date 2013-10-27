@@ -16,6 +16,7 @@
 <script src="<: 'js/jquery.jwNotify.js' | static :>"></script>
 <script src="<: 'js/jquery.timeago.js' | static :>"></script>
 <script src="<: 'js/tinycon.js' | static :>"></script>
+<script src="<: 'js/dnd_pyazo_upload.js' | static :>"></script>
 <script type="text/javascript" src="<: 'shjs/sh_main.min.js' | static :>"></script>
 <script type="text/javascript" src="<: 'shjs/sh_javascript.min.js' | static :>"></script>
 <script type="text/javascript" src="<: 'shjs/sh_perl.min.js' | static :>"></script>
@@ -132,6 +133,7 @@
       <div onclick="reset_unread();" class="flat-b-btn">clear<br>unread</div>
       <div id="toggleNotifyBtn" class="flat-b-btn" onclick="toggle_notify();" >enable notify</div>
       <a class="flat-b-btn popup" href="tagcloud">tag cloud</a>
+      <div id="file_dnd_box" class="flat-b-btn" onclick="alert('Drag and drop to me!!');">DnD<br>upload</div>
     </div>
     <img src="<: 'img/chat_h_info.gif' | static :>" alt="action" width="" height="" />
     <div style="font-size:80%; 3px;font-size:80%">
@@ -141,8 +143,8 @@
     </ul>
     </div>
   </div>
-  
-  
+
+
   <div id="messages">
     <div id="lines">
     <div style="background-color:#CCCCCC;text-align:center">
