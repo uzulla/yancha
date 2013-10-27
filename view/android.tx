@@ -15,6 +15,8 @@
 <script src="<: '/js/jquery.cookie.js' | static :>"></script>
 <script src="<: '/js/jquery.timeago.js' | static :>"></script>
 <script src="<: '/js/jquery.touchwipe.js' | static :>"></script>
+<script src="<: '/js/jquery.form.js' | static :>"></script>
+<script src="<: '/js/sp_pyazo_upload.js' | static :>"></script>
 <script type="text/javascript" src="<: '/shjs/sh_main.min.js' | static :>"></script>
 <script type="text/javascript" src="<: '/shjs/sh_javascript.min.js' | static :>"></script>
 <script type="text/javascript" src="<: '/shjs/sh_perl.min.js' | static :>"></script>
@@ -129,13 +131,18 @@
           <span style="font-size:60%;">※クリックでOn/Off</span>
           <div id="tags">
           </div>
+          UPLOAD<br>
+          <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
+              <form action="http://yairc.cfe.jp:5000/" method="post" enctype="multipart/form-data">
+                  <input type="file" name="imagedata"><button onclick="android_upload_to_pyazo(event)">送信</button>
+              </form>
+          </div>
           ABOUT<br>
           <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
-            <a href="https://github.com/uzulla/yancha" target="_blank">yanchaについて</a>    
+            <a href="https://github.com/uzulla/yancha" target="_blank">yanchaについて</a>
           </div>
         </td>
       </tr>
-    
       <tr>
         <td colspan="2" style="text-align:center">
           <button style="margin:5px;width:200px;" onclick='hidemenu()'>閉じる</button>
