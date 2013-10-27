@@ -249,6 +249,7 @@ button.focus {
   text-height:1em;
   cursor: pointer;
   text-decoration: none;
+  margin-top:5px;
 }
 
 #toggleNotifyBtn.notify_on {
