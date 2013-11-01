@@ -12,13 +12,13 @@ sub run {
     my $data_storage = $self->sys->data_storage;
 
     my $token = $req->param('token');
-    $self->response({}, 401) unless $token;
+    $self->response("require token.", 401) unless $token;
 
     my $user = $data_storage->get_user_by_token({ token => $token }) || {};
-    $self->response({}, 401) unless keys %$user;
+    $self->response("session not found.", 401) unless keys %$user;
 
     my $text = decode_utf8 $req->param('text') || '';
-    return $self->response({}, 400) unless $text;
+    return $self->response("require text.", 400) unless $text;
 
     my @tags = $self->sys->extract_tags_from_text( $text );
     $self->sys->add_default_tag( \@tags, \$text ) unless @tags;
@@ -28,7 +28,7 @@ sub run {
         tags => \@tags,
         user => $user,
     });
-    return $self->response({}, 400) unless $post;
+    return $self->response("store post fail", 400) unless $post;
 
 
     my $ctx = { record_post => 1 }; # このメッセージに対する各プラグイン間でのやりとり用
@@ -45,7 +45,7 @@ sub run {
 
     $self->sys->send_post_to_tag_joined( $post, \@tags );
 
-    return $self->response({}, 200);
+    return $self->response("success", 200);
 }
 
 1;
