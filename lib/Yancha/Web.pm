@@ -64,6 +64,16 @@ app {
     get qr{^/search(\.html)?$} => sub {
         return [200, [], render('search.tx')];
     };
+
+    get qr{^/low_energy(\.html)?$} => sub {
+        my $req = req;
+        my $env = req->env;
+        #session load
+        my $session = Plack::Session->new( $env );
+        my $token = $session->get('token'); 
+        return [200, [], render('low_energy.tx'=>{token=>$token})];
+    };
+    
 };
     
 1;

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>yancha 省エネ</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+  <link href="<: '/stylesheets/iphone.css' | static :>" rel="stylesheet" />
+  <script src="<: '/js/jquery.js' | static :>"></script>
+  <script src="<: '/js/common.js' | static :>"></script>
+  <script src="<: '/js/filter.js' | static :>"></script>
+  <script src="<: '/js/moment.min.js' | static :>"></script>
+  <script src="<: '/js/jquery.cookie.js' | static :>"></script>
+  <script src="<: '/js/jquery.timeago.js' | static :>"></script>
+  <script src="<: '/js/jquery.scrollto.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_main.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_javascript.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_perl.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_php.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_ruby.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_c.min.js' | static :>"></script>
+  <script type="text/javascript" src="<: '/shjs/sh_python.min.js' | static :>"></script>
+
+  <link type="text/css" rel="stylesheet" href="<: '/shjs/sh_style.css' | static :>">
+
+  <script type="text/javascript" src="<: '/js/search.js' | static :>"></script>
+
+  <script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-19063513-4']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+  $(function(){
+    submitSearchByQueryString();
+  });
+  </script>
+</head>
+<script src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<body>
+:if !$token { # before login --
+
+  <div id="nickname">
+    <div class="header" style="text-align:right; background-color:#004065">
+      <a href="<: '/' | uri :>"><img src="<: '/img/header_logo.png' | static :>"></a>
+    </div>
+    <h1>yancha</h1>
+    <p>yet another network chat</p>
+    <h3>省エネモード</h3>
+    <hr>
+    <p><a class="flat-login-btn" href="<: '/login/twitter/start?callback_url=%2Flow_energy' | uri :>">Twitterでログイン</a></p>
+    <form action="<: '/login' | uri :>" method="post">
+      <input type="hidden" name="callback_url" value="<: '/low_energy' | uri :>" >
+      <p>または…シンプルログイン</p>
+      <table style="margin-left:auto;margin-right:auto">
+        <tr>
+          <td style="padding:0px;margin:0px;"><input type="text" name="nick" placeholder='ニックネーム' style="margin:0px;border-radius:0px;-webkit-appearance: none;border-width:2px"></td>
+          <td style="padding:0px;margin:0px;"><input type="submit" name="login" value="ログイン" class="flat-login-btn" style="margin:0px;border-style:none;border-radius:0px;-webkit-appearance: none;"></td>
+        </tr>
+      </table>
+    </form>
+    <br>
+    <p><a href="/android.html">通常モードはこちら</a></p>
+    <br>
+    <a href="https://github.com/uzulla/yancha" target="_blank">yanchaについて</a>    
+  </div>
+
+: } else { # before login -- after login
+
+<div id="searchform" class="header" style="background-color:#004065; color:white; font-weight:bold;">
+    yancha (<input type="button" value="更新" onclick="submitSearchForm(event);" style="font-size:100%">)
+    <select name="limit">
+      <option value="20">20件</option>  
+      <option value="100">100件</option>
+    </select>
+    <input type="hidden" id="new_is_first" value="1"> 
+</div>
+
+<form action="#" target="_blank" method="post" id="popuper"></form>
+<script>
+function sendMessage(){
+    var token = $("input[name=token]").val();
+    var text = $("input[name=text]").val();
+    if(text.length>0){
+        $.ajax({
+            url: "<: '/api/post' | uri :>",
+            method: "post",
+            data: {
+                token: token,
+                text: text,
+                cache: false
+            },
+            success: function(){
+                submitSearchForm();
+                $("input[name=text]").val('');
+            },
+            error: function(){alert("エラーが発生しました、リロードしてください")},
+            });
+    }
+}
+</script>
+<div id="postform" style="background-color:#CCCCCC;">
+    <form onsubmit="return false">
+        <input type="hidden" name="token" value="<: $token :>">
+        <input name="text" value="">
+        <button onclick="sendMessage()">send</button>
+    </form>
+</div>
+
+<div style="text-align:center;display:none" id="loading_top">
+  <img src="<: '/img/loading.gif' | static :>">
+</div>
+<div id="messages">
+  <div id="scroller">
+    <div id="lines" style="overflow-y:auto;"></div>
+  </div>
+</div>
+<div style="text-align:center;" >
+  <img src="<: '/img/loading.gif' | static :>" id="loading_bottom" style="display:none"><br>
+  <span id="loading_text_bottom"style="display:none">Auto Paging...</span>
+  <span id="loading_finish_text_bottom"style="display:none">not found older post.</span>
+</div>
+
+<div style="display:none">
+  <div id="template_messagecell" class="messagecell">
+  	<img src="<: '/img/nobody.png' | static :>" style="width:48px;height:48px;float: left; margin: 3px;" class="messagecell_img">
+  	<span style="float: right;"><abbr title="" class="timeago messagecell_time"></abbr></span>
+  	<span style="font-weight: bold;" class="messagecell_nickname">noname</span><br>
+  	<div style="overflow: auto;" class="messagecell_text"></div>
+  	<div class="messagecell_plusplus"></div>
+  	<br style="clear: both;">
+  </div>
+</div>
+: } # -- / after login 
+</body>
+</html>
