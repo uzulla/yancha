@@ -48,7 +48,7 @@ sub build_psgi_endpoint {
                         cb => sub {
                             my ($location, $response, $body, $header) = @_;
                             
-                            $session->set( 'token', $response->{oauth_token});
+                            $session->set( 'token', $response->{oauth_token}); # TODO : session で token というキー名は使われているのでリネームすべき
                             $session->set( 'token_secret', $response->{oauth_token_secret} );
                             $session->set( 'token_only', 1 ) if $req->parameters->{ token_only };
 
@@ -109,13 +109,13 @@ sub build_psgi_endpoint {
                               sns_data_cache    => encode_json($response),
                             } );
                             my $_token = $user->{ token };
-                            
+                            $session->set('token', $_token); 
                             if($session->remove( 'token_only' )){
                               my $callback_url = $req->param('callback_url');
                               $responder->($self->response_token_only($_token, $callback_url)->finalize);
                             }else{
                               my $res = Plack::Response->new();
-                              my $ret_url = $self->redirect_url( $env );
+                              my $ret_url = ($req->param('callback_url')) ? $req->param('callback_url') : $self->redirect_url( $env );
                               $res->redirect( $ret_url );
                               $res->cookies->{yancha_auto_login_token} = {
                                   value => $_token,
