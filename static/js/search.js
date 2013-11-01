@@ -39,7 +39,7 @@ function submitSearchForm(){
   $('#loading_bottom').show();
   cancelSelectPostEvent();
 
-  (!$('#check_new_is_first').prop('checked')) ? $('#loading_top').show() : $('#loading_bottom').show(); // loading indicator
+  (!$('#check_new_is_first').prop('checked') || $('#new_is_first').val()=="1") ? $('#loading_top').show() : $('#loading_bottom').show(); // loading indicator
 
   var f = $("#searchform");
   var keyword = $('input[name=keyword]', f).val();
@@ -51,8 +51,8 @@ function submitSearchForm(){
   }
   var time ;
   var time_window = parseInt($('select[name=time_window]', f).val());
-  var sort_key = $('select[name=sort_key]', f).val();
-  var sort_seq = $('select[name=sort_seq]', f).val();
+  var sort_key = ($('select[name=sort_key]', f).val()) ? $('select[name=sort_key]', f).val() : 'created_at_ms';
+  var sort_seq = ($('select[name=sort_seq]', f).val()) ? $('select[name=sort_seq]', f).val() : "desc";
   var order = (sort_seq == 'desc') ? '-'+sort_key : sort_key;
 
   if(time_window && time_window != 0){
@@ -81,6 +81,7 @@ function submitSearch(query) {
     type: 'POST',
     url: getHostRootURL()+"/api/search", // todo
     data: query,
+    cache: false,
     error: function(XMLHttpRequest, textStatus, errorThrown){
       console.log(textStatus);
     },
@@ -104,7 +105,7 @@ function submitSearch(query) {
 function extendSearch(){
   $(window).off('scroll', extendSearchOnScroll);
 
-  (!$('#check_new_is_first').prop('checked')) ? $('#loading_top').show() : $('#loading_bottom').show(); // loading indicator
+  (!$('#check_new_is_first').prop('checked') || $('#new_is_first').val()=="1") ? $('#loading_top').show() : $('#loading_bottom').show(); // loading indicator
 
   var f = $("#searchform");
   var keyword = $('input[name=keyword]', f).val();
@@ -113,8 +114,8 @@ function extendSearch(){
   var last_post_cell = $('#lines .messagecell:last-child').get(0);
   var oldest_post_id = $(last_post_cell).attr('data-post-id');
 
-  var sort_key = $('select[name=sort_key]', f).val();
-  var sort_seq = $('select[name=sort_seq]', f).val();
+  var sort_key = ($('select[name=sort_key]', f).val()) ? $('select[name=sort_key]', f).val() : 'created_at_ms';
+  var sort_seq = ($('select[name=sort_seq]', f).val()) ? $('select[name=sort_seq]', f).val() : "desc"; 
   var order = sort_seq == 'desc' ? '-'+sort_key : sort_key;
 
   var time;
@@ -129,7 +130,8 @@ function extendSearch(){
 
   $.ajax({
     type: 'POST',
-    url: location.href.split('/search')[0]+"/api/search", // todo
+    url: getHostRootURL()+"/api/search",
+    cache: false,
     data: {
       keyword:keyword,
       tag:tag,
@@ -163,7 +165,7 @@ function extendSearch(){
 function drawItemByHashList(list){
   for(var i=0; list.length>i; i++){
     var cell = buildMessageCell(list[i]);
-    ($('#check_new_is_first').prop('checked')) ? $('#lines').append(cell) : $('#lines').prepend(cell);
+    ($('#check_new_is_first').prop('checked') || $('#new_is_first').val()=="1") ? $('#lines').append(cell) : $('#lines').prepend(cell);
     
     if( cell.html().match(/sh_/) ){
       sh_highlightDocument();
@@ -209,7 +211,7 @@ $(function () {
 });
 
 function extendSearchOnScroll(e){ //Auto pagerize
-  if($('#check_new_is_first').prop('checked')){ //Auto Pagerは上>下の時だけ有効にする…しかないよね。
+  if($('#check_new_is_first').prop('checked') || $('#new_is_first').val()=="1"){ //Auto Pagerは上>下の時だけ有効にする…しかないよね。
     var drift = $('body').height() - ( $(window).height()+$(window).scrollTop() ) ;
     if( $('body').height() > $(window).height() ){
       if( drift < 200  &&  drift >= 0 && !pagerize ){ // TODO誤差調整の数値はかなり場当たり的…iPhoneが変
