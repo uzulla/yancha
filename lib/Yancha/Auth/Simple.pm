@@ -30,7 +30,9 @@ sub build_psgi_endpoint {
             my $session = Plack::Session->new( $env );
             my $nick    = decode_utf8 $req->parameters->{ $name_field };
 
-            my $url = $self->redirect_url( $env );
+            my $url = ($req->parameters->{ callback_url }) ? 
+                $req->parameters->{ callback_url } :
+                $self->redirect_url( $env );
             my $res = Plack::Response->new;
             $res->redirect($url);
 
