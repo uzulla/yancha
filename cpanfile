@@ -21,6 +21,7 @@ requires 'SQL::Translator';
 requires 'Time::HiRes';
 requires 'Time::Piece';
 requires 'Try::Tiny';
+requires 'URI';
 requires 'XML::FeedPP';
 requires 'parent';
 requires 'Nephia::Plugin::Dispatch';
