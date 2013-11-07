@@ -28,7 +28,7 @@ my $client = sub {
     my ( $port ) = shift;
     my ( $client1, $client2 ) = t::Utils->create_clients_and_set_tags(
         $port,
-        { nickname => 'client1', tags => ['PUBLIC'] }, 
+        { nickname => 'client1', tags => ['PUBLIC'] },
         { nickname => 'client2', tags => ['PUBLIC'] },
     );
 
@@ -42,16 +42,16 @@ my $client = sub {
         $client2->socket->emit('plusplus', "1");
 
         $cv->begin;
-            
+
         $client1->socket->on( 'user message', sub {
             my $post = $_[1];
-            
+
             if($post->{id} == 1) {
                 is $post->{plusplus}, 1;
-                $cv->end;    
+                $cv->end;
             }
         } );
-    
+
         $cv->wait;
     };
 };

@@ -21,7 +21,7 @@ my $client = sub {
     my ( $port ) = shift;
     my ( $client1, $client2 ) = t::Utils->create_clients_and_set_tags(
         $port,
-        { nickname => 'client1', tags => ['hoge'] }, 
+        { nickname => 'client1', tags => ['hoge'] },
         { nickname => 'client2' }, # default tag is public
     );
 
@@ -32,7 +32,7 @@ my $client = sub {
     } );
 
     $cv->begin; $cv->begin;
-        
+
     $client1->socket->on('user message', sub {
         my $post = $_[1];
         is( $post->{ text }, "Hello Hachioji.pm #HOGE", 'c1 : ' . $post->{ text } );
