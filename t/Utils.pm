@@ -84,7 +84,7 @@ sub create_clients_and_set_tags {
                 else {
                     $client->set_tags( @tags, sub { $cv->end; } );
                 }
-             });
+            });
             $socket->emit('token login', $client->token);
         });
 
