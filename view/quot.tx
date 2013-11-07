@@ -25,15 +25,12 @@
 
     <script type="text/javascript">
 $(function () {
-  var hash=window.location.hash;
-  
   var hashes = getUrlVars();
-  $('#quot_count_value').text(hashes.id.split(',').length);
-  
-  console.log(hashes);
   if(hashes.id){
+    var id_csv = hashes.id.replace(/%2C/g, ',');
+    $('#quot_count_value').text(id_csv.split(',').length);
     $('#quot_count').show();
-    $('input[name=id]', $('#searchform')).val(hashes.id);
+    $('input[name=id]', $('#searchform')).val(id_csv);
     submitSearchForm();
     $('#searchform').hide();
     $('#controls').hide();
@@ -41,7 +38,6 @@ $(function () {
     $('#quot_count').hide();
   }
 });
-
 
 function getUrlVars()
 {
@@ -77,7 +73,7 @@ function getUrlVars()
     <input type="hidden" name="tag" value="">
     <input type="hidden" name="limit" value="1000">
     <input type="hidden" name="keyword" value="">
-    <input type="checkbox" checked="checked" id="check_new_is_first">
+    <input type="checkbox" id="check_new_is_first">
   </form>
   
 </div>
