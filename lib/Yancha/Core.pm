@@ -50,8 +50,9 @@ sub token_login {
     my $user = $self->sys->data_storage->get_user_by_token( $token );
 
     my $user_client_info = $socket->{conn}->{on_connect_args}->[0];
+    my $remote_addr = ($user_client_info->{"X-Forwarded-Host"}) ? $user_client_info->{"X-Forwarded-Host"} : $user_client_info->{REMOTE_ADDR};
     $user->{client} = {
-        remote_addr => $user_client_info->{REMOTE_ADDR},
+        remote_addr => $remote_addr,
         server_info => $user_client_info->{HTTP_HOST},
         user_agent  => $user_client_info->{HTTP_USER_AGENT},
     };
