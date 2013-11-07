@@ -1,3 +1,5 @@
+/* vim: set sw=2 ts=2 : */
+
 var socket = io.connect();
 var data = {
   token:false,
@@ -11,7 +13,7 @@ var data = {
 //各種接続、切断、エラーイベント
 socket.on('connect', function () {
   console.log('Connected to the server');
-  if( is_input_disable() ){ 
+  if( is_input_disable() ){
     clear ();
   }
   $('#connecting').hide();
@@ -67,7 +69,7 @@ socket.on('no session', function (message) {
   }
 });
 
-//delete 
+//delete
 socket.on('delete user message', function(hash){
   var post_id = hash.id;
   if(debug){console.log('delete message'.post_id)};
@@ -75,7 +77,7 @@ socket.on('delete user message', function(hash){
     $('div[data-post-id='+post_id+']').remove();
     updateTitle();
   });
-  
+
 });
 
 function getTimezonStr(){
@@ -105,7 +107,7 @@ function announcement(msg){
     $('.announcementcell_time', cell)
       .attr('title', moment().format("YYYY-MM-DDTHH:mm:ss")+TIMEZONE_STR)
       .text("("+moment().format('YYYY-MM-DD HH:mm')+")")
-      .timeago();    
+      .timeago();
     $('#lines').append(cell);
     hook.doHook('doScrollBottom', undefined);
   }
@@ -122,7 +124,7 @@ socket.on('user message', function(hash){
 
   var cell = $('#template_messagecell').clone().removeAttr('id');
   cell.attr('data-post-id', hash.id);
-  cell.attr('data-tags', hash.tags);  
+  cell.attr('data-tags', hash.tags);
 
   //表示させるべきかフラグを持つ（タグをMuteしていないか）
   var enable_tag_list = getEnableTagList();
@@ -133,7 +135,7 @@ socket.on('user message', function(hash){
       hash.is_mute = false;
     }
   }
-  
+
   if(hash.profile_image_url.length>0){
     $('.messagecell_img', cell).attr('src', hash.profile_image_url).wrap("<a href='"+hash.profile_url+"'></a>");
   }
@@ -154,7 +156,7 @@ socket.on('user message', function(hash){
     }else{
       ppstar_elm.append('★x'+ppnum);
     }
-    
+
     $('.messagecell_plusplus', cell).append(
       $("<button onclick='addPlusPlus("+hash.id+");'>++</button>")
         .bind('touchstart', (function(hash) {
@@ -167,7 +169,7 @@ socket.on('user message', function(hash){
       ppstar_elm
     );
   }
-  
+
   $('.messagecell_time', cell)
     .attr('title', moment(hash.created_at_ms/100).format("YYYY-MM-DDTHH:mm:ss")+TIMEZONE_STR)
     .text("("+moment(hash.created_at_ms/100).format('YYYY-MM-DD HH:mm')+")")
@@ -189,13 +191,13 @@ socket.on('user message', function(hash){
         $(this).addClass('unread');
       });
   }
-  
+
   $('.messagecell_plusplus', cell)
     .on('mouseover', function(){
       $(this).removeClass('uncheck');
     });
 
-  if(hash.is_message_log){ //ログなので、差し込む場所を調整する  
+  if(hash.is_message_log){ //ログなので、差し込む場所を調整する
     var added_flg=false;
     $('#lines div.messagecell').each(function(){
       var _pid = parseInt($(this).attr('data-post-id'));
@@ -204,7 +206,7 @@ socket.on('user message', function(hash){
         added_flg=true;
         return false; //break
       }else if(_pid<hash.id){ // 自分より古いので、一つ進める
-        return; //continue 
+        return; //continue
       }else{ // 自分より新しい物が「初めて」でたので、その前に自分を差し込む
         $(this).before(cell);
         added_flg=true;
@@ -225,7 +227,7 @@ socket.on('user message', function(hash){
     $('#lines').append( cell );
     hook.doHook('doScrollBottom', hash);
   }
-  
+
   if($('#lines .messagecell').length>100){ // 沢山表示すると重くなるので、古い物を消していく
     $('#lines .messagecell:first').remove();
   }
@@ -248,27 +250,27 @@ function updateTitle(){
     prefix = "("+unreadnum+")";
   }
   document.title = prefix+"yancha";
-  
+
   if(typeof(Tinycon) !== 'undefined'){
     Tinycon.setBubble(unreadnum);
   }
-  
+
 }
 
 //トークンを使ってログインした後、レスポンスされる自分情報を保存
 socket.on('token login', function(res){
   if(res.status == 'ok'){
     var ud = res.user_data;
-  
+
     data.nick = ud.nickname;
     data.user_key = ud.user_key;
     data.profile_image_url = ud.profile_image_url;
     data.profile_url = ud.profile_url;
-    
+
     //Cookieに保持されたTagsリストがあれば、それをデフォルトタグにする
     if($.cookie('chat_tag_list')){
       var list = $.cookie('chat_tag_list').split(',');
-      if(list.length>0){ 
+      if(list.length>0){
         data.tags = {};//初期値設定されているなら、tagsを消す
         for( i in list ){
           data.tags[list[i]] = 0;
@@ -301,9 +303,9 @@ socket.on('join tag', function(tags){
     $('#tags').append(
       $('<b class="tagcell'+tagDisabled+'">')
         .attr('data-tag-name', i)
-        .append( 
-          i, 
-          "&nbsp;", 
+        .append(
+          i,
+          "&nbsp;",
           $('<span style="text-decoration:none; cursor: pointer; color:#CCCCCC">X</span>')
             .on('click', function(e){
               e.stopPropagation();
@@ -327,7 +329,7 @@ socket.on('join tag', function(tags){
 
 function tagRefresh(){
   var enable_tag_list = getEnableTagList();
-  
+
   //まずすべてPostを隠して、その後で必要なものだけ復活させる。
   $('#lines div.messagecell').hide();
   for(var i=0; enable_tag_list.length>i;i++){
@@ -337,7 +339,7 @@ function tagRefresh(){
       if(elm.attr('data-tags').match(re)){ //tagを含んでいるので、表示させる
         elm.show();
       }
-    });  
+    });
   }
 }
 
@@ -370,7 +372,7 @@ function addTag(newtag){
     data.tags[newtag] = 0;
   }
   sendTags();
-  
+
   var re = new RegExp('#'+newtag+'( |$)', "i");
   if(!$('#message').val().match(re)){
     $('#message').val($('#message').val()+' #'+newtag);
@@ -392,6 +394,7 @@ function sendMessage(){
     return false;
   }
   var message = $('#message').val();
+
   var unfamiliar_tags = getUnfamiliarTagsInMessage(message);
   if ( unfamiliar_tags ) {
     var taglist = unfamiliar_tags.join(', ');
@@ -413,8 +416,12 @@ function sendMessage(){
   message = message.replace(/(?:^| |　)#[a-zA-Z0-9]+/mg, '');
   message = message.replace(/\s/g, '');
   if(message.length>0){
-    input_disable();
-    socket.emit('user message', $('#message').val());
+    if (message.match(/^fukumotosan$/)) { // `fukumotosan` command
+      socket.emit('fukumotosan');
+    } else {
+      input_disable();
+      socket.emit('user message', $('#message').val());
+    }
   }
   return false;
 }
