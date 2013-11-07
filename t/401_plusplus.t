@@ -6,11 +6,7 @@ use AnyEvent;
 use Yancha::Client;
 use Yancha::DataStorage::DBI;
 
-BEGIN {
-    use Test::More;
-    plan skip_all => 'PocketIO::Client::IO are required to run this test'
-      unless eval { require PocketIO::Client::IO; 1 };
-}
+use Test::More;
 
 my $testdb = t::Utils->setup_testdb( schema => './db/init.sql' );
 my $config = {
