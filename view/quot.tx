@@ -25,8 +25,6 @@
 
     <script type="text/javascript">
 $(function () {
-  var hash=window.location.hash;
-  
   var hashes = getUrlVars();
   $('#quot_count_value').text(hashes.id.split(',').length);
   
