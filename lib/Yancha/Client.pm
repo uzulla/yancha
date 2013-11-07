@@ -12,7 +12,8 @@ my @event_list = (
     'announcement',
     'token login',
     'no session',
-    'plusplus', 
+    'plusplus',
+    'fukumotosan',
 );
 
 sub new {
@@ -36,7 +37,7 @@ sub login {
     my $token = $self->retrieve_token( $url, $login_point, $user );
     $self->token( $token );
 
-    return 1;    
+    return 1;
 }
 
 sub connect {
@@ -64,7 +65,7 @@ sub run {
 
 sub token {
     $_[0]->{ token } = $_[1] if @_ > 1;
-    $_[0]->{ token };    
+    $_[0]->{ token };
 };
 
 sub socket {

@@ -39,6 +39,7 @@ sub dispatch {
         $socket->on( 'token login'  => sub { $self->token_login( @_ ); } );
         $socket->on( 'join tag'     => sub { $self->join_tag( @_ ); } );
         $socket->on( 'disconnect'   => sub { $self->disconnect( @_ ); } );
+        $socket->on( 'fukumotosan'  => sub { $self->fukumotosan( @_ ); } );
         $socket->on( 'delete user message'   => sub { $self->delete_user_message( @_ ); } );
         $self->sys->call_hook( 'connected', $socket, $env );
     };
@@ -47,6 +48,13 @@ sub dispatch {
 sub token_login {
     my ($self, $socket, $token, $cb) = @_;
     my $user = $self->sys->data_storage->get_user_by_token( $token );
+
+    my $user_client_info = $socket->{conn}->{on_connect_args}->[0];
+    $user->{client} = {
+        remote_addr => $user_client_info->{REMOTE_ADDR},
+        server_info => $user_client_info->{HTTP_HOST},
+        user_agent  => $user_client_info->{HTTP_USER_AGENT},
+    };
 
     #TODO tokenが無い場合のエラー
     unless($user){
@@ -172,6 +180,27 @@ sub plusplus {
     $self->sys->send_post_to_tag_joined( $post => $post->{ tags } );
 }
 
+sub fukumotosan {
+    my ( $self, $socket ) = @_;
+
+    $socket->get('user_data' => sub {
+        my ($socket, $err, $user) = @_;
+
+        if(!defined($user)){
+            $socket->emit('no session');
+            return;
+        }
+
+        my $client_info = $user->{client};
+        my $message = <<"EOM";
+User-Agent: $client_info->{user_agent}
+Remote-Address: $client_info->{remote_addr}
+Server: $client_info->{server_info}
+EOM
+
+        $self->user_message($socket, $message);
+    });
+}
 
 sub delete_user_message {
     my ( $self, $socket, $post_id ) = @_;
