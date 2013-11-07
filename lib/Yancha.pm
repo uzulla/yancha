@@ -39,7 +39,7 @@ sub app {
 
 # もうそろそろアクセサ生成モジュールつかうべきか
 
-sub data_storage { $_[0]->{ data_storage } } 
+sub data_storage { $_[0]->{ data_storage } }
 
 sub config { $_[0]->{ config } ||= {} }
 

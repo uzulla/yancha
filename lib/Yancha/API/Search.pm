@@ -72,7 +72,7 @@ sub _search_posts {
             next unless $order_param =~ m/^(-)?(.+)$/;
 
             my $order = defined($1) ? $1 : '';
-            
+
             push @{$attr_orders}, ($order eq '-') ? "$2 DESC" : "$2 ASC";
         }
     }
@@ -107,7 +107,6 @@ sub _search_posts {
         }
     }
 
-    
     if (!@$attr_orders && $format eq 'rss') {
         push @{$attr_orders}, 'id DESC';
     }
@@ -131,20 +130,20 @@ sub _rss_feed {
     $feed->link($server_info->{url});
     $feed->pubDate($last_update_dt);
 
-	foreach my $post ( @$posts) {
+    foreach my $post ( @$posts) {
         next unless $post->{id};
 
-		my $url   = $server_url . "quot/" . $post->{id};
-		my $entry = $feed->add_item($url);
-		my $title = my $content = $post->{nickname}." : ".$post->{text};
-		$entry->guid($url);
-		$title =~ s/[\r\n]//g;
-		$title = substr ($title, 0, 64);
-		$entry->link($url);
-		$entry->title($title);
-		$entry->description($content);
-		$entry->pubDate(_get_datetime_from_ms($post->{created_at_ms}));
-	}
+        my $url   = $server_url . "quot/" . $post->{id};
+        my $entry = $feed->add_item($url);
+        my $title = my $content = $post->{nickname}." : ".$post->{text};
+        $entry->guid($url);
+        $title =~ s/[\r\n]//g;
+        $title = substr ($title, 0, 64);
+        $entry->link($url);
+        $entry->title($title);
+        $entry->description($content);
+        $entry->pubDate(_get_datetime_from_ms($post->{created_at_ms}));
+    }
 
     return $feed->to_string;
 }

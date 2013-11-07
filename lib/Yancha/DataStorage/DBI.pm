@@ -153,7 +153,7 @@ sub remove_user {
 sub count_user {
     my $self = shift;
 
-    my ($sql, @binds) = $self->{sql_maker}->select('user', [\'count(*)']); 
+    my ($sql, @binds) = $self->{sql_maker}->select('user', [\'count(*)']);
     return $self->dbh->selectrow_array($sql, {}, @binds);
 }
 
@@ -289,7 +289,7 @@ sub get_last_posts_by_tag {
         $post->{ tags } = [ split / /, $post->{ tags } ];
         push @posts, $post;
     }
- 
+
     return \@posts;
 }
 
