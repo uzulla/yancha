@@ -73,7 +73,7 @@ function getUrlVars()
     <input type="hidden" name="tag" value="">
     <input type="hidden" name="limit" value="1000">
     <input type="hidden" name="keyword" value="">
-    <input type="checkbox" checked="checked" id="check_new_is_first">
+    <input type="checkbox" id="check_new_is_first">
   </form>
   
 </div>
