@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS `post` (
   `user_key` varchar(64) NOT NULL,
   `profile_image_url` varchar(128) NOT NULL,
   `profile_url` varchar(128) NOT NULL,
+  `full_text` text NOT NULL,
   `plusplus` int(10) NOT NULL DEFAULT 0,
   `created_at_ms` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`)
