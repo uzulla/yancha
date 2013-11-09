@@ -96,7 +96,7 @@
     </tr>
     <tr>
       <td style="text-align:center">
-        <a class="flat-b-btn" target="_blank" href="http://yairc.cfe.jp:5000/">pyazo<br>uploader</a>
+        <a class="flat-b-btn" target="_blank" href="http://pyazo.hachiojipm.org/">pyazo<br>uploader</a>
         <div class="flat-b-btn" onclick='hideControlpad()'>close</div>
         <div class="flat-b-btn" onclick='$(window).scrollTop(10000000);'>Scroll<br>Bottom</div>
       </td>
@@ -134,7 +134,7 @@
           </div>
           UPLOAD<br>
           <div style="font-size:80%; border-bottom:1px #999 solid;padding:3px;font-size:80%">
-              <form action="http://yairc.cfe.jp:5000/" method="post" enctype="multipart/form-data">
+              <form action="http://pyazo.hachiojipm.org/" method="post" enctype="multipart/form-data">
                   <label><input type="checkbox" name="auto_resize" value="1" checked>Pyazoでオートリサイズ</label><br><br>
                   <input type="file" name="imagedata"><button onclick="android_upload_to_pyazo(event)">送信</button>
               </form>

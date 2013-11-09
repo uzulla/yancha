@@ -1,6 +1,6 @@
 $(function(){
 
-var PYAZO_URL = "http://yairc.cfe.jp:5000/";
+var PYAZO_URL = "http://pyazo.hachiojipm.org/";
 
 function handleFileSelect(e) {
     e.stopPropagation();
