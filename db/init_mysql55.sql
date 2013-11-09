@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `post` (
   `profile_image_url` varchar(128) NOT NULL,
   `profile_url` varchar(128) NOT NULL,
   `plusplus` int(10) NOT NULL DEFAULT 0,
+  `full_text` text NOT NULL,
   `created_at_ms` bigint(20) unsigned NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;

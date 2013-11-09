@@ -96,7 +96,7 @@ $(function () {
   loader.installPlugin(SoundJS);
   loader.onComplete = onSoundLoadComplete;
   loader.loadManifest([
-    {src:"http://yairc.cfe.jp/yairc/1ekMA.mp3|http://yairc.cfe.jp/yairc/9E2Ny.ogg",id:"message"}
+    {src:"http://yancha.hachiojipm.org/yairc/1ekMA.mp3|http://yancha.hachiojipm.org/yairc/9E2Ny.ogg",id:"message"}
   ]);
 
   var timeagoTimer = setInterval(function(){

@@ -224,7 +224,7 @@ sub add_post {
 
     my ($sql, @binds) = $self->{sql_maker}->insert('post', [
         (map { $_ => $post->{$_} }
-             qw/user_key nickname profile_image_url profile_url text tags created_at_ms/),
+             qw/user_key nickname profile_image_url profile_url text tags full_text created_at_ms/),
     ]);
     $self->dbh->do($sql, {}, @binds);
 
@@ -328,17 +328,12 @@ sub search_post {
         $where_tag->add('tags', [ map { { 'like' => '% ' . uc($_) . ' %' } } @$tags ]);
     }
 
-    my $where_text_and_nick;
+    my $where_full_text;
     if ( exists $params->{ text } ) {
-        my $where_text = $maker->new_condition;
+        $where_full_text = $maker->new_condition;
         my $keywords = $params->{ text };
         $keywords = ref $keywords ? $keywords : [ $keywords ];
-        $where_text->add( 'text', [ '-and', map { { 'like', => '%' . $_ . '%' } } grep { $_ ne '' } @$keywords ] );
-
-        my $where_nick = $maker->new_condition;
-        $where_nick->add( 'nickname', [ '-and', map { { 'like', => '%' . $_ . '%' } } grep { $_ ne '' } @$keywords ] );
-
-        $where_text_and_nick = $where_text | $where_nick;
+        $where_full_text->add( 'full_text', [ '-and', map { { 'like', => '%' . $_ . '%' } } grep { $_ ne '' } @$keywords ] );
     }
 
     my $where_time;
@@ -375,7 +370,7 @@ sub search_post {
         $older_than_id->add( 'id', { '<' => $params->{ older_than_id } });
     }
 
-    for ( $where_id, $where_tag, $where_text_and_nick, $where_time, $older_than_id ) {
+    for ( $where_id, $where_tag, $where_full_text, $where_time, $older_than_id ) {
         if ( !$where and $_ ) {
             $where = $_;
             next;
@@ -385,7 +380,9 @@ sub search_post {
     }
 
     my ( $sql, @binds ) = $maker->select( 'post', ['*'],  $where, $attr );
-
+#    use Data::Dumper;
+#warn Dumper($sql);
+#warn Dumper(@binds);
 #print STDERR $sql,"\n";
 #print STDERR Data::Dumper::Dumper(\@binds);
     my $sth = $self->dbh->prepare( $sql );
