@@ -15,6 +15,8 @@ use Encode;
 sub build_psgi_endpoint {
     my ( $self, $opt ) = @_;
     my $name_field = $opt->{ 'name_field' } || 'nick';
+    my $allow_avatar_img_url_regex = $opt->{ 'allow_profile_image_url_regex' } || '^http://pyazo.hachiojipm.org/image/';
+
     my $endpoint = $opt->{ endpoint };
 
     # クライアント向け情報に入力欄名を設定する
@@ -40,10 +42,15 @@ sub build_psgi_endpoint {
                 return $res->finalize;
             }
 
+            my $avatar_img_url = $req->parameters->{ 'profile_image_url' } || '';
+            if($avatar_img_url !~ m|$allow_avatar_img_url_regex|){ 
+                $avatar_img_url = '';
+            }
+
             my $user = $self->set_user_into_storage( {
                 user_key          => '-:' . $nick,
                 nickname          => $nick,
-                profile_image_url => '',
+                profile_image_url => $avatar_img_url,
                 profile_url       => '',
                 sns_data_cache    => '',
             } );

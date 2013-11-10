@@ -22,7 +22,8 @@ use strict;
         auth_endpoint => { # endpoint => [ $module_name, $args, $description_for_client ]
             '/login'         => [
                 'Yancha::Auth::Simple'  => {
-                    name_field => 'nick'
+                    name_field => 'nick',
+                    allow_profile_image_url_regex => '^http://pyazo.hachiojipm.org/image/'
                 } => { description => 'Test!' },
             ],
             '/login/basic'   => [
