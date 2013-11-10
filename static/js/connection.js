@@ -137,7 +137,10 @@ socket.on('user message', function(hash){
   }
 
   if(hash.profile_image_url.length>0){
-    $('.messagecell_img', cell).attr('src', hash.profile_image_url).wrap("<a href='"+hash.profile_url+"'></a>");
+    var avatar_img = $('.messagecell_img', cell).attr('src', hash.profile_image_url);
+    if(hash.profile_url.length>0){
+      avatar_img.wrap("<a href='"+hash.profile_url+"'></a>");
+    }
   }
 
   $('.messagecell_nickname', cell).text(hash.nickname);
