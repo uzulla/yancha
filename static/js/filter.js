@@ -2,6 +2,7 @@ var messageFilters = messageFilters || [];
 
 messageFilters.push(messageFilterPyazoAutoInlineDisplay);
 messageFilters.push(messageFilterInstagram);
+messageFilters.push(messageFilterGifboom);
 messageFilters.push(messageFilterGistInline);
 messageFilters.push(messageFilterAsamashiate);
 messageFilters.push(messageFilterTwitterInline);
@@ -22,6 +23,15 @@ function messageFilterInstagram(message){
     message = message.replace(
             /http:\/\/instagram\.com\/p\/([a-zA-Z0-9]+)\//gi ,
             "<iframe src='//instagram.com/p/$1/embed/' width='612' height='710' frameborder='0' scrolling='no' allowtransparency='true'></iframe>"
+            );
+    return message;
+
+}
+
+function messageFilterGifboom(message){
+    message = message.replace(
+            /http:\/\/gifboom.com\/x\/([a-zA-Z0-9]+)/gi ,
+            "<iframe class=\"embed-preview\" src=\"//gifboom.com/x/$1/embed_content\" width=\"600\" height=\"600\" frameborder=\"0\" scrolling=\"no\"></iframe><script async src=\"//medias.gifboom.com/static/embed.1.js\" charset=\"utf-8\"></script>"
             );
     return message;
 
