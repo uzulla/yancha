@@ -1,6 +1,7 @@
 var messageFilters = messageFilters || [];
 
 messageFilters.push(messageFilterPyazoAutoInlineDisplay);
+messageFilters.push(messageFilterInstagram);
 messageFilters.push(messageFilterGistInline);
 messageFilters.push(messageFilterAsamashiate);
 messageFilters.push(messageFilterTwitterInline);
@@ -8,11 +9,22 @@ messageFilters.push(messageFilterYoutubeThumbnail);
 messageFilters.push(messageFilterAutoLink);
 messageFilters.push(messageFilterSyntaxHilight);
 
+
+
 function user_message_filter(message){
     for(var i in messageFilters){
         message = messageFilters[i](message);
     }
     return message;
+}
+
+function messageFilterInstagram(message){
+    message = message.replace(
+            /http:\/\/instagram\.com\/p\/([a-zA-Z0-9]+)\//gi ,
+            "<iframe src='//instagram.com/p/$1/embed/' width='612' height='710' frameborder='0' scrolling='no' allowtransparency='true'></iframe>"
+            );
+    return message;
+
 }
 
 function messageFilterPyazoAutoInlineDisplay(message) {
