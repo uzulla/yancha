@@ -39,10 +39,10 @@ function messageFilterGifboom(message){
 
 function messageFilterPyazoAutoInlineDisplay(message) {
     //auto inline display(pyazo)
-    message = message.replace(/http(s)?:\/\/yairc.cfe.jp(:5000)?(\/[\x21-\x7e]+)\.(png|gif|jpg|jpeg)/gi,
+    message = message.replace(/https?:\/\/yairc.cfe.jp(:5000)?(\/[\x21-\x7e]+)\.(png|gif|jpg|jpeg)/gi,
                               "<a href='//yairc.cfe.jp$3.$4' target='_blank'><img src='//yairc.cfe.jp$3.$4' style='max-width:300px;max-height:300px;'/></a>");
 
-    message = message.replace(/http(s)?:\/\/yairc.cfe.jp(:5000)?(\/[\x21-\x7e]+)\.^(png|gif|jpg|jpeg)/gi,
+    message = message.replace(/https?:\/\/yairc.cfe.jp(:5000)?(\/[\x21-\x7e]+)\.^(png|gif|jpg|jpeg)/gi,
                               "<a href='//yairc.cfe.jp$3.$4' target='_blank'>//yairc.cfe.jp$3.$4</a>");
 
     message = message.replace(/http:\/\/pyazo.hachiojipm.org(:5000)?(\/[\x21-\x7e]+)\.(png|gif|jpg|jpeg)/gi,
