@@ -39,16 +39,16 @@ function messageFilterGifboom(message){
 
 function messageFilterPyazoAutoInlineDisplay(message) {
     //auto inline display(pyazo)
-    message = message.replace(/http(s)?:\/\/yairc.cfe.jp(:5000)?(\/[\x21-\x7e]+)\.(png|gif|jpg|jpeg)/gi,
+    message = message.replace(/https?:\/\/yairc.cfe.jp(:5000)?(\/[\x21-\x7e]+)\.(png|gif|jpg|jpeg)/gi,
                               "<a href='//yairc.cfe.jp$3.$4' target='_blank'><img src='//yairc.cfe.jp$3.$4' style='max-width:300px;max-height:300px;'/></a>");
 
-    message = message.replace(/http(s)?:\/\/yairc.cfe.jp(:5000)?(\/[\x21-\x7e]+)\.^(png|gif|jpg|jpeg)/gi,
+    message = message.replace(/https?:\/\/yairc.cfe.jp(:5000)?(\/[\x21-\x7e]+)\.^(png|gif|jpg|jpeg)/gi,
                               "<a href='//yairc.cfe.jp$3.$4' target='_blank'>//yairc.cfe.jp$3.$4</a>");
 
-    message = message.replace(/http:\/\/pyazo.hachiojipm.org?(\/[\x21-\x7e]+)\.(png|gif|jpg|jpeg)/gi,
+    message = message.replace(/http:\/\/pyazo.hachiojipm.org(:5000)?(\/[\x21-\x7e]+)\.(png|gif|jpg|jpeg)/gi,
                               "<a href='//pyazo.hachiojipm.org$1.$2' target='_blank'><img src='//pyazo.hachiojipm.org$1.$2' style='max-width:300px;max-height:300px;'/></a>");
 
-    message = message.replace(/http:\/\/pyazo.hachiojipm.org?(\/[\x21-\x7e]+)\.(^png|gif|jpg|jpeg)/gi,
+    message = message.replace(/http:\/\/pyazo.hachiojipm.org(:5000)?(\/[\x21-\x7e]+)\.(^png|gif|jpg|jpeg)/gi,
                               "<a href='//pyazo.hachiojipm.org$1.$2' target='_blank'>//pyazo.hachiojipm.org$1.$2</a>");
 
     return message;
@@ -93,7 +93,7 @@ function messageFilterSyntaxHilight(message) {
     message = message.replace(/&#62;\|javascript\|\n([\s\S]*?)\n\|\|&#60;/g, function(whole,s1) {
         return( '<pre class="sh_javascript">' + s1 + '</pre>' );
     });
-    
+
     var foundShHighlight = false;
 
     message = message.replace(/&#62;\|perl\|\n([\s\S]*?)\n\|\|&#60;/g, function(whole,s1) {
@@ -129,8 +129,8 @@ function messageFilterSyntaxHilight(message) {
 
     message = message.replace(/&#62;&#62;\n([\s\S]*?)\n&#60;&#60;/g, function(whole,s1) {
         return( '<blockquote>' + s1 + '</blockquote>' );
-    });  
-    
+    });
+
     message = message.replace(/\n/g, "<br />");
 
 
