@@ -93,7 +93,7 @@ function messageFilterSyntaxHilight(message) {
     message = message.replace(/&#62;\|javascript\|\n([\s\S]*?)\n\|\|&#60;/g, function(whole,s1) {
         return( '<pre class="sh_javascript">' + s1 + '</pre>' );
     });
-    
+
     var foundShHighlight = false;
 
     message = message.replace(/&#62;\|perl\|\n([\s\S]*?)\n\|\|&#60;/g, function(whole,s1) {
@@ -129,8 +129,8 @@ function messageFilterSyntaxHilight(message) {
 
     message = message.replace(/&#62;&#62;\n([\s\S]*?)\n&#60;&#60;/g, function(whole,s1) {
         return( '<blockquote>' + s1 + '</blockquote>' );
-    });  
-    
+    });
+
     message = message.replace(/\n/g, "<br />");
 
 
