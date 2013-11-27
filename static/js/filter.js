@@ -45,10 +45,10 @@ function messageFilterPyazoAutoInlineDisplay(message) {
     message = message.replace(/http(s)?:\/\/yairc.cfe.jp(:5000)?(\/[\x21-\x7e]+)\.^(png|gif|jpg|jpeg)/gi,
                               "<a href='//yairc.cfe.jp$3.$4' target='_blank'>//yairc.cfe.jp$3.$4</a>");
 
-    message = message.replace(/http:\/\/pyazo.hachiojipm.org?(\/[\x21-\x7e]+)\.(png|gif|jpg|jpeg)/gi,
+    message = message.replace(/http:\/\/pyazo.hachiojipm.org(:5000)?(\/[\x21-\x7e]+)\.(png|gif|jpg|jpeg)/gi,
                               "<a href='//pyazo.hachiojipm.org$1.$2' target='_blank'><img src='//pyazo.hachiojipm.org$1.$2' style='max-width:300px;max-height:300px;'/></a>");
 
-    message = message.replace(/http:\/\/pyazo.hachiojipm.org?(\/[\x21-\x7e]+)\.(^png|gif|jpg|jpeg)/gi,
+    message = message.replace(/http:\/\/pyazo.hachiojipm.org(:5000)?(\/[\x21-\x7e]+)\.(^png|gif|jpg|jpeg)/gi,
                               "<a href='//pyazo.hachiojipm.org$1.$2' target='_blank'>//pyazo.hachiojipm.org$1.$2</a>");
 
     return message;
