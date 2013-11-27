@@ -40,10 +40,10 @@ function messageFilterGifboom(message){
 function messageFilterPyazoAutoInlineDisplay(message) {
     //auto inline display(pyazo)
     message = message.replace(/https?:\/\/yairc.cfe.jp(:5000)?(\/[\x21-\x7e]+)\.(png|gif|jpg|jpeg)/gi,
-                              "<a href='//yairc.cfe.jp$3.$4' target='_blank'><img src='//yairc.cfe.jp$3.$4' style='max-width:300px;max-height:300px;'/></a>");
+                              "<a href='//yairc.cfe.jp$2.$3' target='_blank'><img src='//yairc.cfe.jp$3.$4' style='max-width:300px;max-height:300px;'/></a>");
 
     message = message.replace(/https?:\/\/yairc.cfe.jp(:5000)?(\/[\x21-\x7e]+)\.^(png|gif|jpg|jpeg)/gi,
-                              "<a href='//yairc.cfe.jp$3.$4' target='_blank'>//yairc.cfe.jp$3.$4</a>");
+                              "<a href='//yairc.cfe.jp$2.$3' target='_blank'>//yairc.cfe.jp$3.$4</a>");
 
     message = message.replace(/http:\/\/pyazo.hachiojipm.org(:5000)?(\/[\x21-\x7e]+)\.(png|gif|jpg|jpeg)/gi,
                               "<a href='//pyazo.hachiojipm.org$1.$2' target='_blank'><img src='//pyazo.hachiojipm.org$1.$2' style='max-width:300px;max-height:300px;'/></a>");
