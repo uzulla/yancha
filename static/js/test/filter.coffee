@@ -55,3 +55,42 @@ describe '#messageFilterPyazoAutoInlineDisplay', ->
         uri = 'https' + host
         it '非対応ファイルタイプはそのままリンクとして扱う', ->
           filter.messageFilterPyazoAutoInlineDisplay(uri).should.equal(expected)
+
+  describe 'pyazo.hachiojipm.org', ->
+    describe '対応しているファイル', ->
+      expected = (extension) ->
+        return "<a href='//pyazo.hachiojipm.org/testIMAGE123.#{extension}' target='_blank'><img src='//pyazo.hachiojipm.org/testIMAGE123.#{extension}' style='max-width:300px;max-height:300px;'/></a>"
+
+      baseUri = 'http://pyazo.hachiojipm.org/testIMAGE123.'
+      it 'jpegを受け入れて変換する', ->
+        extension = 'jpeg'
+        filter.messageFilterPyazoAutoInlineDisplay(baseUri + extension).should.equal(expected(extension))
+
+      it 'jpgを受け入れて変換する', ->
+        extension = 'jpg'
+        filter.messageFilterPyazoAutoInlineDisplay(baseUri + extension).should.equal(expected(extension))
+
+      it 'pngを受け入れて変換する', ->
+        extension = 'png'
+        filter.messageFilterPyazoAutoInlineDisplay(baseUri + extension).should.equal(expected(extension))
+
+      it 'gifを受け入れて変換する', ->
+        extension = 'gif'
+        filter.messageFilterPyazoAutoInlineDisplay(baseUri + extension).should.equal(expected(extension))
+
+      describe '5000番ポート', ->
+        baseUri = 'http://pyazo.hachiojipm.org:5000/testIMAGE123.'
+        it 'jpegを受け入れて変換する', ->
+          extension = 'jpeg'
+          filter.messageFilterPyazoAutoInlineDisplay(baseUri + extension).should.equal(expected(extension))
+
+    describe '非対応ファイル', ->
+      uri      = 'http://pyazo.hachiojipm.org/testIMAGE123.docx'
+      expected = "<a href='//pyazo.hachiojipm.org/testIMAGE123.docx' target='_blank'>//pyazo.hachiojipm.org/testIMAGE123.docx</a>"
+      it '非対応ファイルタイプはそのままリンクとして扱う', ->
+        filter.messageFilterPyazoAutoInlineDisplay(uri).should.equal(expected)
+
+      describe '5000番ポート', ->
+        uri = 'http://pyazo.hachiojipm.org:5000/testIMAGE123.docx'
+        it '非対応ファイルタイプはそのままリンクとして扱う', ->
+          filter.messageFilterPyazoAutoInlineDisplay(uri).should.equal(expected)

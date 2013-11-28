@@ -46,7 +46,7 @@ function messageFilterPyazoAutoInlineDisplay(message) {
     message = message.replace(/http:\/\/pyazo.hachiojipm.org(:5000)?(\/[\x21-\x7e]+)\.(png|gif|jpg|jpeg)/gi,
                               "<a href='//pyazo.hachiojipm.org$2.$3' target='_blank'><img src='//pyazo.hachiojipm.org$2.$3' style='max-width:300px;max-height:300px;'/></a>");
 
-    message = message.replace(/http:\/\/pyazo.hachiojipm.org(:5000)?(\/[\x21-\x7e]+)\.(^png|gif|jpg|jpeg)/gi,
+    message = message.replace(/http:\/\/pyazo.hachiojipm.org(:5000)?(\/[\x21-\x7e]+)\.(.+)/gi,
                               "<a href='//pyazo.hachiojipm.org$2.$3' target='_blank'>//pyazo.hachiojipm.org$2.$3</a>");
 
     return message;
