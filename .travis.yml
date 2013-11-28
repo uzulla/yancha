@@ -2,7 +2,7 @@ language: perl
 
 script:
     - npm install -g mocha
-    - npm install -g should --save-dev
+    - npm install --prefix ./static/js/test should --save-dev
     - mocha --reporter spec static/js/test
 
 before_install:
