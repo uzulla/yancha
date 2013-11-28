@@ -1,5 +1,5 @@
 should = require 'should'
-filter = require '../filter.js'
+filter = require '../../../filter.js'
 
 describe '#messageFilterPyazoAutoInlineDisplay', ->
   describe 'yairc.cfe.jp', ->
