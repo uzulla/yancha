@@ -1,7 +1,7 @@
 language: perl
 
 after_script:
-    - npm install -g mocha
+    - npm install -g mocha coffee-script
     - npm install --prefix ./static/js/test should --save-dev
     - mocha static/js/test
 
