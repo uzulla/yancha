@@ -3,7 +3,7 @@ language: perl
 after_script:
     - npm install -g mocha
     - npm install --prefix ./static/js/test should --save-dev
-    - mocha --reporter spec static/js/test
+    - mocha static/js/test
 
 before_install:
     - cpanm --notest --quiet Test::mysqld
