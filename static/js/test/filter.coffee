@@ -1,4 +1,4 @@
-should = require "should"
+should = require 'should'
 filter = require '../filter.js'
 
 describe '#messageFilterPyazoAutoInlineDisplay', ->
@@ -65,3 +65,6 @@ describe '#messageFilterPyazoAutoInlineDisplay', ->
 
       describe '5000番ポート', ->
         it '非対応ファイルタイプはそのままリンクとして扱う', -> filtered_rightly(uri(':5000'))
+
+  describe '全然Pyazoと関係ない文字列', ->
+    it '加工せずに出力', -> filter.messageFilterPyazoAutoInlineDisplay('http://example.com').should.equal('http://example.com')
