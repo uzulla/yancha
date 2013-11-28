@@ -10,8 +10,6 @@ messageFilters.push(messageFilterYoutubeThumbnail);
 messageFilters.push(messageFilterAutoLink);
 messageFilters.push(messageFilterSyntaxHilight);
 
-
-
 function user_message_filter(message){
     for(var i in messageFilters){
         message = messageFilters[i](message);
@@ -160,4 +158,9 @@ function load_gist(gistid){
 function adjustIframeSize(gistid, newHeight) {
     var i = $('iframe[data-gist-id='+gistid+']');
     i.css('height',parseInt(newHeight) + "px");
+}
+
+// For mocha
+if (typeof exports !== 'undefined') {
+   exports.messageFilterPyazoAutoInlineDisplay = messageFilterPyazoAutoInlineDisplay;
 }
