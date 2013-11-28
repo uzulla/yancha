@@ -1,6 +1,6 @@
 language: perl
 
-script:
+after_script:
     - npm install -g mocha
     - npm install --prefix ./static/js/test should --save-dev
     - mocha --reporter spec static/js/test
