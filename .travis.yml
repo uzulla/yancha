@@ -1,5 +1,10 @@
 language: perl
 
+script:
+    - npm install -g mocha
+    - npm install -g should --save-dev
+    - mocha --reporter spec static/js/test
+
 before_install:
     - cpanm --notest --quiet Test::mysqld
     - cpanm --notest --quiet DBD::mysql DBD::SQLite
