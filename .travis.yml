@@ -1,5 +1,10 @@
 language: perl
 
+after_script:
+    - npm install -g mocha coffee-script
+    - npm install --prefix ./static/js/test should --save-dev
+    - (cd static/js/ && mocha test/src)
+
 before_install:
     - cpanm --notest --quiet Test::mysqld
     - cpanm --notest --quiet DBD::mysql DBD::SQLite
