@@ -47,7 +47,7 @@ socket.on('nicknames', function (nicknames) {
   $('#nicknames').empty();
   var join_num = 0;
   for (var i in nicknames) {
-    $('#nicknames').append($('<b>').text(nicknames[i]));
+    $('#nicknames').append($('<b>').text(nicknames[i].nickname)).append('</b>');
     join_num += 1;
   }
   $('#join_num').text(join_num);

@@ -281,7 +281,17 @@ sub _send_lastlog_by_tag_lastusec {
 
 sub _get_uniq_and_anon_nicknames {
     my ( $users ) = @_;
-    return { map { $_->{ nickname } => $_->{ nickname } } values %$users };
+    my @extract_fields = qw/nickname profile_image_url profile_url/;
+
+    my $unique_users = {};
+    for my$user ( values %$users ) {
+        my $unique_user = {};
+        for my$field ( @extract_fields ) {
+            $unique_user->{$field} = $user->{$field};
+        }
+        $unique_users->{ $user->{nickname} } = $unique_user;
+    }
+    return $unique_users;
 }
 
 sub _nickname_and_token {
