@@ -25,8 +25,11 @@ my $client = sub {
         $cv->send;
     } );
 
+    my $nickname = 'test_client';
+    my $profile_image_url = 'http://pyazo.hachiojipm.org/image/my_profile_image_url';
     ok( $client->login(
-            "http://localhost:$port/", => 'login', { nick => 'test_client' }
+            "http://localhost:$port/", => 'login',
+                { nick => $nickname, profile_image_url => $profile_image_url }
       ), 'login' );
     ok( $client->connect, 'connect' );
 
@@ -34,7 +37,8 @@ my $client = sub {
         my ( $self, $socket ) = @_;
 
         $socket->on('nicknames', sub {
-            is( $_[1]->{ test_client }, 'test_client', 'token login' );
+            is( $_[1]->{ $nickname }->{ nickname }, $nickname, 'compared nickname' );
+            is( $_[1]->{ $nickname }->{ profile_image_url }, $profile_image_url, 'compared profile image url' );
             $cv->send;
         });
 
