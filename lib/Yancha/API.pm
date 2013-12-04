@@ -46,7 +46,7 @@ sub response_as_json {
     my ($self, $data, $code) = @_;
     my $res = Plack::Response->new($code || 200);
 
-    $res->content_type( 'application/json' );
+    $res->content_type( 'application/json; charset=utf8' );
     $res->body( encode_json($data) );
 
     return $res;
