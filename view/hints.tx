@@ -32,6 +32,13 @@ CODE
 ・画像ポスト
 <a href="http://pyazo.hachiojipm.org/" target="_blank">http://pyazo.hachiojipm.org/ </a>
 ※Gyazo互換です
+
+・リモートホストの表示
+<textarea rows=1>
+fukumotosan
+</textarea>
+※以下のボタンを押すとリモートホストを表示・送信します
+<button onclick="sendFukumotosan()">福本さん</button>
 </pre>
 
 <script>
@@ -45,6 +52,10 @@ function setPlainPreAndSend($lang){
   var $msg_area = $('#message');
   $msg = $msg_area.val();
   $msg_area.val(">>\n"+$msg+"\n<<\n");
+  $('#send-message').submit();
+}
+function sendFukumotosan() {
+  $('#message').val("fukumotosan");
   $('#send-message').submit();
 }
 </script>
