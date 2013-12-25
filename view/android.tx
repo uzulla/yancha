@@ -97,8 +97,13 @@
     <tr>
       <td style="text-align:center">
         <a class="flat-b-btn" target="_blank" href="http://pyazo.hachiojipm.org/">pyazo<br>uploader</a>
-        <div class="flat-b-btn" onclick='hideControlpad()'>close</div>
+        <a class="flat-b-btn" href="/low_energy">low<br>energy<br>mode</a>
         <div class="flat-b-btn" onclick='$(window).scrollTop(10000000);'>Scroll<br>Bottom</div>
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:center">
+        <div class="flat-b-btn" onclick='hideControlpad()'>close</div>
       </td>
     </tr>
     </table>    

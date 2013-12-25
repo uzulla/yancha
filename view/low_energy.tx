@@ -73,11 +73,8 @@
 : } else { # before login -- after login
 
 <div id="searchform" class="header" style="background-color:#004065; color:white; font-weight:bold;">
-    yancha (<input type="button" value="更新" onclick="submitSearchForm(event);" style="font-size:100%">)
-    <select name="limit">
-      <option value="20">20件</option>  
-      <option value="100">100件</option>
-    </select>
+    yancha <a href="/android.html" style="color:white;">(nomal mode)</a>
+    <input type="hidden" name="limit" value="20">
     <input type="hidden" id="new_is_first" value="1"> 
 </div>
 
@@ -101,14 +98,18 @@ function sendMessage(){
             },
             error: function(){alert("エラーが発生しました、リロードしてください")},
             });
+    }else{
+        submitSearchForm();
     }
 }
 </script>
 <div id="postform" style="background-color:#CCCCCC;">
     <form onsubmit="return false">
+        <table>
         <input type="hidden" name="token" value="<: $token :>">
-        <input name="text" value="">
-        <button onclick="sendMessage()">send</button>
+        <td style="padding:0px;margin:0px;"><input type="text" name="text" style="width:200px;margin:0px;border-radius:0px;-webkit-appearance: none;border-width:2px"></td>
+        <td style="padding:0px;margin:0px;"><button onclick="sendMessage()" class="flat-login-btn" style="padding:10px;margin:3px;border-style:none;border-radius:0px;-webkit-appearance: none;">send/reload</button>
+        </table>
     </form>
 </div>
 
