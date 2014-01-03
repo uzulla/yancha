@@ -103,45 +103,64 @@
       <img src="<: 'img/header_logo.png' | static :>">
     </div>
 
-    <img src="<: 'img/chat_h_online.gif' | static :>" alt="online" width="" height="" />
-    <div id="nicknames_header"><a href="<: '/join_users' | uri :>" target="_blank">ログインユーザー一覧</a>&nbsp;<span id="join_num">0</span>人</div>
-    <div id="nicknames">
-    </div>
-    <img src="<: 'img/chat_h_tags.gif' | static :>" alt="tags" width="" height="" />
-    <div id="tags">
-    </div>
-    <table>
-      <tr>
-        <td>
-          <input id="tagname" type="text" style="width:100px;height:25px;margin:0px;padding:0px;border:0px;">
-        <td style="width:50px">
-          <input type=image src="<: 'img/chat_btn_tagadd.gif' | static :>" onclick="addTag($('#tagname').val());$('#tagname').val('');return false;" style="vertical-align:top;height:25px;margin:0px;padding:0px;border:0px;">
-    </table>
-    <img src="<: 'img/chat_h_settings.gif' | static :>" alt="settings" width="" height="" />
-    <div style="padding-left:5px;">
-      <ul style="list-style-type:none;padding:0px;margin:0px;">
-        <li style="float:left"><img src="<: 'img/chat_sw_notice.gif' | static :>" alt="notice" width="" height="" class="virtualcheckbox" id="disp_announcement" onclick="toggleVirtualCheckbox(event)" /><li>
-        <li style="margin-left:5px;float:left"><img src="<: 'img/chat_sw_sound.gif' | static :>" alt="sound" width="" height="" class="virtualcheckbox" id="sound" checked=checked onclick="toggleVirtualCheckbox(event)" checked="checked" /><li>
-      </ul><br style="clear:both">
-    </div>
-    <img src="<: 'img/chat_h_action.gif' | static :>" alt="action" width="" height="" />
-    <div style="padding-left:5px;">
-      <a class="popup" href="hints"><img src="<: 'img/chat_btn_hints.gif' | static :>" alt="chat_btn_hints" width="" height="" class="onclk"/></a>
-      <img src="<: 'img/chat_btn_logout.gif' | static :>" alt="chat_btn_logout" width="" height="" class="onclk" onclick="logout()"/>
-      <a href="search" target="_blank"><img src="<: 'img/chat_btn_logsearch.gif' | static :>" alt="chat_btn_logsearch" width="" height=""/></a>
-      <img src="<: 'img/chat_sw_select.gif' | static :>" alt="chat_sw_select" width="" class="virtualcheckbox" height="" class="onclk virtualcheckbox" onclick="startOrEndSelectPost(event);"/><br>
-      <div onclick="reset_unread();" class="flat-b-btn">clear<br>unread</div>
-      <div id="toggleNotifyBtn" class="flat-b-btn" onclick="toggle_notify();" >enable notify</div>
-      <a class="flat-b-btn popup" href="tagcloud">tag cloud</a>
-      <div id="file_dnd_box" class="flat-b-btn" onclick="alert('Drag and drop to me!!');">DnD<br>upload</div>
-    </div>
-    <img src="<: 'img/chat_h_info.gif' | static :>" alt="action" width="" height="" />
-    <div style="font-size:80%; font-size:80%">
-    <ul style="padding-left:20px">
-      <li><a class="popup" href="about">yanchaについて</a></li>
-      <li><a href="https://www.github.com/uzulla/yancha" target="_blank">github:yancha</a></li>
-    </ul>
-    </div>
+    <section id="online_info">
+      <h1>ONLINE<span class="note"> - <span id="join_num">0</span>人</span></h1>
+      <div class="inner_section">
+        <div id="nicknames"></div>
+        <div id="nicknames_header"><a href="<: '/join_users' | uri :>" target="_blank">ログインユーザー一覧</a></div>
+      </div>
+    </section>
+    <section id="tags_info">
+      <h1>TAGS</h1>
+      <div class="inner_section">
+        <div id="tags"></div>
+        <table>
+          <tr>
+            <td>
+              <input id="tagname" type="text" style="width:100px;height:25px;margin:0px;padding:0px;border:0px;">
+            </td>
+            <td class="sendbtn">
+              <input type=image src="<: 'img/chat_btn_tagadd.gif' | static :>" onclick="addTag($('#tagname').val());$('#tagname').val('');return false;" style="vertical-align:top;height:25px;margin:0px;padding:0px;border:0px;">
+            </td>
+          </tr>
+        </table>
+      </div>
+    </section>
+    <section id="settings_info">
+      <h1>SETTINGS</h1>
+      <div class="inner_section">
+        <ul style="list-style-type:none;padding:0px;margin:0px;">
+          <li style="float:left"><img src="<: 'img/chat_sw_notice.gif' | static :>" alt="notice" width="" height="" class="virtualcheckbox" id="disp_announcement" onclick="toggleVirtualCheckbox(event)" /><li>
+          <li style="margin-left:5px;float:left"><img src="<: 'img/chat_sw_sound.gif' | static :>" alt="sound" width="" height="" class="virtualcheckbox" id="sound" checked=checked onclick="toggleVirtualCheckbox(event)" checked="checked" /><li>
+        </ul>
+      </div>
+    </section>
+    <section id="action_info">
+      <h1>ACTION</h1>
+      <div class="inner_section">
+        <ul id="action1" class="actionlist">
+          <li class="flat-b-btn onclk"><a class="popup" href="hints">HINTS</a></li>
+          <li class="flat-b-btn onclk" onclick="logout()">LOGOUT</li>
+          <li class="flat-b-btn"><a href="search" target="_blank">LOG SEARCH</a></li>
+          <li class="flat-b-btn onclk" onclick="startOrEndSelectPost(event);">SELECT START</li>
+        </ul>
+        <ul id="action2" class="actionlist">
+          <li class="flat-b-btn" onclick="reset_unread();">CLEAR<br>UNREAD</li>
+          <li class="flat-b-btn" id="toggleNotifyBtn" onclick="toggle_notify();" >ENABLE NOTIFY</li>
+          <li class="flat-b-btn"><a class="popup" href="tagcloud">TAG CLOUD</a></li>
+          <li class="flat-b-btn" id="file_dnd_box" onclick="alert('Drag and drop to me!!');">DnD<br>UPLOAD</li>
+        </ul>
+      </div>
+    </section>
+    <section id="info_info">
+      <h1>INFO</h1>
+      <div class="inner_section">
+        <ul>
+          <li><a class="popup" href="about">yanchaについて</a></li>
+          <li><a href="https://www.github.com/uzulla/yancha" target="_blank">github:yancha</a></li>
+        </ul>
+      </div>
+    </section>
   </div>
 
 

@@ -1,22 +1,22 @@
-div, body{
-padding:0px;
-margin:0px;
+div, body {
+  padding: 0px;
+  margin: 0px;
 }
 
-a{
-  color:#f25d06;
+a {
+  color: #f25d06;
 }
 
-pre{
-background-color: #CCCCCC;
-font-size:90%;
-border: dotted 2px #888888;
+pre {
+  background-color: #CCCCCC;
+  font-size: 90%;
+  border: dotted 2px #888888;
 }
 
-blockquote{
-background-color: #CCCCCC;
-font-size:90%;
-border: dotted 2px #888888;
+blockquote {
+  background-color: #CCCCCC;
+  font-size: 90%;
+  border: dotted 2px #888888;
 }
 
 #nickname, #connecting, #loading {
@@ -38,88 +38,51 @@ border: dotted 2px #888888;
   padding: 10px;
 }
 
-
-#messages div.messagecell{
+#messages div.messagecell {
   font-size: 12px;
   background: #eeeeee;
-  padding:3px;
+  padding: 3px;
 }
+
 #messages div.messagecell:nth-child(even) {
   background: #fafafa;
 }
+
 #messages div.unread {
   background: #ffaaaa;
 }
+
 #messages div.unread:nth-child(even) {
   background: #ff9999;
 }
+
 #messages div.uncheck {
   color: red;
 }
 
-#messages div.selectedMessageCell{
-  background-color:red !important;
+#messages div.selectedMessageCell {
+  background-color: red !important;
 }
 
-
-.onclk{
-  cursor:pointer;
+.onclk {
+  cursor: pointer;
 }
 
 #lines {
   overflow: auto;
   overflow-x: auto;
   overflow-y: scroll;
-  padding:0px;
-  margin:0px;
-}
-
-#infomation{
-  background-color: #bfd8e7;
-  width:295px;
-  float:right;
-  overflow-y:scroll;
-}
-
-#infomation #nicknames ,#infomation #tags {
-  font: 11px Helvetica;
-}
-
-#infomation #nicknames b{ 
-  display: inline-block;
-  color: #000017;
-  padding: 3px 6px;
-  margin-right: 5px;
-  margin-bottom: 5px;
-}
-
-#infomation #tags{
-  padding:3px;
-  
-}
-#infomation #tags b.tagcell {
-  display: inline-block;
-  color: #fff;
-  background: #f25d07;
-  padding: 3px 6px;
-  margin-right: 5px;
-  margin-bottom: 5px;
-}
-#infomation #tags b.tagcell a {
-  color: #CCC;
-}
-
-#infomation #tags b.disable_tag {
-  background: gray;
+  padding: 0px;
+  margin: 0px;
 }
 
 #send-message textarea {
   border: none;
-  font-size:12px;
-  margin-top:2px;
-  margin-bottom:-2px;
-  padding:0px;
-  width:100%;
+  font-size: 12px;
+  margin-top: 2px;
+  margin-bottom: -2px;
+  padding: 0px;
+  width: 100%;
 }
 
 .messagecell_plusplus button {
@@ -128,38 +91,42 @@ border: dotted 2px #888888;
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0, orange), color-stop(1, #be9200));
   background: -webkit-linear-gradient(top, orange 0%, #be9200 100%);
   background: -moz-linear-gradient(top, orange 0%, #be9200 100%);
-  background: linear-gradient(top, orange 0%, #be9200 100%);
+  background: linear-gradient(top, #ffa500 0%, #be9200 100%);
   border: 0px solid #2e70c4;
   text-shadow: 0 -1px 1px #FFFFFF;
 }
+
 .messagecell_delete button {
   padding: 0px;
   background: gray;
   border: 0px solid gray;
   text-shadow: 0 -1px 1px #FFFFFF;
 }
+
 .messagecell_plusplus button:hover {
   padding: 0px;
   background: orange;
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0, orange), color-stop(1, #be9200));
   background: -webkit-linear-gradient(top, orange 0%, #be9200 100%);
   background: -moz-linear-gradient(top, orange 0%, #be9200 100%);
-  background: linear-gradient(top, orange 0%, #be9200 100%);
+  background: linear-gradient(top, #ffa500 0%, #be9200 100%);
   border: 0px solid #2e70c4;
   text-shadow: 0 -1px 1px #FFFFFF;
 }
 
-.messagecell_plusplus_stars{
-  color:orange;
-  font-weight:bold;
+.messagecell_plusplus_stars {
+  color: orange;
+  font-weight: bold;
 }
-.announcementcell{
+
+.announcementcell {
   background-color: #e6f5c3;
   font-size: 12px;
 }
+
 .announcementcell_text {
   padding-left: 10px;
-  color:#7c7c7c ;
+  color: #7c7c7c;
   font-style: italic;
 }
 
@@ -189,6 +156,7 @@ button {
   text-align: center;
   text-shadow: 0 -1px 1px #2d6dc0;
 }
+
 button:hover,
 button.hover {
   background: darker;
@@ -200,6 +168,7 @@ button.hover {
   cursor: pointer;
   text-shadow: 0 -1px 1px #2c6bbb;
 }
+
 button:active,
 button.active {
   background: #2e70c4;
@@ -207,63 +176,166 @@ button.active {
   border-bottom: 1px solid #2861aa;
   text-shadow: 0 -1px 1px #2b67b5;
 }
+
 button:focus,
 button.focus {
   outline: none;
-  -webkit-box-shadow: 0 1px 0 0 rgba(255,255,255,0.4), 0 0 4px 0 #377ad0;
-  -moz-box-shadow: 0 1px 0 0 rgba(255,255,255,0.4), 0 0 4px 0 #377ad0;
-  box-shadow: 0 1px 0 0 rgba(255,255,255,0.4), 0 0 4px 0 #377ad0;
+  -webkit-box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.4), 0 0 4px 0 #377ad0;
+  -moz-box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.4), 0 0 4px 0 #377ad0;
+  box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.4), 0 0 4px 0 #377ad0;
 }
 
 #overlay {
-  position        : absolute;
-  top             : 0px;
-  left            : 0px;
-  z-index         : 9999;
-  width           : 100%;
-  height          : 100%;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 9999;
+  width: 100%;
+  height: 100%;
   background-color: #FFFFFF;
-  filter          : alpha(opacity=0);
-  -moz-opacity    : 0.0;
-  opacity         : 0.0;
+  filter: alpha(opacity=0);
+  -moz-opacity: 0.0;
+  opacity: 0.0;
 }
 
 #popup {
-  position        : absolute;
-  border          : 4px solid #ccc;
-  z-index         : 100000;
+  position: absolute;
+  border: 4px solid #ccc;
+  z-index: 100000;
   background-color: #FFFFFF;
-  padding         : 2px 2px 2px 2px;
-  filter          : alpha(opacity=0);
-  -moz-opacity    : 0.0;
-  opacity         : 0.0;
+  padding: 2px 2px 2px 2px;
+  filter: alpha(opacity=0);
+  -moz-opacity: 0.0;
+  opacity: 0.0;
 }
 
-.flat-b-btn{
-  display:inline-block;
-  width:70px;
-  height:70px;
-  background-color:#004065;
-  color:white;
-  padding:5px;
-  text-height:1em;
+.flat-b-btn {
+  display: inline-block;
+  width: 70px;
+  height: 70px;
+  background-color: #004065;
+  color: white;
+  padding: 5px;
+  text-height: 1em;
   cursor: pointer;
   text-decoration: none;
-  margin-top:5px;
+  margin-top: 5px;
 }
 
 #toggleNotifyBtn.notify_on {
   background-color: #f25d07;
 }
 
-.virtualcheckbox{
+.virtualcheckbox {
   cursor: pointer;
 }
 
 /* pyazo dnd upload */
 #file_dnd_box.on {
-    background-color: green;
+  background-color: green;
 }
+
 #file_dnd_box.send {
-    background-color: red;
+  background-color: red;
+}
+
+#infomation section#online_info #nicknames, #infomation section#tags_info .inner_section #tags {
+  font-size: 11px;
+}
+
+#infomation {
+  background-color: #bfd8e7;
+  width: 295px;
+  float: right;
+  overflow-y: scroll;
+  font-family: Helvetica, Helvetica Neue, Arial;
+}
+#infomation section {
+  margin-bottom: 20px;
+}
+#infomation section h1 {
+  font-size: 18px;
+  font-weight: bold;
+  border-bottom: 1px solid white;
+  color: #004065;
+  padding-left: 10px;
+  margin-bottom: 10px;
+}
+#infomation section .inner_section {
+  padding-left: 10px;
+  overflow: hidden;
+  *zoom: 1;
+}
+#infomation section#online_info h1 span.note {
+  font-size: 80%;
+}
+#infomation section#online_info #nicknames b {
+  display: inline-block;
+  color: #000017;
+  margin-right: 10px;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+#infomation section#online_info #nicknames_header {
+  font-size: 12px;
+  text-align: right;
+  padding-right: 10px;
+}
+#infomation section#tags_info .inner_section #tags b.tagcell {
+  display: inline-block;
+  color: white;
+  background-color: #f25d07;
+  padding: 3px 6px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+#infomation section#tags_info .inner_section #tags b.tagcell a {
+  color: #cccccc;
+}
+#infomation section#tags_info .inner_section #tags b.disable_tag {
+  background-color: gray;
+}
+#infomation section#tags_info .inner_section table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+#infomation section#tags_info .inner_section table td {
+  padding: 0;
+}
+#infomation section#tags_info .inner_section table td.sendbtn {
+  width: 50px;
+  padding-left: 4px;
+}
+#infomation section#action_info .inner_section ul {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  *zoom: 1;
+}
+#infomation section#action_info .inner_section ul.actionlist {
+  list-style: none;
+}
+#infomation section#action_info .inner_section ul.actionlist li {
+  vertical-align: top;
+  line-height: 1.2;
+  font-size: 14px;
+  font-weight: bold;
+}
+#infomation section#action_info .inner_section ul.actionlist li a {
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: white;
+  text-decoration: none;
+}
+#infomation section#info_info .inner_section {
+  font-size: 80%;
+}
+#infomation section#info_info .inner_section ul {
+  margin: 0;
+  list-style: none;
+  padding-left: 0px;
+}
+#infomation section#info_info .inner_section ul li {
+  line-height: 1.6;
 }
