@@ -130,23 +130,21 @@
       <h1>SETTINGS</h1>
       <div class="inner_section">
         <ul style="list-style-type:none;padding:0px;margin:0px;">
-          <li style="float:left"><img src="<: 'img/chat_sw_notice.gif' | static :>" alt="notice" width="" height="" class="virtualcheckbox" id="disp_announcement" onclick="toggleVirtualCheckbox(event)" /><li>
-          <li style="margin-left:5px;float:left"><img src="<: 'img/chat_sw_sound.gif' | static :>" alt="sound" width="" height="" class="virtualcheckbox" id="sound" checked=checked onclick="toggleVirtualCheckbox(event)" checked="checked" /><li>
+          <li><img src="<: 'img/chat_sw_notice.gif' | static :>" alt="notice" width="" height="" class="virtualcheckbox" id="disp_announcement" onclick="toggleVirtualCheckbox(event)" /></li>
+          <li><img src="<: 'img/chat_sw_sound.gif' | static :>" alt="sound" width="" height="" class="virtualcheckbox" id="sound" checked=checked onclick="toggleVirtualCheckbox(event)" checked="checked" /></li>
+          <li class="flat-b-btn" id="toggleNotifyBtn" onclick="toggle_notify();" >ENABLE NOTIFY</li>
         </ul>
       </div>
     </section>
     <section id="action_info">
       <h1>ACTION</h1>
       <div class="inner_section">
-        <ul id="action1" class="actionlist">
+        <ul class="actionlist">
           <li class="flat-b-btn onclk"><a class="popup" href="hints">HINTS</a></li>
           <li class="flat-b-btn onclk" onclick="logout()">LOGOUT</li>
           <li class="flat-b-btn"><a href="search" target="_blank">LOG SEARCH</a></li>
           <li class="flat-b-btn onclk" onclick="startOrEndSelectPost(event);">SELECT START</li>
-        </ul>
-        <ul id="action2" class="actionlist">
           <li class="flat-b-btn" onclick="reset_unread();">CLEAR<br>UNREAD</li>
-          <li class="flat-b-btn" id="toggleNotifyBtn" onclick="toggle_notify();" >ENABLE NOTIFY</li>
           <li class="flat-b-btn"><a class="popup" href="tagcloud">TAG CLOUD</a></li>
           <li class="flat-b-btn" id="file_dnd_box" onclick="alert('Drag and drop to me!!');">DnD<br>UPLOAD</li>
         </ul>
