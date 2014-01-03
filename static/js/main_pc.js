@@ -7,7 +7,7 @@ hook.addHook('onUserMessage', function(hash){
     $.jwNotify({
       image : hash.profile_image_url,
       title: hash.nickname,
-      body: hash.text,
+      body: " " + hash.text,
       timeout: 10000
     });
   }
