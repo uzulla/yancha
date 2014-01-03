@@ -1,0 +1,230 @@
+div, body{
+padding:0px;
+margin:0px;
+}
+
+a{
+  color:#f25d06;
+}
+
+pre{
+background-color: #CCCCCC;
+font-size:90%;
+border: dotted 2px #888888;
+}
+
+blockquote{
+background-color: #CCCCCC;
+font-size:90%;
+border: dotted 2px #888888;
+}
+
+#nickname, #connecting, #loading {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  background: #fff;
+  text-align: center;
+  font: 15px Georgia;
+  color: #666;
+  display: block;
+}
+
+#nickname input {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+
+#messages div.messagecell{
+  font-size: 12px;
+  background: #eeeeee;
+  padding:3px;
+}
+#messages div.messagecell:nth-child(even) {
+  background: #fafafa;
+}
+#messages div.unread {
+  background: #ffaaaa;
+}
+#messages div.unread:nth-child(even) {
+  background: #ff9999;
+}
+#messages div.uncheck {
+  color: red;
+}
+
+#messages div.selectedMessageCell{
+  background-color:red !important;
+}
+
+
+.onclk{
+  cursor:pointer;
+}
+
+#lines {
+  overflow: auto;
+  overflow-x: auto;
+  overflow-y: scroll;
+  padding:0px;
+  margin:0px;
+}
+
+#send-message textarea {
+  border: none;
+  font-size:12px;
+  margin-top:2px;
+  margin-bottom:-2px;
+  padding:0px;
+  width:100%;
+}
+
+.messagecell_plusplus button {
+  padding: 0px;
+  background: orange;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, orange), color-stop(1, #be9200));
+  background: -webkit-linear-gradient(top, orange 0%, #be9200 100%);
+  background: -moz-linear-gradient(top, orange 0%, #be9200 100%);
+  background: linear-gradient(top, orange 0%, #be9200 100%);
+  border: 0px solid #2e70c4;
+  text-shadow: 0 -1px 1px #FFFFFF;
+}
+.messagecell_delete button {
+  padding: 0px;
+  background: gray;
+  border: 0px solid gray;
+  text-shadow: 0 -1px 1px #FFFFFF;
+}
+.messagecell_plusplus button:hover {
+  padding: 0px;
+  background: orange;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, orange), color-stop(1, #be9200));
+  background: -webkit-linear-gradient(top, orange 0%, #be9200 100%);
+  background: -moz-linear-gradient(top, orange 0%, #be9200 100%);
+  background: linear-gradient(top, orange 0%, #be9200 100%);
+  border: 0px solid #2e70c4;
+  text-shadow: 0 -1px 1px #FFFFFF;
+}
+
+.messagecell_plusplus_stars{
+  color:orange;
+  font-weight:bold;
+}
+.announcementcell{
+  background-color: #e6f5c3;
+  font-size: 12px;
+}
+.announcementcell_text {
+  padding-left: 10px;
+  color:#7c7c7c ;
+  font-style: italic;
+}
+
+/* generic button css */
+button {
+  margin: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+  display: inline-block;
+  text-decoration: none;
+  background: #43a1f7;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #43a1f7), color-stop(1, #377ad0));
+  background: -webkit-linear-gradient(top, #43a1f7 0%, #377ad0 100%);
+  background: -moz-linear-gradient(top, #43a1f7 0%, #377ad0 100%);
+  background: linear-gradient(top, #43a1f7 0%, #377ad0 100%);
+  border: 1px solid #2e70c4;
+  -webkit-border-radius: 16px;
+  -moz-border-radius: 16px;
+  border-radius: 16px;
+  color: #fff;
+  font-family: "lucida grande", sans-serif;
+  font-size: 11px;
+  font-weight: normal;
+  line-height: 1;
+  padding: 3px 10px 5px 10px;
+  text-align: center;
+  text-shadow: 0 -1px 1px #2d6dc0;
+}
+button:hover,
+button.hover {
+  background: darker;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #43a1f7), color-stop(1, #2e70c4));
+  background: -webkit-linear-gradient(top, #43a1f7 0%, #2e70c4 100%);
+  background: -moz-linear-gradient(top, #43a1f7 0%, #2e70c4 100%);
+  background: linear-gradient(top, #43a1f7 0%, #2e70c4 100%);
+  border: 1px solid #2e70c4;
+  cursor: pointer;
+  text-shadow: 0 -1px 1px #2c6bbb;
+}
+button:active,
+button.active {
+  background: #2e70c4;
+  border: 1px solid #2e70c4;
+  border-bottom: 1px solid #2861aa;
+  text-shadow: 0 -1px 1px #2b67b5;
+}
+button:focus,
+button.focus {
+  outline: none;
+  -webkit-box-shadow: 0 1px 0 0 rgba(255,255,255,0.4), 0 0 4px 0 #377ad0;
+  -moz-box-shadow: 0 1px 0 0 rgba(255,255,255,0.4), 0 0 4px 0 #377ad0;
+  box-shadow: 0 1px 0 0 rgba(255,255,255,0.4), 0 0 4px 0 #377ad0;
+}
+
+#overlay {
+  position        : absolute;
+  top             : 0px;
+  left            : 0px;
+  z-index         : 9999;
+  width           : 100%;
+  height          : 100%;
+  background-color: #FFFFFF;
+  filter          : alpha(opacity=0);
+  -moz-opacity    : 0.0;
+  opacity         : 0.0;
+}
+
+#popup {
+  position        : absolute;
+  border          : 4px solid #ccc;
+  z-index         : 100000;
+  background-color: #FFFFFF;
+  padding         : 2px 2px 2px 2px;
+  filter          : alpha(opacity=0);
+  -moz-opacity    : 0.0;
+  opacity         : 0.0;
+}
+
+.flat-b-btn{
+  display:inline-block;
+  width:70px;
+  height:70px;
+  background-color:#004065;
+  color:white;
+  padding:5px;
+  text-height:1em;
+  cursor: pointer;
+  text-decoration: none;
+  margin-top:5px;
+}
+
+#toggleNotifyBtn.notify_on {
+  background-color: #f25d07;
+}
+
+.virtualcheckbox{
+  cursor: pointer;
+}
+
+/* pyazo dnd upload */
+#file_dnd_box.on {
+    background-color: green;
+}
+#file_dnd_box.send {
+    background-color: red;
+}

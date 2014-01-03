@@ -109,9 +109,9 @@ $(function () {
   if (jwNotify.status) {
     if ( jwNotify.notifications.checkPermission() == 0 ) {
       notify = true; // TODO cookieに保存？
-      $('#toggleNotifyBtn').text('disable notify').addClass("notify_on");
+      $('#toggleNotifyBtn').text('DISABLE NOTIFY').addClass("notify_on");
     }else{
-      $('#toggleNotifyBtn').text('enable notify').removeClass("notify_on");
+      $('#toggleNotifyBtn').text('ENABLE NOTIFY').removeClass("notify_on");
     }
 
     $('#toggleNotifyBtn').click(function(e){
@@ -123,7 +123,7 @@ $(function () {
           body: 'デスクトップ通知が許可されました',
           onshow: function(){
             notify = true;
-            $('#toggleNotifyBtn').text('disable notify').addClass("notify_on");
+            $('#toggleNotifyBtn').text('DISABLE NOTIFY').addClass("notify_on");
           }
         });
       }else{
@@ -134,7 +134,7 @@ $(function () {
             body: 'デスクトップ通知を停止します'
           });
           notify = false;
-          $('#toggleNotifyBtn').text('enable notify').removeClass("notify_on");
+          $('#toggleNotifyBtn').text('ENABLE NOTIFY').removeClass("notify_on");
         } else {
           $.jwNotify({
             image: '/img/nobody.png',
@@ -142,7 +142,7 @@ $(function () {
             body: 'デスクトップ通知が許可されました'
           });
           notify = true;
-          $('#toggleNotifyBtn').text('disable notify').addClass("notify_on");
+          $('#toggleNotifyBtn').text('DISABLE NOTIFY').addClass("notify_on");
         }
       }
     });
@@ -189,12 +189,22 @@ function onSoundLoadComplete(){
 function startOrEndSelectPost(e){
   var elm = $(e.target);
   
-  if(elm.attr('checked')){
+  if(elm.hasClass('checked')){
     endSelectPost();
-    toggleVirtualCheckbox(e);
+    toggleSelectPost(elm);
   }else{
     startSelectPost();
-    toggleVirtualCheckbox(e);
+    toggleSelectPost(elm);
+  }
+}
+
+function toggleSelectPost(elm){
+  if( elm.hasClass("checked")){
+    elm.removeClass("checked");
+    elm.text("SELECT START");
+  }else{
+    elm.addClass("checked");
+    elm.text("SELECT END");
   }
 }
 
