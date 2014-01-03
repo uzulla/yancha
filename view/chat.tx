@@ -118,14 +118,14 @@
           <input type=image src="<: 'img/chat_btn_tagadd.gif' | static :>" onclick="addTag($('#tagname').val());$('#tagname').val('');return false;" style="vertical-align:top;height:25px;margin:0px;padding:0px;border:0px;">
     </table>
     <img src="<: 'img/chat_h_settings.gif' | static :>" alt="settings" width="" height="" />
-    <div style="3px;padding-left:5px;">
+    <div style="padding-left:5px;">
       <ul style="list-style-type:none;padding:0px;margin:0px;">
         <li style="float:left"><img src="<: 'img/chat_sw_notice.gif' | static :>" alt="notice" width="" height="" class="virtualcheckbox" id="disp_announcement" onclick="toggleVirtualCheckbox(event)" /><li>
         <li style="margin-left:5px;float:left"><img src="<: 'img/chat_sw_sound.gif' | static :>" alt="sound" width="" height="" class="virtualcheckbox" id="sound" checked=checked onclick="toggleVirtualCheckbox(event)" checked="checked" /><li>
       </ul><br style="clear:both">
     </div>
     <img src="<: 'img/chat_h_action.gif' | static :>" alt="action" width="" height="" />
-    <div style="3px; padding-left:5px;">
+    <div style="padding-left:5px;">
       <a class="popup" href="hints"><img src="<: 'img/chat_btn_hints.gif' | static :>" alt="chat_btn_hints" width="" height="" class="onclk"/></a>
       <img src="<: 'img/chat_btn_logout.gif' | static :>" alt="chat_btn_logout" width="" height="" class="onclk" onclick="logout()"/>
       <a href="search" target="_blank"><img src="<: 'img/chat_btn_logsearch.gif' | static :>" alt="chat_btn_logsearch" width="" height=""/></a>
@@ -136,7 +136,7 @@
       <div id="file_dnd_box" class="flat-b-btn" onclick="alert('Drag and drop to me!!');">DnD<br>upload</div>
     </div>
     <img src="<: 'img/chat_h_info.gif' | static :>" alt="action" width="" height="" />
-    <div style="font-size:80%; 3px;font-size:80%">
+    <div style="font-size:80%; font-size:80%">
     <ul style="padding-left:20px">
       <li><a class="popup" href="about">yanchaについて</a></li>
       <li><a href="https://www.github.com/uzulla/yancha" target="_blank">github:yancha</a></li>
