@@ -321,6 +321,9 @@ button.focus {
   font-size: 14px;
   font-weight: bold;
 }
+#infomation section#action_info .inner_section ul.actionlist li.checked {
+  background-color: #f25d07;
+}
 #infomation section#action_info .inner_section ul.actionlist li a {
   display: block;
   width: 100%;

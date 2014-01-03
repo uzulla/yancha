@@ -189,12 +189,22 @@ function onSoundLoadComplete(){
 function startOrEndSelectPost(e){
   var elm = $(e.target);
   
-  if(elm.attr('checked')){
+  if(elm.hasClass('checked')){
     endSelectPost();
-    toggleVirtualCheckbox(e);
+    toggleSelectPost(elm);
   }else{
     startSelectPost();
-    toggleVirtualCheckbox(e);
+    toggleSelectPost(elm);
+  }
+}
+
+function toggleSelectPost(elm){
+  if( elm.hasClass("checked")){
+    elm.removeClass("checked");
+    elm.text("SELECT START");
+  }else{
+    elm.addClass("checked");
+    elm.text("SELECT END");
   }
 }
 

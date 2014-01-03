@@ -2,6 +2,7 @@
 @import "a"
 
 $deepblue: #004065
+$dominant: #f25d07
 
 %ft11
   font-size: 11px
@@ -52,7 +53,7 @@ $deepblue: #004065
             &.tagcell
               display: inline-block
               color: #FFF
-              background-color: #f25d07
+              background-color: $dominant
               padding: 3px 6px
               margin-right: 5px
               margin-bottom: 5px
@@ -84,6 +85,9 @@ $deepblue: #004065
               line-height: 1.2
               font-size: 14px
               font-weight: bold
+              &.checked
+                background-color: $dominant
+
               a
                 display: block
                 width: 100%
