@@ -104,3 +104,29 @@ $dominant: #f25d07
           padding-left: 0px
           li
             line-height: 1.6
+
+%button
+  background: url("http://pyazo.hachiojipm.org/image/VVM8UbSXabex0Upo138876683252016.png") no-repeat center center
+  width: 50px
+  height: 20px
+  +border-radius( 4px )
+  +box-sizing( border-box )
+.messagecell_plusplus
+  button
+    @extend %button
+    border: 1px solid #0096db
+    &:hover
+      @extend %button
+      border: 2px solid #0096db
+  .messagecell_plusplus_stars
+    i.star
+      display: inline-block
+      width: 20px
+      height: 0
+      padding-top: 20px
+      background: url("http://pbs.twimg.com/profile_images/378800000726654125/c3aa3512c7eb20ae0ac6b3361b49f2bc_normal.jpeg") no-repeat 0 0
+      background-size: cover
+      margin-right: 2px
+      vertical-align: middle
+        
+        

@@ -151,13 +151,18 @@ socket.on('user message', function(hash){
   //plusplus
   if (cell.attr('data-post-id') > 0) {
     var ppnum = (parseInt(hash.plusplus)||0);
+    console.log( ppnum );
     var ppstar_elm = $("<span class='messagecell_plusplus_stars'>");
+    //var starIcon = '★<span style="font-size:0.01em"> </span>';
+    var starIcon = "<i class='star' />";
+
     if(ppnum<100){
       for(var i=0; ppnum>i; i++){
-        ppstar_elm.append('★<span style="font-size:0.01em"> </span>');
+        ppstar_elm.append(starIcon);
       }
     }else{
-      ppstar_elm.append('★x'+ppnum);
+      //ppstar_elm.append('★x'+ppnum);
+      ppstar_elm.append(starIcon).appned('x' + ppnum);
     }
 
     $('.messagecell_plusplus', cell).append(
