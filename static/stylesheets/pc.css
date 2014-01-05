@@ -355,3 +355,34 @@ button.focus {
 #infomation section#info_info .inner_section ul li {
   line-height: 1.6;
 }
+
+.messagecell_plusplus button, .messagecell_plusplus button:hover {
+  background: url("http://pyazo.hachiojipm.org/image/VVM8UbSXabex0Upo138876683252016.png") no-repeat center center;
+  width: 50px;
+  height: 20px;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.messagecell_plusplus button {
+  border: 1px solid #0096db;
+}
+.messagecell_plusplus button:hover {
+  border: 2px solid #0096db;
+}
+.messagecell_plusplus .messagecell_plusplus_stars i.star {
+  display: inline-block;
+  width: 20px;
+  height: 0;
+  padding-top: 20px;
+  background: url("http://pbs.twimg.com/profile_images/378800000726654125/c3aa3512c7eb20ae0ac6b3361b49f2bc_normal.jpeg") no-repeat 0 0;
+  background-size: cover;
+  margin-right: 2px;
+  vertical-align: middle;
+}
