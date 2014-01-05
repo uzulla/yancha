@@ -65,6 +65,7 @@ function messageFilterAsamashiate(message) {
     //アサマシエイト （サーバー運営費に当てます！！！）
     message = message.replace(/\/\/(?:www\.)?amazon\.(?:co\.)?jp[\x21-\x7e]*\/dp\/([0-9A-Z]{10,13})[\x21-\x7e]*/ig, addAsamashi);
     message = message.replace(/\/\/(?:www\.)?amazon\.(?:co\.)?jp[\x21-\x7e]*\/gp\/product\/([0-9A-Z]{10,13})[\x21-\x7e]*/ig, addAsamashi);
+    message = message.replace(/\/\/(?:www\.)?amazon\.(?:co\.)?jp[\x21-\x7e]*\/ASIN\/([0-9A-Z]{10,13})[\x21-\x7e]*/ig, addAsamashi);
     return message;
 }
 
