@@ -19,7 +19,7 @@ function user_message_filter(message){
 
 function messageFilterInstagram(message){
     message = message.replace(
-            /http:\/\/instagram\.com\/p\/([a-zA-Z0-9]+)\//gi ,
+            /http:\/\/instagram\.com\/p\/([a-zA-Z0-9_]+)\//gi ,
             "<iframe src='//instagram.com/p/$1/embed/' width='612' height='710' frameborder='0' scrolling='no' allowtransparency='true'></iframe>"
             );
     return message;
