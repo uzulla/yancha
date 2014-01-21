@@ -60,22 +60,22 @@ $(function () {
   $('#send-message').submit(sendMessage);
 
   //インプット欄の改行制御
-	$("#send-message").keypress(function(ev) {
-        menuButtonPressed = false;
-		if ((ev.which && ev.which === 13) || (ev.keyCode && ev.keyCode === 13)) { // 13 is Enter
-		  if(ev.shiftKey){
-		    return true;//改行を通す
-		  }else{
-		    $('#send-message').submit();
-		    return false;//改行を通さない
-		  }
-		} else {
-			return true;
-		}
-	});
+  $("#send-message").keypress(function(ev) {
+      menuButtonPressed = false;
+      if ((ev.which && ev.which === 13) || (ev.keyCode && ev.keyCode === 13)) { // 13 is Enter
+          if(ev.shiftKey){
+              return true;//改行を通す
+          }else{
+              $('#send-message').submit();
+              return false;//改行を通さない
+          }
+      } else {
+          return true;
+      }
+  });
 
-	//入力欄の高さ調整
-	$('#message').bind("click mouseup blur keyup input", function() {
+  //入力欄の高さ調整
+  $('#message').bind("click mouseup blur keyup input", function() {
     resizeMessageTextarea();
   });
 
