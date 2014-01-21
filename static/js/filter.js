@@ -129,8 +129,9 @@ function messageFilterSyntaxHilight(message) {
         return( '<blockquote>' + s1 + '</blockquote>' );
     });
 
-    message = message.replace(/\n/g, "<br />");
+    message = message.replace(/`(.*?)`/g, "<code>$1</code>");
 
+    message = message.replace(/\n/g, "<br />");
 
     message = message.replace(/#([a-zA-Z0-9]+)($| )/g, function(whole,s1) {
         return( ' <span style="color:orange;font-weight:bold" onclick="addTag(\''+s1+'\')">#' + s1 + '</span> ' );

@@ -355,3 +355,12 @@ button.focus {
 #infomation section#info_info .inner_section ul li {
   line-height: 1.6;
 }
+
+#messages code {
+  font-size: 90%;
+  margin: 0 2px;
+  padding: 0 5px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.13);
+  border-radius: 3px;
+}
