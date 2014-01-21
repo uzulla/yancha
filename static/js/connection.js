@@ -9,7 +9,6 @@ var data = {
   profile_url:false,
   tags:{PUBLIC:0,FROMLINGR:0}
 };
-var menuButtonPressed = false;
 
 //各種接続、切断、エラーイベント
 socket.on('connect', function () {
@@ -393,10 +392,7 @@ function sendTags(){
 
 //メッセージ送信
 function sendMessage(){
-  if (menuButtonPressed) {
-    return false;
-  }
-  if (is_input_disable()) {
+  if( is_input_disable() ){
     alert("sending...");
     return false;
   }

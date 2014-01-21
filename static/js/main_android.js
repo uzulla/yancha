@@ -48,14 +48,6 @@ function resizeMessageTextarea(linenum){
 //各種初期化
 $(function () {
 
-  $("button#menu_button").click(function () {
-      menuButtonPressed = true; // MENUボタン押下時にメッセージ送られないように
-  });
-
-  $("button#submit_button").click(function () {
-      menuButtonPressed = false;
-  });
-
   //送信ボタン
   $('#send-message').submit(sendMessage);
 
