@@ -28,7 +28,7 @@ sub run {
         return $self->response_as_text( ref $posts eq 'ARRAY' ? $posts : [ $posts ] );
     }
     elsif ( $format eq 'rss' ) {
-        return $self->response( $self->_rss_feed( $posts ), 200, "application/rss+xml; charset=utf-8" );
+        return $self->response( $self->_rss_feed( $posts ), 200, "application/rss+xml; charset=UTF-8" );
     }
     else {
         return $self->response_as_json( $posts );
