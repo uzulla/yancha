@@ -48,11 +48,20 @@ function resizeMessageTextarea(linenum){
 //各種初期化
 $(function () {
 
+  $("button#menu_button").click(function () {
+      menuButtonPressed = true; // MENUボタン押下時にメッセージ送られないように
+  });
+
+  $("button#submit_button").click(function () {
+      menuButtonPressed = false;
+  });
+
   //送信ボタン
   $('#send-message').submit(sendMessage);
 
   //インプット欄の改行制御
 	$("#send-message").keypress(function(ev) {
+        menuButtonPressed = false;
 		if ((ev.which && ev.which === 13) || (ev.keyCode && ev.keyCode === 13)) { // 13 is Enter
 		  if(ev.shiftKey){
 		    return true;//改行を通す
