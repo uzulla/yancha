@@ -15,7 +15,7 @@ hook.addHook('doScrollBottom', function(hash){
 
   if( domHeight - lastElmHeight <= nowBottom + 10 ){ // 10は遊び
     $(window).scrollTop(10000000);
-  }  
+  }
 });
 
 
@@ -50,7 +50,7 @@ $(function () {
 
   //送信ボタン
   $('#send-message').submit(sendMessage);
-  
+
   //インプット欄の改行制御
 	$("#send-message").keypress(function(ev) {
 		if ((ev.which && ev.which === 13) || (ev.keyCode && ev.keyCode === 13)) { // 13 is Enter
@@ -63,8 +63,8 @@ $(function () {
 		} else {
 			return true;
 		}
-	}); 
-	
+	});
+
 	//入力欄の高さ調整
 	$('#message').bind("click mouseup blur keyup input", function() {
     resizeMessageTextarea();
@@ -78,7 +78,7 @@ $(function () {
   var timeagoTimer = setInterval(function(){
     $('abbr.timeago').timeago();
   },60000);
-  
+
   $("#messages").touchwipe({
        wipeLeft: function() { showControlpad(); },
        wipeRight: function() { showmenu(); },
@@ -87,7 +87,7 @@ $(function () {
        min_move_x: 150,
        min_move_y: 150,
        preventDefaultEvents: false
-  });  
+  });
 
 
   $("#infomation").touchwipe({
@@ -95,7 +95,7 @@ $(function () {
        min_move_x: 100,
        min_move_y: 100,
        preventDefaultEvents: false
-  });  
+  });
 
 
   $("#controlpad").touchwipe({
