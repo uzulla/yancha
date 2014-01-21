@@ -66,17 +66,17 @@
     <br>
     <p><a href="/low_energy">省エネモードはこちら</a></p>
     <br>
-    <a href="https://github.com/uzulla/yancha" target="_blank">yanchaについて</a>    
+    <a href="https://github.com/uzulla/yancha" target="_blank">yanchaについて</a>
   </div>
 
   <div id="loading">
     <div class="wrap">please wait...</div>
   </div>
-  
+
   <div id="connecting">
     <div class="wrap">Connecting to server...</div>
-  </div>  
-  
+  </div>
+
   <div id="messages" style="overflow-y:auto">
     <div id="lines" style="overflow-y:auto">
       <div style="background-color:#CCCCCC;text-align:center">
@@ -84,7 +84,7 @@
       </div>
     </div>
   </div>
-  
+
   <div id="controlpad" style="width:100%">
     <table style="margin-left:auto;margin-right:auto">
     <tr>
@@ -106,9 +106,9 @@
         <div class="flat-b-btn" onclick='hideControlpad()'>close</div>
       </td>
     </tr>
-    </table>    
+    </table>
   </div>
-  
+
   <div id="infomation" style="width:100%">
     <table>
       <tr>
@@ -116,10 +116,10 @@
           <button style="margin:5px;width:200px;" onclick='hidemenu()'>閉じる</button>
         </td>
       </tr>
-    
+
       <tr>
         <td>
-    
+
           ONLINE
           <a style="margin-left:10px;" href="<: '/join_users' | uri :>" target="_blank">ユーザー一覧</a>&nbsp;<span id="join_num">0</span>人
           <div id="nicknames">
@@ -155,18 +155,19 @@
           <button style="margin:5px;width:200px;" onclick='hidemenu()'>閉じる</button>
         </td>
       </tr>
-    
+
     </table>
-  </div> 
-  
-  
-  
+  </div>
+
+
+
   <form id="send-message">
     <table style="width:100%">
       <tr>
         <td style="width:100%"><textarea id="message"></textarea></td>
         <td><button style="margin:0px;padding:10px">Send</button></td>
-      <td><button style="margin:0px;padding:10px" onclick='togglemenu()'>MENU</button></td>
+        <td><button style="margin:0px;padding:10px" onclick='togglemenu()' type="button">MENU</button></td>
+      </tr>
     </table>
   </form>
 
@@ -182,7 +183,7 @@
   <div id="template_announcementcell" class="announcementcell">
     <span style="float: right;"><abbr class="timeago announcementcell_time"></abbr></span>
     <div class="announcementcell_text"></div>
-  </div>    
+  </div>
 </div>
 
 </body>
