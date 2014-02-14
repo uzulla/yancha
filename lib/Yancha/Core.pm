@@ -40,6 +40,7 @@ sub dispatch {
         $socket->on( 'join tag'     => sub { $self->join_tag( @_ ); } );
         $socket->on( 'disconnect'   => sub { $self->disconnect( @_ ); } );
         $socket->on( 'fukumotosan'  => sub { $self->fukumotosan( @_ ); } );
+        $socket->on( 'ping'         => sub { $self->ping( @_ ); } );
         $socket->on( 'delete user message'   => sub { $self->delete_user_message( @_ ); } );
         $self->sys->call_hook( 'connected', $socket, $env );
     };
@@ -179,6 +180,21 @@ sub plusplus {
     $post->{is_message_log} = JSON::true;
 
     $self->sys->send_post_to_tag_joined( $post => $post->{ tags } );
+}
+
+sub ping {
+    my ( $self, $socket, $token ) = @_;
+
+    $socket->get('user_data' => sub {
+        my ($socket, $err, $user) = @_;
+
+        if(!defined($user)){
+            $socket->emit('no session');
+            return;
+        }
+
+        $socket->emit('pong', $token);
+    });
 }
 
 sub fukumotosan {

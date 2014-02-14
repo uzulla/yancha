@@ -41,6 +41,14 @@ socket.on('announcement', function (msg) {
   announcement(msg)
 });
 
+//ping pong
+socket.on('pong', function (msg) {
+  console.log(msg);
+});
+function _ping(token){
+  socket.emit('ping', token);
+  console.log("sent ping :"+token);
+}
 
 //サーバから、参加ニックネームリストの更新
 socket.on('nicknames', function (nicknames) {
