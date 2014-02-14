@@ -289,6 +289,11 @@ sub _get_uniq_and_anon_nicknames {
         for my$field ( @extract_fields ) {
             $unique_user->{$field} = $user->{$field};
         }
+        if(!defined $user->{nickname}){
+            warn "blank Nick";
+            warn Dumper($user);	
+            next;
+        }
         $unique_users->{ $user->{nickname} } = $unique_user;
     }
     return $unique_users;
