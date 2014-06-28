@@ -47,7 +47,7 @@ function messageFilterPyazoAutoInlineDisplay(message) {
                               "<a href='//pyazo.hachiojipm.org$2.$3' target='_blank'><img src='//pyazo.hachiojipm.org$2.$3' style='max-width:300px;max-height:300px;'/></a>");
 
     message = message.replace(/http:\/\/pyazo.hachiojipm.org(:5000)?(\/[\x21-\x7e]+)\.(mp4)/gi,
-                              "<video controls src='//pyazo.hachiojipm.org$2.$3' style='max-width:300px;max-height:300px;'/><br><a href='//pyazo.hachiojipm.org$2.$3' target='_blank'>pyazo.hachiojipm.org$2.$3</a>");
+                              "<video controls  preload='none' src='//pyazo.hachiojipm.org$2.$3' style='max-width:300px;max-height:300px;'/><br><a href='//pyazo.hachiojipm.org$2.$3' target='_blank'>pyazo.hachiojipm.org$2.$3</a>");
 
     message = message.replace(/http:\/\/pyazo.hachiojipm.org(:5000)?(\/[\x21-\x7e]+)\.(.+)/gi,
                               "<a href='//pyazo.hachiojipm.org$2.$3' target='_blank'>//pyazo.hachiojipm.org$2.$3</a>");
