@@ -15,7 +15,7 @@ print " watch start\n";
 while(1){
     my $response =  eval {
     local $SIG{ALRM} = sub { die HTTP::Response->new(408, "got alarm, read timeout.") };
-        alarm 10;
+        alarm 30;
         my $res = $ua->get($YANCHA_URL);
         alarm 0;
         $res;
@@ -30,7 +30,7 @@ while(1){
         # must restart
         `nohup ./start.sh >> start.sh.log 2>&1 &`;
     }
-    sleep 10;
+    sleep 30;
 }
 
 =pod
