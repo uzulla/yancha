@@ -46,7 +46,7 @@ sub load_plugins {
 
 sub is_smartphone {
     my ( $self, $ua ) = @_;
-    return ($ua =~ m/(iPod|iPhone|iPad|Android|PlayStation Vita)/);
+    return ($ua =~ m/(iPod|iPhone|iPad|Android|PlayStation Vita|Windows Phone)/);
 }
 
 1;
