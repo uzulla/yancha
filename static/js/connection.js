@@ -146,16 +146,25 @@ socket.on('user message', function(hash){
 
   if(hash.profile_image_url.length>0){
     var avatar_img = $('.messagecell_img', cell).attr('src', hash.profile_image_url);
+
+//if(hash.nickname == "moznion"){
+//avatar_img.css('-webkit-animation-name','sqeeze');
+//avatar_img.css('-webkit-animation-duration', '1s');
+//avatar_img.css('-webkit-animation-iteration-count','infinite');
+//}
     if(hash.profile_url.length>0){
-      avatar_img.wrap("<a href='"+hash.profile_url+"'></a>");
+      avatar_img.wrap("<a href='"+hash.profile_url+"' ></a>");
     }
   }
 
   $('.messagecell_nickname', cell).text(hash.nickname);
 
   var message = user_message_filter(h(hash.text));
+//if(hash.nickname == "__papix__"){
+//  $('.messagecell_text', cell).html("<blink><marquee scrollamount='25' behavior='alternate' style='color:red;font-weight:bold;font-size:150%;'>"+message+"</marquee></blink>");
+//}else{
   $('.messagecell_text', cell).html(message);
-
+//}
   //plusplus
   if (cell.attr('data-post-id') > 0) {
     var ppnum = (parseInt(hash.plusplus)||0);
@@ -165,6 +174,7 @@ socket.on('user message', function(hash){
         ppstar_elm.append('★<span style="font-size:0.01em"> </span>');
       }
     }else{
+			cell.css('backgroundImage', 'url(http://pyazo.hachiojipm.org/image/e8n4atMNQWRtd0Li139274285993312.jpeg)');
       ppstar_elm.append('★x'+ppnum);
     }
 
@@ -208,11 +218,19 @@ socket.on('user message', function(hash){
       $(this).removeClass('uncheck');
     });
 
+	// if(hash.nickname == "moznion"){
+	//	cell.css('backgroundImage', 'url(http://pyazo.hachiojipm.org/image/e8n4atMNQWRtd0Li139274285993312.jpeg)');
+	// }
+
   if(hash.is_message_log){ //ログなので、差し込む場所を調整する
     var added_flg=false;
     $('#lines div.messagecell').each(function(){
       var _pid = parseInt($(this).attr('data-post-id'));
       if(_pid==hash.id){ // 自分と同じPostIDがある、上書きする。（現状plusplusのみ）
+				var ppnum = (parseInt(hash.plusplus)||0);
+				if(ppnum>=100){
+		    	$(this).css('backgroundImage', 'url(http://pyazo.hachiojipm.org/image/e8n4atMNQWRtd0Li139274285993312.jpeg)');
+				}
         $('.messagecell_plusplus', this).replaceWith($('.messagecell_plusplus', cell).addClass('uncheck'));
         added_flg=true;
         return false; //break
@@ -247,6 +265,11 @@ socket.on('user message', function(hash){
     sh_highlightDocument();
   }
 
+//if(hash.nickname == "__papix__"){
+//$('div,span,img', cell).css('-webkit-animation-name','rotateArea');
+//$('div,span,img', cell).css('-webkit-animation-duration', '3s');
+//$('div,span,img', cell).css('-webkit-animation-iteration-count','infinite');
+//}
   updateTitle();
   tagRefresh();
   hook.doHook('onUserMessage', hash);
