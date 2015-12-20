@@ -55,6 +55,14 @@ DISTRIBUTIONS
       AnyEvent::Util undef
     requirements:
       ExtUtils::MakeMaker 0
+  AnyEvent-AIO-1.1
+    pathname: M/ML/MLEHMANN/AnyEvent-AIO-1.1.tar.gz
+    provides:
+      AnyEvent::AIO undef
+    requirements:
+      AnyEvent 3.4
+      ExtUtils::MakeMaker 0
+      IO::AIO 3
   AnyEvent-HTTP-2.15
     pathname: M/ML/MLEHMANN/AnyEvent-HTTP-2.15.tar.gz
     provides:
@@ -436,6 +444,14 @@ DISTRIBUTIONS
       base 0
       strict 0
       warnings 0
+  EV-4.15
+    pathname: M/ML/MLEHMANN/EV-4.15.tar.gz
+    provides:
+      EV 4.15
+      EV::MakeMaker undef
+    requirements:
+      ExtUtils::MakeMaker 0
+      common::sense 0
   Encode-Locale-1.03
     pathname: G/GA/GAAS/Encode-Locale-1.03.tar.gz
     provides:
@@ -562,6 +578,12 @@ DISTRIBUTIONS
       Filesys::Notify::Simple 0.12
     requirements:
       ExtUtils::MakeMaker 6.30
+  Guard-1.022
+    pathname: M/ML/MLEHMANN/Guard-1.022.tar.gz
+    provides:
+      Guard 1.022
+    requirements:
+      ExtUtils::MakeMaker 0
   HTML-Parser-3.71
     pathname: G/GA/GAAS/HTML-Parser-3.71.tar.gz
     provides:
@@ -696,6 +718,13 @@ DISTRIBUTIONS
       Hash::MultiValue 0.15
     requirements:
       ExtUtils::MakeMaker 6.30
+  IO-AIO-4.18
+    pathname: M/ML/MLEHMANN/IO-AIO-4.18.tar.gz
+    provides:
+      IO::AIO 4.18
+    requirements:
+      ExtUtils::MakeMaker 0
+      common::sense 0
   IO-HTML-1.00
     pathname: C/CJ/CJM/IO-HTML-1.00.tar.gz
     provides:
@@ -852,6 +881,14 @@ DISTRIBUTIONS
       Test::More 0.88
       XSLoader 0.02
       perl 5.006002
+  Mozilla-CA-20130114
+    pathname: A/AB/ABH/Mozilla-CA-20130114.tar.gz
+    provides:
+      Mozilla::CA 20130114
+    requirements:
+      ExtUtils::MakeMaker 0
+      Test 0
+      perl 5.006
   Nephia-0.83
     pathname: Y/YT/YTURTLE/Nephia-0.83.tar.gz
     provides:
@@ -1356,6 +1393,17 @@ DISTRIBUTIONS
       XML::Writer 0.500
       YAML 0.66
       perl 5.008001
+  Signal-StackTrace-0.04
+    pathname: L/LE/LEMBARK/Signal-StackTrace-0.04.tar.gz
+    provides:
+      Signal::StackTrace 0.04
+    requirements:
+      Carp 0
+      Config 0
+      Data::Dumper 0
+      ExtUtils::MakeMaker 0
+      blib 0
+      strict 0
   Stream-Buffered-0.02
     pathname: D/DO/DOY/Stream-Buffered-0.02.tar.gz
     provides:
