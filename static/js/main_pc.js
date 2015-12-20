@@ -53,6 +53,7 @@ function resizeMessageTextarea(linenum){
   $(window).resize();
 }
 
+var timeagoTimer;
 //各種初期化
 $(function () {
 
@@ -99,7 +100,10 @@ $(function () {
     {src:"http://yancha.hachiojipm.org/yairc/1ekMA.mp3|http://yancha.hachiojipm.org/yairc/9E2Ny.ogg",id:"message"}
   ]);
 
-  var timeagoTimer = setInterval(function(){
+  if(timeagoTimer){
+    clearInterval(timeagoTimer);
+  }
+  timeagoTimer = setInterval(function(){
     $('abbr.timeago').timeago();
   },60000);
 
