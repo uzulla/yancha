@@ -212,7 +212,7 @@ sub fukumotosan {
         my $message = <<"EOM";
 User-Agent: $client_info->{user_agent}
 Remote-Address: $client_info->{remote_addr}
-Server: $client_info->{server_info}
+Server: $client_info->{server_info} #PUBLIC #FUKUMOTOSAN
 EOM
 
         $self->user_message($socket, $message);
